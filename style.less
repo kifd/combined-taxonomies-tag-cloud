@@ -1,0 +1,67 @@
+
+@import 'library';
+
+
+
+.widget_tag_cloud {
+	background-color:#6c9a18;
+	padding:1em;
+	font-size:85%;
+
+	h1 {
+		text-align:center;
+	}
+
+	.tagcloud {
+		text-align:center;
+		padding:1em;
+		background-color:rgba(0,0,0, 0.4);
+
+		a {
+			display:inline-block; position:relative;
+			letter-spacing:-0.04em; text-decoration:none;
+			vertical-align:middle;
+			margin:0 0.4em 0.2em 0; padding:0.4em 0.6em 0.5em; line-height:1;
+
+			color:#202e07;
+
+			&:hover {
+				color:#ff8239; background-color:#202e07;
+			}
+
+			&.smaller {
+				letter-spacing:0;
+			}
+		}
+
+		&.boxes {
+			a {
+				.rounded(0.4em);
+				margin:0 0.4em 0.6em 0; padding:0.25em 0.4em; line-height:0.8;
+
+				color:rgba(0,0,0, 1); background-color:rgba(255,255,255, 0.95);
+				text-shadow:0 0 0.1em solid rgba(255,255,255, 0.6);
+				border:0.1em solid rgba(255,255,255, 0.2);
+				.box-shadow(0 0 0.3em rgba(0,0,0, 0.4));
+
+				&:hover {
+					color:rgba(255,255,255, 1); background-color:rgba(0,0,0, 0.6); 
+					text-shadow:0 0 0.1em rgba(0,0,0, 0.3);
+					border:0.1em solid rgba(0,0,0, 0.7);
+					.box-shadow(0 0 0.3em rgba(0,0,0, 0.7) inset);
+				}
+				&.smaller {
+					padding:0.4em 0.6em;
+				}
+			}
+
+		}
+
+		.lower {
+			text-transform:lowercase;
+		}
+		.upper {
+			text-transform:uppercase;
+		}
+	}
+}
