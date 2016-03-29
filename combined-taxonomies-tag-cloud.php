@@ -66,14 +66,14 @@ $CombinedTaxonomiesTagCloud = new CombinedTaxonomiesTagCloudPlugin();
 class CombinedTaxonomiesTagCloudWidget extends WP_Widget {
 
 	public function CombinedTaxonomiesTagCloudWidget() {
-		parent::__construct(false, 'Tag Cloud', array('description' => __('More adaptable version of the basic WP tag cloud widget.', 'CombinedTaxonomiesTagCloud'), 'classname' => 'widget_tag_cloud'));
+		parent::__construct(false, __('Combined Tag Cloud', 'CombinedTaxonomiesTagCloud'), array('description' => __('More adaptable version of the basic WP tag cloud widget.', 'CombinedTaxonomiesTagCloud'), 'classname' => 'widget_tag_cloud'));
 		
 		// only load if we're using the widget
 		if (is_admin() OR is_active_widget(false, false, $this->id_base, true)) {
 			add_action('wp_loaded', array($this, 'make_default_selections'));
 			add_action('admin_enqueue_scripts', function() {
 				wp_enqueue_style('wp-color-picker'); 
-				wp_enqueue_script('combined-taxonomies-tag-cloud-script', plugins_url('admin.js', __FILE__), array('wp-color-picker', 'underscore'), false, true);
+				wp_enqueue_script('combined-taxonomies-tag-cloud-script', plugins_url('admin.js', __FILE__), array('wp-color-picker'), false, true);
 			});
 
 			// only need our stylesheet on the front end, hence the wp_ hooks
