@@ -1,7 +1,7 @@
 <?php
 /*
 Plugin Name: Combined Taxonomies Tag Cloud
-Version: 0.1
+Version: 0.2
 Plugin URI: http://drakard.com/
 Description: Makes a tag cloud widget out of multiple taxonomies across multiple post types.
 Author: Keith Drakard
@@ -71,7 +71,12 @@ class CombinedTaxonomiesTagCloudWidget extends WP_Widget {
 		// only load if we're using the widget
 		if (is_admin() OR is_active_widget(false, false, $this->id_base, true)) {
 			add_action('wp_loaded', array($this, 'make_default_selections'));
-			// only need the stylesheet on the front end, hence the wp_ hooks
+			add_action('admin_enqueue_scripts', function() {
+				wp_enqueue_style('wp-color-picker'); 
+				wp_enqueue_script('combined-taxonomies-tag-cloud-script', plugins_url('admin.js', __FILE__), array('wp-color-picker', 'underscore'), false, true);
+			});
+
+			// only need our stylesheet on the front end, hence the wp_ hooks
 			add_action('wp_head', function() { wp_register_style('combined-taxonomies-tag-cloud-style', plugins_url('style.css', __FILE__), false, '0.1'); });
 			add_action('wp_footer', function() { wp_enqueue_style('combined-taxonomies-tag-cloud-style'); });
 		}
@@ -97,8 +102,8 @@ class CombinedTaxonomiesTagCloudWidget extends WP_Widget {
 			'display'		=> array(
 								'diy' => __('Your Own Stylesheet', 'CombinedTaxonomiesTagCloud'),
 								'flat' => __('Flat List', 'CombinedTaxonomiesTagCloud'),
-								'olist' => __('Ordered List', 'CombinedTaxonomiesTagCloud'),
-								'ulist' => __('Unordered List', 'CombinedTaxonomiesTagCloud'),
+								'ulist' => __('Block List', 'CombinedTaxonomiesTagCloud'),
+								'olist' => __('Numbered List', 'CombinedTaxonomiesTagCloud'),
 								'boxes' => __('Box Tags', 'CombinedTaxonomiesTagCloud'),
 							),
 			'textcase'		=> array(
@@ -124,8 +129,11 @@ class CombinedTaxonomiesTagCloudWidget extends WP_Widget {
 			'order'			=> 0, // 0 = asc, 1 = desc
 			'single'		=> 'leave',
 			'nofollow'		=> 0,
-			'display'		=> 'diy',
 			'textcase'		=> '',
+			'display'		=> 'flat',
+			'wbackground'	=> '#ffffff',
+			'tbackground'	=> '#ffffff',
+			'tforeground'	=> '#000000',
 			'save'			=> 12,
 		);
 	}
@@ -248,11 +256,11 @@ class CombinedTaxonomiesTagCloudWidget extends WP_Widget {
 
 			switch ($args['display']) {
 				case 'diy':			
-				case 'flat':		$cloud = '<div class="tagcloud">'.implode('', $cloud).'</div>';
+				case 'flat':		$cloud = '<div class="combinedtagcloud">'.implode('', $cloud).'</div>';
 									break;
-				case 'olist':		$cloud = '<ol class="tagcloud list"><li>'.implode('</li><li>', $cloud).'</li></ol>'; break;
-				case 'ulist':		$cloud = '<ul class="tagcloud list"><li>'.implode('</li><li>', $cloud).'</li></ul>'; break;
-				case 'boxes':		$cloud = '<div class="tagcloud boxes">'.implode('', $cloud).'</div>'; break;
+				case 'olist':		$cloud = '<ol class="combinedtagcloud list"><li>'.implode('</li><li>', $cloud).'</li></ol>'; break;
+				case 'ulist':		$cloud = '<ul class="combinedtagcloud list"><li>'.implode('</li><li>', $cloud).'</li></ul>'; break;
+				case 'boxes':		$cloud = '<div class="combinedtagcloud boxes">'.implode('', $cloud).'</div>'; break;
 				default:			$cloud = '';
 			}
 
@@ -262,12 +270,30 @@ class CombinedTaxonomiesTagCloudWidget extends WP_Widget {
 
 
 			// save the resulting html so we don't need to do this again for a while
-			if (0 < $instance['save']) set_transient($this->transient, $output, $instance['save'] * HOUR_IN_SECONDS);
+			if (0 < $args['save']) set_transient($this->transient, $output, $args['save'] * HOUR_IN_SECONDS);
 		}
 
 
 		// TODO: if you set this to diy for the last instance of the widget, then all preceeding widgets will also lose their styles...
-		if ('diy' == $args['display']) wp_deregister_style('combined-taxonomies-tag-cloud-style');
+		if ('diy' == $args['display']) {
+			wp_deregister_style('combined-taxonomies-tag-cloud-style');
+
+		} else {
+
+			$custom_css = '
+				#'.$args['widget_id'].' .combinedtagcloud {
+					background-color:'.$args['wbackground'].';
+				}
+				#'.$args['widget_id'].' a {
+					background-color:'.$args['tbackground'].'; color:'.$args['tforeground'].';
+				}
+				#'.$args['widget_id'].' a:hover {
+					background-color:'.$args['tforeground'].'; color:'.$args['tbackground'].';
+				}
+			';
+
+			wp_add_inline_style('combined-taxonomies-tag-cloud-style', $custom_css);
+		}
 
 		echo $output;
 	}
@@ -291,14 +317,20 @@ class CombinedTaxonomiesTagCloudWidget extends WP_Widget {
 																						$instance['maximum'] = absint($new['maximum']);
 		if (in_array($new['single'], array_keys($this->choices['single'])))				$instance['single'] = $new['single'];
 																						$instance['nofollow'] = (bool) $new['nofollow'];
-		if (in_array($new['display'], array_keys($this->choices['display'])))			$instance['display'] = $new['display'];
 		if (in_array($new['textcase'], array_keys($this->choices['textcase'])))			$instance['textcase'] = $new['textcase'];
+		if (in_array($new['display'], array_keys($this->choices['display'])))			$instance['display'] = $new['display'];
+
+		if ($this->is_valid_colour($new['wbackground']))								$instance['wbackground'] = $new['wbackground'];
+		if ($this->is_valid_colour($new['tbackground']))								$instance['tbackground'] = $new['tbackground'];
+		if ($this->is_valid_colour($new['tforeground']))								$instance['tforeground'] = $new['tforeground'];
+
 		if (in_array($new['save'], $this->choices['save']))								$instance['save'] = $new['save'];
 
 
 		delete_transient($this->transient); // either something's changed or we pressed the save button for the sake of it. regardless, delete our saved html and start again
 		return $instance;
 	}
+
 
 
 	// form for the widget ----------------------------------
@@ -360,6 +392,7 @@ class CombinedTaxonomiesTagCloudWidget extends WP_Widget {
 				. ' .combined-taxonomies-tag-cloud select[multiple] { min-height:5rem; }'
 				. ' .combined-taxonomies-tag-cloud input { height:1.8rem; }'
 				. ' .combined-taxonomies-tag-cloud input[type=checkbox] { margin:0!important; width:1.4rem; }'
+				. ' .combined-taxonomies-tag-cloud .wp-picker-container { vertical-align:top; }'
 				. '</style>';
 
 		// TODO: build this form programmatically if you add much more options
@@ -394,10 +427,19 @@ class CombinedTaxonomiesTagCloudWidget extends WP_Widget {
 				. '<p><label class="half" for="'.esc_attr($this->get_field_id('single')).'">'.__('Tags With Just One Entry', 'CombinedTaxonomiesTagCloud').':</label>'.$select['single'].'</p>'
 				. '<p><label class="half" for="'.esc_attr($this->get_field_id('nofollow')).'">'.__('Make Links No-Follow?', 'CombinedTaxonomiesTagCloud').':</label>'
 					. '<input type="checkbox" id="'.esc_attr($this->get_field_id('nofollow')).'" name="'.esc_attr($this->get_field_name('nofollow')).'" value="1"'.$checked['nofollow'].'></p>'
+				. '<p><label class="half" for="'.esc_attr($this->get_field_id('textcase')).'">'.__('Tag Text Case', 'CombinedTaxonomiesTagCloud').':</label>'.$select['textcase'].'</p>'
 				. '<hr>'
 
 				. '<p><label class="half" for="'.esc_attr($this->get_field_id('display')).'">'.__('Tag Style', 'CombinedTaxonomiesTagCloud').':</label>'.$select['display'].'</p>'
-				. '<p><label class="half" for="'.esc_attr($this->get_field_id('textcase')).'">'.__('Text Case', 'CombinedTaxonomiesTagCloud').':</label>'.$select['textcase'].'</p>'
+				. '<p><label class="half" for="'.esc_attr($this->get_field_id('wbackground')).'">'.__('Widget Background', 'CombinedTaxonomiesTagCloud').'</label>'
+					. '<input type="text" class="color-field" size="5" id="'.esc_attr($this->get_field_id('wbackground')).'" name="'.esc_attr($this->get_field_name('wbackground')).'" value="'.$instance['wbackground'].'"></p>'
+				. '<p><label class="half" for="'.esc_attr($this->get_field_id('tbackground')).'">'.__('Tag Background', 'CombinedTaxonomiesTagCloud').'</label>'
+					. '<input type="text" class="color-field" size="5" id="'.esc_attr($this->get_field_id('tbackground')).'" name="'.esc_attr($this->get_field_name('tbackground')).'" value="'.$instance['tbackground'].'"></p>'
+				. '<p><label class="half" for="'.esc_attr($this->get_field_id('tforeground')).'">'.__('Tag Foreground', 'CombinedTaxonomiesTagCloud').'</label>'
+					. '<input type="text" class="color-field" size="5" id="'.esc_attr($this->get_field_id('tforeground')).'" name="'.esc_attr($this->get_field_name('tforeground')).'" value="'.$instance['tforeground'].'"></p>'
+				
+
+				. '<hr>'
 				. '<p><label class="half" for="'.esc_attr($this->get_field_id('save')).'">'.__('Save Cloud For (Hours)', 'CombinedTaxonomiesTagCloud').':</label>'.$select['save'].'</p>'
 				. '<hr>'
 				. '</div>';
@@ -428,6 +470,10 @@ class CombinedTaxonomiesTagCloudWidget extends WP_Widget {
 			$topCat->children = array();
 			$this->sort_terms_hierarchically($cats, $topCat->children, $topCat->term_id);
 		}
+	}
+
+	private function is_valid_colour($value) {
+		return preg_match('/^#(?:[0-9a-f]{3}){1,2}$/i', $value);
 	}
 
 }

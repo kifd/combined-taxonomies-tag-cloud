@@ -4,7 +4,7 @@ Donate Link: http://drakard.com/
 Tags: tag cloud, taxonomy tag cloud, tag cloud widget, tag cloud post type, custom tag cloud, combined tag cloud, custom post tag cloud, change tag cloud
 Requires at least: 3.8 or higher
 Tested up to: 4.4.2
-Stable tag: 0.1
+Stable tag: 0.2
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -24,9 +24,8 @@ With this plugin, you can now configure (on a per-widget basis):
 * how to treat tags with just one entry - leave alone, remove them or link directly to that post,
 * whether to make links no-follow,
 * what case the tags should appear as,
+* the widget background and tag background/foreground colours,
 * and how long each widget's output should be saved for, if at all.
-
-There are a couple of demonstration styles included, but the plugin is currently intended to be styled by your own theme's stylesheet.
 
 
 == Installation ==
@@ -41,11 +40,19 @@ There are a couple of demonstration styles included, but the plugin is currently
 
 == Screenshots ==
 
+1. Enter your (optional) title, and pick which taxonomies and post types will be picked for this cloud.
+2. Choose the size range of the tags, which ones should never appear and what order to display them in.
+3. More options - how to deal with single count tags, link behaviour and tag appearance, as well as how long to store the resulting HTML.
+
 
 == Changelog ==
 
 = 0.1 =
 * Initial release.
+
+= 0.2 =
+* Added colour pickers,
+* Tidied up the stylesheet.
 
 
 == Upgrade Notice ==
