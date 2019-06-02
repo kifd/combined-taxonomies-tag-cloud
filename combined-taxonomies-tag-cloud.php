@@ -1,7 +1,7 @@
 <?php
 /*
 Plugin Name: Combined Taxonomies Tag Cloud
-Version: 0.2
+Version: 0.21.2
 Plugin URI: http://drakard.com/
 Description: Makes a tag cloud widget out of multiple taxonomies across multiple post types.
 Author: Keith Drakard
@@ -335,6 +335,7 @@ class CombinedTaxonomiesTagCloudWidget extends WP_Widget {
 
 	// form for the widget ----------------------------------
 	public function form($instance) {
+		// if (empty($instance)) return; // TODO: don't go through all this if we're not using the widget - need to account for freshly added widgets
 
 		$instance = wp_parse_args((array) $instance, $this->defaults);
 
@@ -360,6 +361,8 @@ class CombinedTaxonomiesTagCloudWidget extends WP_Widget {
 			$select[$field].= '</select>';
 		}
 
+		// taxonomies could've been deleted since we made this widget, and get_terms() crashes if any don't exist...
+		foreach ($instance['taxonomies'] as $i => $tax) if (! taxonomy_exists($tax)) unset($instance['taxonomies'][$i]);
 
 		// do this one separately because its a pita
 		$all_terms = get_terms($instance['taxonomies'], array(
