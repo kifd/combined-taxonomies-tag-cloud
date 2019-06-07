@@ -1,7 +1,7 @@
 <?php
 /*
 Plugin Name: Combined Taxonomies Tag Cloud
-Version: 0.21.2
+Version: 0.21.3
 Plugin URI: http://drakard.com/
 Description: Makes a tag cloud widget out of multiple taxonomies across multiple post types.
 Author: Keith Drakard
@@ -65,7 +65,7 @@ $CombinedTaxonomiesTagCloud = new CombinedTaxonomiesTagCloudPlugin();
 
 class CombinedTaxonomiesTagCloudWidget extends WP_Widget {
 
-	public function CombinedTaxonomiesTagCloudWidget() {
+	public function __construct() {
 		parent::__construct(false, __('Combined Tag Cloud', 'CombinedTaxonomiesTagCloud'), array('description' => __('More adaptable version of the basic WP tag cloud widget.', 'CombinedTaxonomiesTagCloud'), 'classname' => 'widget_tag_cloud'));
 		
 		// only load if we're using the widget
@@ -82,9 +82,7 @@ class CombinedTaxonomiesTagCloudWidget extends WP_Widget {
 		}
 	}
 
-
 	public function make_default_selections() {
-		$this->transient	= 'combined_taxonomies_tag_cloud_'.$this->number;
 		$this->choices = array(
 			'taxonomies'	=> get_taxonomies(array('show_ui' => true), 'objects'),
 			'post_types'	=> get_post_types(array('show_ui' => true), 'objects'),
@@ -145,7 +143,10 @@ class CombinedTaxonomiesTagCloudWidget extends WP_Widget {
 		$instance = wp_parse_args($instance, $this->defaults);
 		$args = array_merge($args, $instance);
 
-		if (0 == $instance['save'] OR false === ($output = get_transient($this->transient)) OR '' == $output) {
+		$this->transient = 'combined_taxonomies_tag_cloud_'.$this->id;
+		$output = get_transient($this->transient);
+
+		if (! $output OR $instance['save'] == 0) {
 
 			// need wpdb for the query and wp_post_types to get the labels (names to use in the post counts)
 			global $wpdb, $wp_post_types;
@@ -233,6 +234,9 @@ class CombinedTaxonomiesTagCloudWidget extends WP_Widget {
 					$link = get_term_link((int) $tag['term_id'], $tag['taxonomy']);
 				}
 
+				// in case we setup the cloud and then delete a taxonomy without updating the widget choices
+				if (is_wp_error($link)) continue;
+				
 				// calculate the size of this tag - find the $value in excess of $min_qty, multiply by the font-size increment ($step) and add the $args['smallest'] set above
 				$size = round($args['smallest'] + (($tag['count'] - $min_qty) * $step), 2);
 
@@ -274,7 +278,7 @@ class CombinedTaxonomiesTagCloudWidget extends WP_Widget {
 		}
 
 
-		// TODO: if you set this to diy for the last instance of the widget, then all preceeding widgets will also lose their styles...
+		// BUG TODO: if you set this to diy for any instance of the widget, then all preceeding widgets will also lose their styles...
 		if ('diy' == $args['display']) {
 			wp_deregister_style('combined-taxonomies-tag-cloud-style');
 
@@ -326,8 +330,10 @@ class CombinedTaxonomiesTagCloudWidget extends WP_Widget {
 
 		if (in_array($new['save'], $this->choices['save']))								$instance['save'] = $new['save'];
 
+		// either something's changed or we pressed the save button for the sake of it. regardless, delete our saved html and start again
+		$this->transient = 'combined_taxonomies_tag_cloud_'.$this->id;
+		delete_transient($this->transient);
 
-		delete_transient($this->transient); // either something's changed or we pressed the save button for the sake of it. regardless, delete our saved html and start again
 		return $instance;
 	}
 

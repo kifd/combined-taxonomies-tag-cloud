@@ -4,7 +4,7 @@ Donate Link: http://drakard.com/
 Tags: tag cloud, taxonomy tag cloud, tag cloud widget, tag, cloud, widget, tag cloud post type, custom tag cloud, combined tag cloud, custom post tag cloud, change tag cloud, redirect single tag, remove single tag
 Requires at least: 3.8 or higher
 Tested up to: 5.2.1
-Stable tag: 0.21.2
+Stable tag: 0.21.3
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -47,21 +47,26 @@ With this plugin, you can now configure (on a per-widget basis):
 
 == Changelog ==
 
-= 0.1 =
-* Initial release.
 
-= 0.2 =
-* Added colour pickers,
-* Tidied up the stylesheet.
+= 0.21.3 =
+* Bugfix: transient was only saving a single instance
+* Bugfix: crashed in a different place if you deleted a taxonomy while it was selected in a widget
 
-= 0.21 =
-* Fixed bug: crashed if you deleted a taxonomy while it was selected in a widget.
+= 0.21.2 =
+* Tested with WP 5.2.1
 
 = 0.21.1 =
 * Tested with WP 4.6.1
 
-= 0.21.2 =
-* Tested with WP 5.2.1
+= 0.21 =
+* Bugfix: crashed if you deleted a taxonomy while it was selected in a widget
+
+= 0.2 =
+* Enhancement: added colour pickers
+* Bugfix: tidied up the stylesheet
+
+= 0.1 =
+* Initial release.
 
 
 == Upgrade Notice ==
