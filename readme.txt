@@ -3,8 +3,8 @@ Contributors: keith_wp
 Author Link: https://drakard.com/
 Tags: tag cloud, taxonomy tag cloud, tag cloud widget, tag, cloud, widget, tag cloud post type, custom tag cloud, combined tag cloud, custom post tag cloud, change tag cloud, redirect single tag, remove single tag
 Requires at least: 3.8 or higher
-Tested up to: 5.2.1
-Stable tag: 0.21.4
+Tested up to: 5.5
+Stable tag: 0.22
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -47,6 +47,13 @@ With this plugin, you can now configure (on a per-widget basis):
 
 == Changelog ==
 
+= 0.22 =
+* Tested with WP 5.6 alpha
+* Enhancement: added font selection, and integration with X
+* Enhancement: added 'vw' to CSS unit selection
+* Bugfix: checks 'before_widget' param for CSS id, so themes that don't include it (like 2020...) can still have the widgets styled individually
+* Bugfix: tidied up the widget form code
+* Bugfix: removed a stray pre_get_posts() call
 
 = 0.21.4 =
 * Bugfix: was still trying to make a cloud even if we pulled no tags back

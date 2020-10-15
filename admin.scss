@@ -1,0 +1,41 @@
+.combined-taxonomies-tag-cloud {
+	margin:0 0 1rem;
+	
+	.half {
+		width:50%; display:inline-block;
+	}
+	
+	p {
+		margin:0.2rem 0;
+	}
+	
+	hr {
+		margin:1rem 0; padding:0.1rem; border:0.1rem dotted #ccc; background-color:#fafafa;
+	}
+	
+	select {
+		margin:0.4rem 0;
+		&[multiple] {
+			min-height:5rem;
+		}
+	}
+	
+	input {
+		margin:0.4rem 0;
+		height:1.8rem;
+		&[type=checkbox] {
+			margin:0!important; width:1.4rem;
+			&:checked::before {
+				float:none;
+				position:relative;
+				height:1.8rem;
+				top:50%;
+				margin:-50% 0 0;
+			}
+		}
+	}
+	
+	.wp-picker-container {
+		vertical-align:top;
+	}
+}
