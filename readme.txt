@@ -1,10 +1,10 @@
 === Combined Taxonomies Tag Cloud ===
 Contributors: keith_wp
-Donate Link: http://drakard.com/
+Author Link: https://drakard.com/
 Tags: tag cloud, taxonomy tag cloud, tag cloud widget, tag, cloud, widget, tag cloud post type, custom tag cloud, combined tag cloud, custom post tag cloud, change tag cloud, redirect single tag, remove single tag
 Requires at least: 3.8 or higher
 Tested up to: 5.2.1
-Stable tag: 0.21.3
+Stable tag: 0.21.4
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -47,6 +47,9 @@ With this plugin, you can now configure (on a per-widget basis):
 
 == Changelog ==
 
+
+= 0.21.4 =
+* Bugfix: was still trying to make a cloud even if we pulled no tags back
 
 = 0.21.3 =
 * Bugfix: transient was only saving a single instance

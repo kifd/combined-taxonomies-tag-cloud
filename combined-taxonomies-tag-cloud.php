@@ -1,11 +1,10 @@
 <?php
 /*
 Plugin Name: Combined Taxonomies Tag Cloud
-Version: 0.21.3
-Plugin URI: http://drakard.com/
+Version: 0.21.4
 Description: Makes a tag cloud widget out of multiple taxonomies across multiple post types.
 Author: Keith Drakard
-Author URI: http://drakard.com/
+Author URI: https://drakard.com/
 */
 
 
@@ -214,6 +213,8 @@ class CombinedTaxonomiesTagCloudWidget extends WP_Widget {
 			// trim to the maximum amount we'll be showing
 			$tags = array_slice($tags, 0, $args['maximum']);
 
+			// skip the next bit if we have no tags left
+			if (empty($tags)) return false;
 
 			// work out the difference between our highest and lowest tag counts etc
 			$weights = array(); foreach ($tags as $tag) $weights[] = $tag['count'];
