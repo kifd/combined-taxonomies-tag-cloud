@@ -49,8 +49,9 @@ With this plugin, you can now configure (on a per-widget basis):
 
 = 0.22 =
 * Tested with WP 5.6 alpha
-* Enhancement: added font selection, and integration with X
-* Enhancement: added 'vw' to CSS unit selection
+* Enhancement: added tag font stack selection
+* Enhancement: added 'vw' to CSS unit selection because why not
+* Enhancement: made the widget form hide unused options based on select dropdowns
 * Bugfix: checks 'before_widget' param for CSS id, so themes that don't include it (like 2020...) can still have the widgets styled individually
 * Bugfix: tidied up the widget form code
 * Bugfix: removed a stray pre_get_posts() call

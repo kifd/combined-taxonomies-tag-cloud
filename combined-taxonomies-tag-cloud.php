@@ -7,9 +7,10 @@ Author: Keith Drakard
 Author URI: https://drakard.com/
 
 
-KNOWN (minor tbf) BUGS:
-	- changing just a color in the widget admin doesn't make WP realise the form has changed
-	- if any instances are set to "your own css", then it will make all instances lose styling
+KNOWN (minor tbf) BUGS/SHORTCOMINGS:
+	- changing what taxonomies to use doesn't automatically update the widget re what terms to exclude etc - save it first
+	- changing just a color in the widget admin doesn't make WP realise the form has changed - toggle something else
+	- if any instances are set to "your own css", then it will make all instances lose styling - don't do that then
 */
 
 
@@ -24,6 +25,7 @@ class CombinedTaxonomiesTagCloudPlugin {
 			register_widget('CombinedTaxonomiesTagCloudWidget');
 			// unregister_widget('WP_Widget_Tag_Cloud');
 		});
+		
 	}
 	
 }
@@ -50,6 +52,7 @@ class CombinedTaxonomiesTagCloudWidget extends WP_Widget {
 				wp_enqueue_style('combined-taxonomies-tag-cloud-admin-style', plugins_url('admin.css', __FILE__), false, null);
 				wp_enqueue_style('wp-color-picker'); 
 				wp_enqueue_script('combined-taxonomies-tag-cloud-admin-script', plugins_url('admin.js', __FILE__), array('wp-color-picker'), null, true);
+				wp_localize_script('combined-taxonomies-tag-cloud-admin-script', 'font_stacks', $this->get_font_stacks());
 			});
 			// only need our stylesheet on the front end, but we can't just use the wp_enqueue_scripts action as we may be adding inline styles
 			add_action('wp_head', function() {
@@ -61,14 +64,48 @@ class CombinedTaxonomiesTagCloudWidget extends WP_Widget {
 		}
 	}
 
+	
+	private function get_font_stacks(string $key = '') {
+		// from https://gist.github.com/don1138/5761014
+		$fonts = array(
+			'System' => 
+				'system, -apple-system, ".SFNSText-Regular", "San Francisco", "Roboto", "Segoe UI", "Helvetica Neue", "Lucida Grande", sans-serif',
+			'Times New Roman' =>
+				'Cambria, "Hoefler Text", Utopia, "Liberation Serif", "Nimbus Roman No9 L Regular", Times, "Times New Roman", serif',
+			'Georgia' =>
+				'Constantia, "Lucida Bright", Lucidabright, "Lucida Serif", Lucida, "DejaVu Serif", "Bitstream Vera Serif", "Liberation Serif", Georgia, serif',
+			'Garamond' =>
+				'"Palatino Linotype", Palatino, Palladio, "URW Palladio L", "Book Antiqua", Baskerville, "Bookman Old Style", "Bitstream Charter", "Nimbus Roman No9 L", Garamond, "Apple Garamond", "ITC Garamond Narrow", "New Century Schoolbook", "Century Schoolbook", "Century Schoolbook L", Georgia, serif',
+			'Helvetica/Arial' =>
+				'Frutiger, "Frutiger Linotype", Univers, Calibri, "Gill Sans", "Gill Sans MT", "Myriad Pro", Myriad, "DejaVu Sans Condensed", "Liberation Sans", "Nimbus Sans L", Tahoma, Geneva, "Helvetica Neue", Helvetica, Arial, sans-serif',
+			'Verdana' =>
+				'Corbel, "Lucida Grande", "Lucida Sans Unicode", "Lucida Sans", "DejaVu Sans", "Bitstream Vera Sans", "Liberation Sans", Verdana, "Verdana Ref", sans-serif',
+			'Trebuchet' =>
+				'"Segoe UI", Candara, "Bitstream Vera Sans", "DejaVu Sans", "Bitstream Vera Sans", "Trebuchet MS", Verdana, "Verdana Ref", sans-serif',
+			'Impact' =>
+				'Impact, Haettenschweiler, "Franklin Gothic Bold", Charcoal, "Helvetica Inserat", "Bitstream Vera Sans Bold", "Arial Black", sans-serif',
+			'Monospace' =>
+				'Consolas, "Andale Mono WT", "Andale Mono", "Lucida Console", "Lucida Sans Typewriter", "DejaVu Sans Mono", "Bitstream Vera Sans Mono", "Liberation Mono", "Nimbus Mono L", Monaco, "Courier New", Courier, monospace',
+		);
+		
+		if (isset($fonts[$key])) {
+			$fonts = $fonts[$key];
+		} elseif ($key == '') {
+			asort($fonts);
+		} else {
+			$fonts = '';
+		}
+		
+		return $fonts;
+	}
+	
+	
+	
 	public function make_default_selections() {
 		$this->choices = array(
 			'taxonomies'	=> get_taxonomies(array('show_ui' => true), 'objects'),
 			'post_types'	=> get_post_types(array('show_ui' => true), 'objects'),
-			'font_family'	=> array(
-								__('Leave Alone', 'CombinedTaxonomiesTagCloud'),
-								'Times New Roman',
-							),
+			'font_family'	=> array(__('Leave Alone', 'CombinedTaxonomiesTagCloud')) + array_keys($this->get_font_stacks()),
 			'font_unit'		=> array('rem', 'em', 'pt', 'px', 'vw'),
 			'orderby'		=> array(
 								'name' => __('Alphabetically', 'CombinedTaxonomiesTagCloud'),
@@ -97,17 +134,11 @@ class CombinedTaxonomiesTagCloudWidget extends WP_Widget {
 		sort($this->choices['taxonomies']);
 		sort($this->choices['post_types']);
 		
-		if (function_exists(‘ogf_fonts_array’)) {
-			$uaf_font_families = ogf_fonts_array(); // Returns Array
-			print_r($uaf_font_families);
-			exit;
-		}
-
 		$this->defaults = array(
 			'title' 		=> '',
 			'post_types'	=> array('post'),
 			'taxonomies'	=> array('post_tag'),
-			'font_family'	=> 'leave',
+			'font_family'	=> __('Leave Alone', 'CombinedTaxonomiesTagCloud'),
 			'font_unit'		=> 'rem',
 			'smallest' 		=> 0.8,
 			'largest' 		=> 2.4,
@@ -291,7 +322,7 @@ class CombinedTaxonomiesTagCloudWidget extends WP_Widget {
 		
 			$_font = '';
 			if ($args['font_family'] != __('Leave Alone', 'CombinedTaxonomiesTagCloud')) {
-				$_font = 'font-family:'.$args['font_family'].';';
+				$_font = 'font-family:'.$this->get_font_stacks($args['font_family']).';';
 			}
 			
 			$custom_css = sprintf('
@@ -361,7 +392,7 @@ class CombinedTaxonomiesTagCloudWidget extends WP_Widget {
 		foreach ($fields as $field => $option) {
 			$select[$field] = (0 == $option) // conveniently, only the 0s need a wide, multiple select... 
 				? '<select id="'.esc_attr($this->get_field_id($field)).'[]" name="'.esc_attr($this->get_field_name($field)).'[]" class="widefat" size="6" multiple="true">'
-				: '<select id="'.esc_attr($this->get_field_id($field)).'" name="'.esc_attr($this->get_field_name($field)).'">';
+				: '<select id="'.esc_attr($this->get_field_id($field)).'" class="'.$field.'" name="'.esc_attr($this->get_field_name($field)).'">';
 
 			foreach ($this->choices[$field] as $key => $value) {
 				switch ($option) {
@@ -400,7 +431,7 @@ class CombinedTaxonomiesTagCloudWidget extends WP_Widget {
 		
 		// and now make the form itself
 		// TODO: build this form programmatically if you add much more options
-		$output.= '<div class="combined-taxonomies-tag-cloud">'
+		$output = '<div class="combined-taxonomies-tag-cloud">'
 				
 				. sprintf('<p><label class="half" for="%s">%s:</label><input type="text" class="widefat" id="%s" name="%s" value="%s"></p>',
 						esc_attr($this->get_field_id('title')),
@@ -425,10 +456,13 @@ class CombinedTaxonomiesTagCloudWidget extends WP_Widget {
 				. '<hr>'
 				
 				// TAG FONT attributes
-				. sprintf('<p><label class="half" for="%s">%s:</label>%s</p>',
+				. sprintf('<p title="%s"><label class="half %s" for="%s">%s:</label>%s<br><span class="font_list">%s</span></p>',
+						__('Choose a font stack to apply to the tags - if in doubt, leave it for your theme or font plugin to handle', 'CombinedTaxonomiesTagCloud'),
+						esc_attr('font_list_label'),
 						esc_attr($this->get_field_id('font_family')),
-						__('Tag Font', 'CombinedTaxonomiesTagCloud'),
-						$select['font_family']
+						__('Tag Font Stack', 'CombinedTaxonomiesTagCloud'),
+						$select['font_family'],
+						$this->get_font_stacks($instance['font_family'])
 					)
 				. sprintf('<p><label class="half" for="%s">%s:</label>%s</p>',
 						esc_attr($this->get_field_id('font_unit')),
@@ -510,24 +544,27 @@ class CombinedTaxonomiesTagCloudWidget extends WP_Widget {
 						__('List Style', 'CombinedTaxonomiesTagCloud'),
 						$select['display']
 					)
-				. sprintf('<p title="%s"><label class="half" for="%s">%s:</label><input class="color-field" type="text" size="5" id="%s" name="%s" value="%s"></p>',
+				. sprintf('<p title="%s" class="%s"><label class="half" for="%s">%s:</label><input class="color-field" type="text" size="5" id="%s" name="%s" value="%s"></p>',
 						__('Choose the background color of the area underneath the title', 'CombinedTaxonomiesTagCloud'),
+						($instance['display'] != 'diy') ? 'show' : 'hide',
 						esc_attr($this->get_field_id('wbackground')),
 						__('Widget Background', 'CombinedTaxonomiesTagCloud'),
 						esc_attr($this->get_field_id('wbackground')),
 						esc_attr($this->get_field_name('wbackground')),
 						$instance['wbackground']
 					)
-				. sprintf('<p title="%s"><label class="half" for="%s">%s:</label><input class="color-field" type="text" size="5" id="%s" name="%s" value="%s"></p>',
+				. sprintf('<p title="%s" class="%s"><label class="half" for="%s">%s:</label><input class="color-field" type="text" size="5" id="%s" name="%s" value="%s"></p>',
 						__('Choose the background color of a tag', 'CombinedTaxonomiesTagCloud'),
+						($instance['display'] != 'diy') ? 'show' : 'hide',
 						esc_attr($this->get_field_id('tbackground')),
 						__('Tag Background', 'CombinedTaxonomiesTagCloud'),
 						esc_attr($this->get_field_id('tbackground')),
 						esc_attr($this->get_field_name('tbackground')),
 						$instance['tbackground']
 					)
-				. sprintf('<p title="%s"><label class="half" for="%s">%s:</label><input class="color-field" type="text" size="5" id="%s" name="%s" value="%s"></p>',
+				. sprintf('<p title="%s" class="%s"><label class="half" for="%s">%s:</label><input class="color-field" type="text" size="5" id="%s" name="%s" value="%s"></p>',
 						__('Choose the foreground color of a tag', 'CombinedTaxonomiesTagCloud'),
+						($instance['display'] != 'diy') ? 'show' : 'hide',
 						esc_attr($this->get_field_id('tforeground')),
 						__('Tag Foreground', 'CombinedTaxonomiesTagCloud'),
 						esc_attr($this->get_field_id('tforeground')),

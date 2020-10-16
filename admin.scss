@@ -18,6 +18,9 @@
 		&[multiple] {
 			min-height:5rem;
 		}
+		option {
+			max-width:20vw;
+		}
 	}
 	
 	input {
@@ -35,7 +38,25 @@
 		}
 	}
 	
+	.font_list {
+		display:block;
+		padding:0 1rem;
+		line-height:1.2;
+		font-size:smaller;
+		color:gray;
+	}
+	
 	.wp-picker-container {
 		vertical-align:top;
 	}
+	
+	p {
+		&.hide {
+			display:none;
+		}
+		&.show {
+			display:block;
+		}
+	}
+	
 }
