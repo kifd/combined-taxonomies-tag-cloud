@@ -1,62 +1,109 @@
 .combined-taxonomies-tag-cloud {
-	margin:0 0 1rem;
+	margin:0 -5px 1rem;
 	
-	.half {
-		width:50%; display:inline-block;
-	}
-	
-	p {
-		margin:0.2rem 0;
-	}
-	
-	hr {
-		margin:1rem 0; padding:0.1rem; border:0.1rem dotted #ccc; background-color:#fafafa;
-	}
-	
-	select {
-		margin:0.4rem 0;
-		&[multiple] {
-			min-height:5rem;
-		}
-		option {
-			max-width:20vw;
-		}
-	}
-	
-	input {
-		margin:0.4rem 0;
-		height:1.8rem;
-		&[type=checkbox] {
-			margin:0!important; width:1.4rem;
-			&:checked::before {
-				float:none;
-				position:relative;
-				height:1.8rem;
-				top:50%;
-				margin:-50% 0 0;
+	fieldset {
+		margin:1rem 0; padding:0.2rem 0.4rem;
+		background-color: #fafafa;
+		
+		legend {
+			background-color: #eaeaea;
+			border-top: 0.1rem dotted #ccc;
+			margin:0 -0.4rem; padding: 0.4rem;
+			font-weight: bold;
+			width: 100%;
+			cursor: pointer;
+			
+			&:after {
+				margin-top: -4px;
+				border-radius: 50%;
+				content: "\f142";
+				font: normal 20px/1 dashicons;
+				float: right;
+				color: #72777c;
+			}
+			&.closed:after {
+				content: "\f140";
 			}
 		}
-	}
-	
-	.font_list {
-		display:block;
-		padding:0 1rem;
-		line-height:1.2;
-		font-size:smaller;
-		color:gray;
-	}
-	
-	.wp-picker-container {
-		vertical-align:top;
-	}
-	
-	p {
-		&.hide {
-			display:none;
+		
+		& > div {
+			flex-wrap: wrap;
 		}
-		&.show {
-			display:block;
-		}
-	}
+		
+		p {
+			display: flex;
+			margin: 0.2rem 0 0.4rem;
+			align-items: center;
+			width: 100%;
+			
+			&:first-of-type {
+				margin-top: 0.4rem;
+			}
+			
+			&.full {
+				flex-wrap: wrap;
+				label.half {
+					flex-basis: 49%;
+					& + select {
+						max-width: 49%;
+					}
+				}
+			}
+			&.half label {
+				flex-basis: 49%;
+			}
+		
+			select {
+				margin:0.4rem 0;
+				&[multiple] {
+					min-height:5rem;
+				}
+				option {
+					max-width:20vw;
+				}
+			}
+			
+			input {
+				margin:0.4rem 0;
+				height:1.8rem;
+				&[type=checkbox] {
+					width:1.4rem;
+					margin:0.4rem 0!important;
+					&:checked::before {
+						float:none;
+						position:relative;
+						height:1.8rem;
+						top:50%;
+						margin:-50% 0 0;
+					}
+				}
+			}
+			
+			.font_list {
+				display: block;
+				padding: 0 1rem;
+				line-height: 1.2;
+				font-size: smaller;
+				color: gray;
+			}
 	
+			.wp-picker-container {
+				flex-basis: 49%;
+				
+				.wp-color-result.button {
+					margin: 0;
+					width: 100%;
+				}
+			}
+		}
+		
+		
+		.hide {
+			display: none;
+		}
+		.show {
+			display: flex;
+		}
+	
+	}
 }

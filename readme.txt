@@ -47,6 +47,14 @@ With this plugin, you can now configure (on a per-widget basis):
 
 == Changelog ==
 
+= 0.23 =
+* Enhancement: added 'show count' option
+* Enhancement: added tag border color option
+* Enhancement: rearranged the admin form UI into collapsible sections
+* Enhancement: added mouseover help text to the admin form
+* Bugfix: changed the way styling was added, so you can have your own styling on one widget and a predefined one on another
+* Bugfix: can now clear color settings, oops
+
 = 0.22 =
 * Tested with WP 5.6 alpha
 * Enhancement: added tag font stack selection

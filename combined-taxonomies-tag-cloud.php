@@ -119,10 +119,9 @@ class CombinedTaxonomiesTagCloudWidget extends WP_Widget {
 							),
 			'display'		=> array(
 								'diy' => __('Your Own CSS', 'CombinedTaxonomiesTagCloud'),
-								'flat' => __('Flat List', 'CombinedTaxonomiesTagCloud'),
-								'ulist' => __('Block List', 'CombinedTaxonomiesTagCloud'),
-								'olist' => __('Numbered List', 'CombinedTaxonomiesTagCloud'),
 								'boxes' => __('Box Tags', 'CombinedTaxonomiesTagCloud'),
+								'twenty17' => __('2017', 'CombinedTaxonomiesTagCloud'),
+								'twenty20' => __('2020', 'CombinedTaxonomiesTagCloud'),
 							),
 			'textcase'		=> array(
 								'' => __('Leave Alone', 'CombinedTaxonomiesTagCloud'),
@@ -135,25 +134,28 @@ class CombinedTaxonomiesTagCloudWidget extends WP_Widget {
 		sort($this->choices['post_types']);
 		
 		$this->defaults = array(
-			'title' 		=> '',
-			'post_types'	=> array('post'),
-			'taxonomies'	=> array('post_tag'),
+			'display'		=> 'boxes',
+			'exclude'		=> array(0),
 			'font_family'	=> __('Leave Alone', 'CombinedTaxonomiesTagCloud'),
 			'font_unit'		=> 'rem',
-			'smallest' 		=> 0.8,
 			'largest' 		=> 2.4,
-			'exclude'		=> array(0),
 			'maximum'		=> 999,
-			'orderby'		=> 'name',
-			'order'			=> 0, // 0 = asc, 1 = desc
-			'single'		=> 'leave',
 			'nofollow'		=> 0,
-			'textcase'		=> '',
-			'display'		=> 'boxes',
-			'wbackground'	=> '#ffffff',
-			'tbackground'	=> '#ffffff',
-			'tforeground'	=> '#000000',
+			'order'			=> 0, // 0 = asc, 1 = desc
+			'orderby'		=> 'name',
+			'post_types'	=> array('post'),
 			'save'			=> 0,
+			'scale_tag'		=> 0,
+			'show_count'	=> 0,
+			'single'		=> 'leave',
+			'smallest' 		=> 0.8,
+			'taxonomies'	=> array('post_tag'),
+			'tbackground'	=> '#ffffff',
+			'tborder'		=> '',
+			'textcase'		=> '',
+			'tforeground'	=> '#000000',
+			'title' 		=> '',
+			'wbackground'	=> '#ffffff',
 		);
 	}
 
@@ -273,24 +275,34 @@ class CombinedTaxonomiesTagCloudWidget extends WP_Widget {
 					$link_title[]= (1 == $count) ? '1 '.$wp_post_types[$type]->labels->singular_name : $count.' '.$wp_post_types[$type]->labels->name;
 				}
 				$link_title = strtolower(implode(', ', $link_title));
-
-				$cloud[] = '<a href="'.$link.'" style="font-size:'.$size.$args['font_unit'].'" class="'.$classes.'" title="'.$link_title.'"'.$nofollow.'>'.$tag['name'].'</a>';
+				
+				$cloud[] = sprintf('<a href="%s" %s class="%s" aria-label="%s" title="%s" %s>%s%s</a>',
+					$link,
+					($args['scale_tag']) ? sprintf(' style="font-size:%s%s"', $size, $args['font_unit']) : '',
+					$classes, $link_title, $link_title, $nofollow,
+					$tag['name'],
+					($args['show_count']) ? sprintf(' <span class="tag-link-count">(%s)</span>', $tag['count']) : ''
+				);
 			}
 
 			$title = apply_filters('widget_title', $instance['title']); if ('' != $title) $title = $args['before_title'].$title.$args['after_title'];
 
-			switch ($args['display']) {
-				case 'olist':		$_tag = 'ol'; $_class = 'list'; $_cloud = '<li>'.implode('</li><li>', $cloud).'</li>';
+			
+			$_class = ''; //$args['display'];
+			/*switch ($args['display']) {
+				case 'olist':		$_class = 'list numbers';
 									break;
-				case 'ulist':		$_tag = 'ul'; $_class = 'list'; $_cloud = '<li>'.implode('</li><li>', $cloud).'</li>';
+				case 'ulist':		$_class = 'list bullets';
 									break;
-				case 'boxes':		$_tag = 'div'; $_class = 'boxes'; $_cloud = implode('', $cloud);
+				case 'boxes':		$_class = 'boxes';
 									break;
 				case 'flat':		
-				default:			$_tag = 'div'; $_class = ''; $_cloud = implode('', $cloud);
+				default:			$_class = '';
 									break;
 									
-			}
+			}*/
+		
+			$_cloud = '<li>'.implode("</li>\r\n<li>", $cloud).'</li>';
 			
 			// NOTE: twentytwenty theme doesn't output widget IDs, unlike every other default WP theme,
 			// so make sure there's something we can use to recognize individual widgets
@@ -307,38 +319,46 @@ class CombinedTaxonomiesTagCloudWidget extends WP_Widget {
 			// make the html
 			$output = $args['before_widget']."\n"
 					. $title."\n"
-					. sprintf('<%s class="combinedtagcloud %s">%s</%s>', $_tag, $_class, $_cloud, $_tag)."\n"
+					. sprintf('<ul class="combinedtagcloud %s" role="list">%s</ul>', $_class, $_cloud)."\n"
 					. $args['after_widget']."\n";
 
 			// and (possibly) save the resulting html so we don't need to do this again for a while
 			if (0 < $args['save']) set_transient($this->transient, $output, $args['save'] * HOUR_IN_SECONDS);
 		}
-		
-		
-		if ('diy' == $args['display']) {
-			wp_deregister_style('combined-taxonomies-tag-cloud-style');
-		
-		} else {
-		
-			$_font = '';
-			if ($args['font_family'] != __('Leave Alone', 'CombinedTaxonomiesTagCloud')) {
-				$_font = 'font-family:'.$this->get_font_stacks($args['font_family']).';';
-			}
-			
-			$custom_css = sprintf('
-				#%s .combinedtagcloud { background-color:%s; }
-				#%s .combinedtagcloud a { background-color:%s; color:%s; %s }
-				#%s .combinedtagcloud a:hover { background-color:%s; color:%s; }
-			',
-				$args['widget_id'], $args['wbackground'],
-				$args['widget_id'], $args['tbackground'], $args['tforeground'], $_font,
-				$args['widget_id'], $args['tforeground'], $args['tbackground']
-			);
-			
-			wp_add_inline_style('combined-taxonomies-tag-cloud-style', $custom_css);
-		}
 
 		echo $output;
+		
+		
+		$custom_css = '';
+		
+		if ($args['font_family'] != __('Leave Alone', 'CombinedTaxonomiesTagCloud')) {
+			$custom_css = sprintf('#%s .combinedtagcloud a { font-family:%s; }',
+				$args['widget_id'], $this->get_font_stacks($args['font_family'])
+			);
+		}
+		
+		if ($args['wbackground'] != '') {
+			$custom_css.= sprintf('#%s .combinedtagcloud { background-color:%s; }', $args['widget_id'], $args['wbackground']);
+		}
+
+		if ($args['tborder'] != '') {
+			$custom_css.= sprintf('#%s .combinedtagcloud a { border-color:%s; }', $args['widget_id'], $args['tborder']);
+		}
+		
+		if ($args['tbackground'] != '') {
+			$custom_css.= sprintf('#%s .combinedtagcloud a { background-color:%s; }', $args['widget_id'], $args['tbackground']);
+			$custom_css.= sprintf('#%s .combinedtagcloud a:hover { color:%s; }', $args['widget_id'], $args['tbackground']);
+		}
+		
+		if ($args['tforeground'] != '') {
+			$custom_css.= sprintf('#%s .combinedtagcloud a { color:%s; }', $args['widget_id'], $args['tforeground']);
+			$custom_css.= sprintf('#%s .combinedtagcloud a:hover { background-color:%s; }', $args['widget_id'], $args['tforeground']);
+		}
+		
+		if ($custom_css != '') {
+			wp_add_inline_style('combined-taxonomies-tag-cloud-style', $custom_css);
+		}
+		
 	}
 	
 
@@ -352,22 +372,32 @@ class CombinedTaxonomiesTagCloudWidget extends WP_Widget {
 		$instance['taxonomies'] = array(); foreach ($new['taxonomies'] as $tax)  $instance['taxonomies'][] = $tax;
 
 		if (in_array($new['font_family'], $this->choices['font_family']))		$instance['font_family'] = $new['font_family'];
+																				$instance['scale_tag'] = (bool) $new['scale_tag'];
 		if (in_array($new['font_unit'], $this->choices['font_unit']))			$instance['font_unit'] = $new['font_unit'];
 																				$instance['smallest'] = sprintf('%0.2f', (float) $new['smallest']);
 																				$instance['largest'] = sprintf('%0.2f', (float) $new['largest']);
+																				
 		$instance['exclude'] = array(0); foreach ($new['exclude'] as $term_id)	$instance['exclude'][] = absint($term_id);
 		if (in_array($new['orderby'], array_keys($this->choices['orderby'])))	$instance['orderby'] = $new['orderby'];
 																				$instance['order'] = (bool) $new['order'];
 																				$instance['maximum'] = absint($new['maximum']);
+																				
 		if (in_array($new['single'], array_keys($this->choices['single'])))		$instance['single'] = $new['single'];
 																				$instance['nofollow'] = (bool) $new['nofollow'];
 		if (in_array($new['textcase'], array_keys($this->choices['textcase'])))	$instance['textcase'] = $new['textcase'];
-		if (in_array($new['display'], array_keys($this->choices['display'])))	$instance['display'] = $new['display'];
+		//if (in_array($new['display'], array_keys($this->choices['display'])))	$instance['display'] = $new['display'];
+																				$instance['show_count'] = (bool) $new['show_count'];
 
-		if ($this->is_valid_colour($new['wbackground']))						$instance['wbackground'] = $new['wbackground'];
-		if ($this->is_valid_colour($new['tbackground']))						$instance['tbackground'] = $new['tbackground'];
-		if ($this->is_valid_colour($new['tforeground']))						$instance['tforeground'] = $new['tforeground'];
+		if ($this->is_valid_colour($new['wbackground']) OR $new['wbackground'] == '')
+																				$instance['wbackground'] = $new['wbackground'];
+		if ($this->is_valid_colour($new['tborder']) OR $new['tborder'] == '')
+																				$instance['tborder'] = $new['tborder'];
+		if ($this->is_valid_colour($new['tbackground']) OR $new['tbackground'] == '')
+																				$instance['tbackground'] = $new['tbackground'];
+		if ($this->is_valid_colour($new['tforeground']) OR $new['tforeground'] == '')
+																				$instance['tforeground'] = $new['tforeground'];
 
+																				
 		if (in_array($new['save'], $this->choices['save']))						$instance['save'] = $new['save'];
 
 		// either something's changed or we pressed the save button for the sake of it. regardless, delete our saved html and start again
@@ -422,10 +452,12 @@ class CombinedTaxonomiesTagCloudWidget extends WP_Widget {
 						. $this->display_options_recursively($sorted)
 						. '</select>';
 
-		// TODO: do a loop like the selects if we have more than 2
+		// TODO: do a loop like the selects if we keep adding more...
 		$checked = array(
-			'order'		=> ($instance['order'] == 1) ? ' checked="checked"' : '',
-			'nofollow'	=> ($instance['nofollow'] == 1) ? ' checked="checked"' : '',
+			'nofollow'		=> ($instance['nofollow'] == 1) ? ' checked="checked"' : '',
+			'order'			=> ($instance['order'] == 1) ? ' checked="checked"' : '',
+			'scale_tag'	=> ($instance['scale_tag'] == 1) ? ' checked="checked"' : '',
+			'show_count'	=> ($instance['show_count'] == 1) ? ' checked="checked"' : '',
 		);
 
 		
@@ -433,85 +465,153 @@ class CombinedTaxonomiesTagCloudWidget extends WP_Widget {
 		// TODO: build this form programmatically if you add much more options
 		$output = '<div class="combined-taxonomies-tag-cloud">'
 				
-				. sprintf('<p><label class="half" for="%s">%s:</label><input type="text" class="widefat" id="%s" name="%s" value="%s"></p>',
+				. sprintf('<p><label for="%s">%s:</label><input type="text" class="widefat" id="%s" name="%s" value="%s"></p>',
 						esc_attr($this->get_field_id('title')),
 						__('Title', 'CombinedTaxonomiesTagCloud'),
 						esc_attr($this->get_field_id('title')),
 						esc_attr($this->get_field_name('title')),
 						esc_attr($instance['title'])
 					)
-				. '<hr>'
 				
 				// POST TYPES and TAXONOMIES in use
-				. sprintf('<p><label class="half" for="%s">%s:</label>%s</p>',
+				. sprintf('<fieldset><legend>%s</legend><div>', __('What To Include', 'CombinedTaxonomiesTagCloud'))
+				
+				. sprintf('<p title="%s" class="full"><label for="%s">%s:</label>%s</p>',
+						__('Count only tags belonging to these types of taxonomy', 'CombinedTaxonomiesTagCloud'),
 						esc_attr($this->get_field_id('taxonomies')),
 						__('Taxonomies To Use', 'CombinedTaxonomiesTagCloud'),
 						$select['taxonomies']
 					)
-				. sprintf('<p><label class="half" for="%s">%s:</label>%s</p>',
+				. sprintf('<p title="%s" class="full"><label for="%s">%s:</label>%s</p>',
+						__('Count only tags belonging to these types of post', 'CombinedTaxonomiesTagCloud'),
 						esc_attr($this->get_field_id('post_types')),
 						__('Post Types To Use', 'CombinedTaxonomiesTagCloud'),
 						$select['post_types']
 					)
-				. '<hr>'
+				. sprintf('<p title="%s" class="full"><label for="%s">%s:</label>%s</p>',
+						__('Ignore these tags - though if posts have non-excluded tags as well, they will still get included', 'CombinedTaxonomiesTagCloud'),
+						esc_attr($this->get_field_id('exclude')),
+						__('Exclude These Tags', 'CombinedTaxonomiesTagCloud'),
+						$select['excluded']
+					)
+				. '</div></fieldset>'
 				
 				// TAG FONT attributes
-				. sprintf('<p title="%s"><label class="half %s" for="%s">%s:</label>%s<br><span class="font_list">%s</span></p>',
+				. sprintf('<fieldset><legend>%s</legend><div>', __('Text', 'CombinedTaxonomiesTagCloud'))
+				
+				. sprintf('<p title="%s" class="full"><label class="half" for="%s">%s:</label>%s<br><span class="font_list">%s</span></p>',
 						__('Choose a font stack to apply to the tags - if in doubt, leave it for your theme or font plugin to handle', 'CombinedTaxonomiesTagCloud'),
-						esc_attr('font_list_label'),
 						esc_attr($this->get_field_id('font_family')),
-						__('Tag Font Stack', 'CombinedTaxonomiesTagCloud'),
+						__('Font Stack', 'CombinedTaxonomiesTagCloud'),
 						$select['font_family'],
 						$this->get_font_stacks($instance['font_family'])
 					)
-				. sprintf('<p><label class="half" for="%s">%s:</label>%s</p>',
+				. sprintf('<p title="%s" class="half"><label for="%s">%s:</label>%s</p>',
+						__('You can change the case of all the tags if you wish to make them consistent', 'CombinedTaxonomiesTagCloud'),
+						esc_attr($this->get_field_id('textcase')),
+						__('Text Case', 'CombinedTaxonomiesTagCloud'),
+						$select['textcase']
+					)
+				. sprintf('<p title="%s" class="half"><label for="%s">%s:</label><input type="checkbox" id="%s" name="%s" value="1"%s></p>',
+						__('Show the count of the number of posts that have that term', 'CombinedTaxonomiesTagCloud'),
+						esc_attr($this->get_field_id('show_count')),
+						__('Show Count', 'CombinedTaxonomiesTagCloud'),
+						esc_attr($this->get_field_id('show_count')),
+						esc_attr($this->get_field_name('show_count')),
+						$checked['show_count']
+					)
+				. sprintf('<p title="%s" class="half"><label for="%s">%s:</label><input type="checkbox" id="%s" class="%s" name="%s" value="1"%s></p>',
+						__('Make the size of the tag bigger if more posts have it', 'CombinedTaxonomiesTagCloud'),
+						esc_attr($this->get_field_id('scale_tag')),
+						__('Scale Font', 'CombinedTaxonomiesTagCloud'),
+						esc_attr($this->get_field_id('scale_tag')),
+						'scale_tag',
+						esc_attr($this->get_field_name('scale_tag')),
+						$checked['scale_tag']
+					)
+				. sprintf('<p title="%s" class="half"><label for="%s">%s:</label>%s</p>',
+						__('These are the units that will be used to scale the tag size - best to follow what the rest of your theme is using', 'CombinedTaxonomiesTagCloud'),
 						esc_attr($this->get_field_id('font_unit')),
-						__('Tag Size Units', 'CombinedTaxonomiesTagCloud'),
+						__('Font Units', 'CombinedTaxonomiesTagCloud'),
 						$select['font_unit']
 					)
-				. sprintf('<p><label class="half" for="%s">%s:</label><input type="text" size="3" id="%s" name="%s" value="%s"></p>',
+				. sprintf('<p title="%s" class="half"><label for="%s">%s:</label><input type="text" size="3" id="%s" name="%s" value="%s"></p>',
+						__('Even a tag with only one post will not be smaller than this', 'CombinedTaxonomiesTagCloud'),
 						esc_attr($this->get_field_id('smallest')),
 						__('Smallest Size', 'CombinedTaxonomiesTagCloud'),
 						esc_attr($this->get_field_id('smallest')),
 						esc_attr($this->get_field_name('smallest')),
 						(float) $instance['smallest']
 					)
-				. sprintf('<p><label class="half" for="%s">%s:</label><input type="text" size="3" id="%s" name="%s" value="%s"></p>',
+				. sprintf('<p title="%s" class="half"><label for="%s">%s:</label><input type="text" size="3" id="%s" name="%s" value="%s"></p>',
+						__('Even a tag with a million posts will not be larger than this', 'CombinedTaxonomiesTagCloud'),
 						esc_attr($this->get_field_id('largest')),
 						__('Largest Size', 'CombinedTaxonomiesTagCloud'),
 						esc_attr($this->get_field_id('largest')),
 						esc_attr($this->get_field_name('largest')),
 						(float) $instance['largest']
 					)
-				. sprintf('<p><label class="half" for="%s">%s:</label>%s</p>',
-						esc_attr($this->get_field_id('textcase')),
-						__('Tag Text Case', 'CombinedTaxonomiesTagCloud'),
-						$select['textcase']
-					)
-				. '<hr>'
+				. '</div></fieldset>'
 				
-				// NOT THESE TAGS
-				. sprintf('<p><label class="half" for="%s">%s:</label>%s</p>',
-						esc_attr($this->get_field_id('exclude')),
-						__('Exclude These Tags', 'CombinedTaxonomiesTagCloud'),
-						$select['excluded']
+				. sprintf('<fieldset><legend>%s</legend><div>', __('Colors', 'CombinedTaxonomiesTagCloud'))
+				
+				. sprintf('<p title="%s" class="half"><label for="%s">%s:</label><input class="color-field" type="text" size="5" id="%s" name="%s" value="%s"></p>',
+						__('Choose the background color of the whole widget', 'CombinedTaxonomiesTagCloud'),
+						esc_attr($this->get_field_id('wbackground')),
+						__('Widget Background', 'CombinedTaxonomiesTagCloud'),
+						esc_attr($this->get_field_id('wbackground')),
+						esc_attr($this->get_field_name('wbackground')),
+						$instance['wbackground']
 					)
-				. '<hr>'
+				. sprintf('<p title="%s" class="half"><label for="%s">%s:</label><input class="color-field" type="text" size="5" id="%s" name="%s" value="%s"></p>',
+						__('Choose the border color of a tag', 'CombinedTaxonomiesTagCloud'),
+						esc_attr($this->get_field_id('tborder')),
+						__('Tag Border', 'CombinedTaxonomiesTagCloud'),
+						esc_attr($this->get_field_id('tborder')),
+						esc_attr($this->get_field_name('tborder')),
+						$instance['tborder']
+					)
+				. sprintf('<p title="%s" class="half"><label for="%s">%s:</label><input class="color-field" type="text" size="5" id="%s" name="%s" value="%s"></p>',
+						__('Choose the background color of a tag', 'CombinedTaxonomiesTagCloud'),
+						esc_attr($this->get_field_id('tbackground')),
+						__('Tag Background', 'CombinedTaxonomiesTagCloud'),
+						esc_attr($this->get_field_id('tbackground')),
+						esc_attr($this->get_field_name('tbackground')),
+						$instance['tbackground']
+					)
+				. sprintf('<p title="%s" class="half"><label for="%s">%s:</label><input class="color-field" type="text" size="5" id="%s" name="%s" value="%s"></p>',
+						__('Choose the foreground color of a tag', 'CombinedTaxonomiesTagCloud'),
+						esc_attr($this->get_field_id('tforeground')),
+						__('Tag Foreground', 'CombinedTaxonomiesTagCloud'),
+						esc_attr($this->get_field_id('tforeground')),
+						esc_attr($this->get_field_name('tforeground')),
+						$instance['tforeground']
+					)
+				. '</div></fieldset>'
 				
 				// ORDERING
-				. sprintf('<p><label class="half" for="%s">%s:</label>%s</p>',
+				. sprintf('<fieldset><legend>%s</legend><div>', __('Tag Order', 'CombinedTaxonomiesTagCloud'))
+				
+				. sprintf('<p title="%s" class="half"><label for="%s">%s:</label>%s</p>',
+						__('How do you want to order the resulting tags?', 'CombinedTaxonomiesTagCloud'),
 						esc_attr($this->get_field_id('orderby')),
 						__('Order Tags By', 'CombinedTaxonomiesTagCloud'),
 						$select['orderby']
 					)
-				. sprintf('<p><label class="half" for="%s">%s:</label><input type="checkbox" id="%s" name="%s" value="1"%s></p>',
+				. sprintf('<p title="%s" class="half"><label for="%s">%s:</label><input type="checkbox" id="%s" name="%s" value="1"%s></p>',
+						__('Choose to reverse whatever order you just picked', 'CombinedTaxonomiesTagCloud'),
 						esc_attr($this->get_field_id('order')),
-						__('Reverse Order?', 'CombinedTaxonomiesTagCloud'),
+						__('Reverse Order', 'CombinedTaxonomiesTagCloud'),
 						esc_attr($this->get_field_id('order')),
 						esc_attr($this->get_field_name('order')),
 						$checked['order']
 					)
-				. sprintf('<p title="%s"><label class="half" for="%s">%s:</label><input type="text" size="3" id="%s" name="%s" value="%s"></p>',
+				. '</div></fieldset>'
+				
+				// MISC
+				. sprintf('<fieldset><legend>%s</legend><div>', __('Other Stuff', 'CombinedTaxonomiesTagCloud'))
+				
+				. sprintf('<p title="%s" class="half"><label for="%s">%s:</label><input type="text" size="3" id="%s" name="%s" value="%s"></p>',
 						__('The maximum number of tags that will be shown in this particular widget', 'CombinedTaxonomiesTagCloud'),
 						esc_attr($this->get_field_id('maximum')),
 						__('Maximum Shown', 'CombinedTaxonomiesTagCloud'),
@@ -519,67 +619,33 @@ class CombinedTaxonomiesTagCloudWidget extends WP_Widget {
 						esc_attr($this->get_field_name('maximum')),
 						(int) $instance['maximum']
 					)
-				. '<hr>'
-				
-				// MISC
-				. sprintf('<p title="%s"><label class="half" for="%s">%s:</label>%s</p>',
-						__('How should single entry tags be treated?', 'CombinedTaxonomiesTagCloud'),
+				. sprintf('<p title="%s" class="half"><label for="%s">%s:</label>%s</p>',
+						__('What to do with tags that only have a single post', 'CombinedTaxonomiesTagCloud'),
 						esc_attr($this->get_field_id('single')),
-						__('Tags With Just One Entry', 'CombinedTaxonomiesTagCloud'),
+						__('One Entry Tags', 'CombinedTaxonomiesTagCloud'),
 						$select['single']
 					)
-				. sprintf('<p title="%s"><label class="half" for="%s">%s:</label><input type="checkbox" id="%s" name="%s" value="1"%s></p>',
-						__('Add the rel="nofollow" attribute to each of the tags', 'CombinedTaxonomiesTagCloud'),
+				. sprintf('<p title="%s" class="half"><label for="%s">%s:</label><input type="checkbox" id="%s" name="%s" value="1"%s></p>',
+						__('Add the rel=&quot;nofollow&quot; attribute to each of the tags', 'CombinedTaxonomiesTagCloud'),
 						esc_attr($this->get_field_id('nofollow')),
-						__('Make Links No-Follow?', 'CombinedTaxonomiesTagCloud'),
+						__('Make Links No-Follow', 'CombinedTaxonomiesTagCloud'),
 						esc_attr($this->get_field_id('nofollow')),
 						esc_attr($this->get_field_name('nofollow')),
 						$checked['nofollow']
 					)
-				. '<hr>'
+				. '</div></fieldset>'
 				
-				// STYLING
-				. sprintf('<p><label class="half" for="%s">%s:</label>%s</p>',
-						esc_attr($this->get_field_id('display')),
-						__('List Style', 'CombinedTaxonomiesTagCloud'),
-						$select['display']
-					)
-				. sprintf('<p title="%s" class="%s"><label class="half" for="%s">%s:</label><input class="color-field" type="text" size="5" id="%s" name="%s" value="%s"></p>',
-						__('Choose the background color of the area underneath the title', 'CombinedTaxonomiesTagCloud'),
-						($instance['display'] != 'diy') ? 'show' : 'hide',
-						esc_attr($this->get_field_id('wbackground')),
-						__('Widget Background', 'CombinedTaxonomiesTagCloud'),
-						esc_attr($this->get_field_id('wbackground')),
-						esc_attr($this->get_field_name('wbackground')),
-						$instance['wbackground']
-					)
-				. sprintf('<p title="%s" class="%s"><label class="half" for="%s">%s:</label><input class="color-field" type="text" size="5" id="%s" name="%s" value="%s"></p>',
-						__('Choose the background color of a tag', 'CombinedTaxonomiesTagCloud'),
-						($instance['display'] != 'diy') ? 'show' : 'hide',
-						esc_attr($this->get_field_id('tbackground')),
-						__('Tag Background', 'CombinedTaxonomiesTagCloud'),
-						esc_attr($this->get_field_id('tbackground')),
-						esc_attr($this->get_field_name('tbackground')),
-						$instance['tbackground']
-					)
-				. sprintf('<p title="%s" class="%s"><label class="half" for="%s">%s:</label><input class="color-field" type="text" size="5" id="%s" name="%s" value="%s"></p>',
-						__('Choose the foreground color of a tag', 'CombinedTaxonomiesTagCloud'),
-						($instance['display'] != 'diy') ? 'show' : 'hide',
-						esc_attr($this->get_field_id('tforeground')),
-						__('Tag Foreground', 'CombinedTaxonomiesTagCloud'),
-						esc_attr($this->get_field_id('tforeground')),
-						esc_attr($this->get_field_name('tforeground')),
-						$instance['tforeground']
-					)
-				. '<hr>'
+				// CACHE
+				. sprintf('<fieldset><legend>%s</legend><div>', __('Caching', 'CombinedTaxonomiesTagCloud'))
 				
-				. sprintf('<p title="%s"><label class="half" for="%s">%s:</label>%s</p>',
+				. sprintf('<p title="%s" class="half"><label for="%s">%s:</label>%s</p>',
 						__('You can cache the generated tag cloud to save working it out every time', 'CombinedTaxonomiesTagCloud'),
 						esc_attr($this->get_field_id('save')),
 						__('Save Cloud For (Hours)', 'CombinedTaxonomiesTagCloud'),
 						$select['save']
 					)
-				. '<hr>'
+				. '</div></fieldset>'
+				
 				. '</div>';
 
 		echo $output;
