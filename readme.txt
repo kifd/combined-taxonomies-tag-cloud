@@ -4,7 +4,7 @@ Author Link: https://drakard.com/
 Tags: tag cloud, taxonomy tag cloud, tag cloud widget, tag, cloud, widget, tag cloud post type, custom tag cloud, combined tag cloud, custom post tag cloud, change tag cloud, redirect single tag, remove single tag
 Requires at least: 3.8 or higher
 Tested up to: 5.5
-Stable tag: 0.22
+Stable tag: 0.23
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -51,14 +51,17 @@ With this plugin, you can now configure (on a per-widget basis):
 * Enhancement: added 'show count' option
 * Enhancement: added tag border color option
 * Enhancement: rearranged the admin form UI into collapsible sections
-* Enhancement: added mouseover help text to the admin form
-* Bugfix: changed the way styling was added, so you can have your own styling on one widget and a predefined one on another
+* Enhancement: added mouseover help text to each element
+* Enhancement/Bugfix: completely changed the way CSS was added, so you can have your own styling on one widget and a predefined one on another
+* Enhancement: added tag text decoration option
 * Bugfix: can now clear color settings, oops
+* Bugfix: found a fix for WP not enabling the save button after just a color change
 
 = 0.22 =
 * Tested with WP 5.6 alpha
 * Enhancement: added tag font stack selection
-* Enhancement: added 'vw' to CSS unit selection because why not
+* Enhancement: added tag text size scaling choice
+* Enhancement: added 'vw' to scaling unit selection because why not
 * Enhancement: made the widget form hide unused options based on select dropdowns
 * Bugfix: checks 'before_widget' param for CSS id, so themes that don't include it (like 2020...) can still have the widgets styled individually
 * Bugfix: tidied up the widget form code

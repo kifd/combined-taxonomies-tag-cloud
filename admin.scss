@@ -1,14 +1,14 @@
 .combined-taxonomies-tag-cloud {
-	margin:0 -5px 1rem;
+	margin:0 -5px 1em;
 	
 	fieldset {
-		margin:1rem 0; padding:0.2rem 0.4rem;
+		margin:1em 0; padding:0.2em 0.4em;
 		background-color: #fafafa;
 		
 		legend {
 			background-color: #eaeaea;
-			border-top: 0.1rem dotted #ccc;
-			margin:0 -0.4rem; padding: 0.4rem;
+			border-top: 0.1em dotted #ccc;
+			margin:0 -0.4em; padding: 0.4em;
 			font-weight: bold;
 			width: 100%;
 			cursor: pointer;
@@ -24,6 +24,14 @@
 			&.closed:after {
 				content: "\f140";
 			}
+			
+			&:hover {
+				background-color: #efefef;
+				&:after {
+					color: #92777c;
+				}
+			}
+			
 		}
 		
 		& > div {
@@ -32,56 +40,65 @@
 		
 		p {
 			display: flex;
-			margin: 0.2rem 0 0.4rem;
+			margin: 0.2em 0 0.4em;
 			align-items: center;
 			width: 100%;
 			
 			&:first-of-type {
-				margin-top: 0.4rem;
+				margin-top: 0.4em;
 			}
 			
 			&.full {
 				flex-wrap: wrap;
+				justify-content: space-between;
 				label.half {
-					flex-basis: 49%;
+					flex-basis: 45%;
 					& + select {
-						max-width: 49%;
+						width: 49%;
+					}
+				}
+				select {
+					width: 100%;
+				}
+			}
+			&.half {
+				label {
+					flex-basis: 49%;
+					& + select,
+					& + input[type=number] {
+						width: 49%;
 					}
 				}
 			}
-			&.half label {
-				flex-basis: 49%;
-			}
 		
 			select {
-				margin:0.4rem 0;
+				margin: 0.4em 0;
 				&[multiple] {
-					min-height:5rem;
-				}
-				option {
-					max-width:20vw;
+					min-height:5em;
 				}
 			}
 			
 			input {
-				margin:0.4rem 0;
-				height:1.8rem;
+				margin: 0.4em 0;
+				height: 1.8em;
 				&[type=checkbox] {
-					width:1.4rem;
-					margin:0.4rem 0!important;
+					height: 1.8em; width: 1.8em;
+					margin: 0.4em 0!important;
+					position: relative;
 					&:checked::before {
-						float:none;
-						position:relative;
-						height:1.8rem;
-						top:50%;
-						margin:-50% 0 0;
+						float: none;
+						position: absolute;
+						top: 50%; left: 50%;
+						height: 100%; width: 100%;
+						transform: translate(-50%, -50%);
+						margin: 0;
 					}
 				}
 			}
 			
 			.font_list {
 				display: block;
-				padding: 0 1rem;
+				padding: 0 1em;
 				line-height: 1.2;
 				font-size: smaller;
 				color: gray;
@@ -89,10 +106,33 @@
 	
 			.wp-picker-container {
 				flex-basis: 49%;
-				
+				max-width: 49%;
 				.wp-color-result.button {
 					margin: 0;
 					width: 100%;
+				}
+				
+				
+				&.wp-picker-active {
+					display: contents;
+					.wp-color-result.button {
+						flex-basis: 49%;
+					}
+					.wp-picker-input-wrap {
+						margin: 0.8em auto 0.2em;
+					}
+					.wp-picker-holder {
+						display: flex;
+						justify-content: center;
+						width: 100%;
+					}
+				}
+				
+				
+				.wp-color-result-text {
+					padding: 0 1vw;
+					font-size: 1em;
+					line-height: 30px;
 				}
 			}
 		}
@@ -107,3 +147,21 @@
 	
 	}
 }
+
+
+@media screen and (max-width: 782px) {
+	.combined-taxonomies-tag-cloud {
+		font-size: 13px;
+		
+		fieldset p {
+			.wp-picker-container {
+				.wp-color-result-text {
+					font-size: 0.8em;
+				}
+			}
+		}
+	}
+}
+	
+	
+
