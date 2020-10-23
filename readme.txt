@@ -4,7 +4,7 @@ Author Link: https://drakard.com/
 Tags: tag cloud, taxonomy tag cloud, tag cloud widget, tag, cloud, widget, tag cloud post type, custom tag cloud, combined tag cloud, custom post tag cloud, change tag cloud, redirect single tag, remove single tag
 Requires at least: 3.8 or higher
 Tested up to: 5.5
-Stable tag: 0.23
+Stable tag: 0.30
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -37,8 +37,16 @@ With this plugin, you can now configure (on a per-widget basis):
 
 == Frequently Asked Questions ==
 
+= How do I select multiple taxonomies or post types? =
+
+Depending on your operating system, you can normally use shift+click to select a range of options in a big dropdown on any webpage, or ctrl+click to select multiple individual ones.
+
+You can also combine them if needed - selected loads of options with shift+click first, and then unselect a few individual ones with ctrl+click.
+
 
 == Screenshots ==
+
+Note all screenshots are for versions older than 0.22 at the mo...
 
 1. Enter your (optional) title, and pick which taxonomies and post types will be picked for this cloud.
 2. Choose the size range of the tags, which ones should never appear and what order to display them in.
@@ -46,6 +54,10 @@ With this plugin, you can now configure (on a per-widget basis):
 
 
 == Changelog ==
+
+= 0.30 =
+* Enhancement: added ability to display the widget via a shortcode
+
 
 = 0.23 =
 * Enhancement: added 'show count' option
@@ -91,6 +103,15 @@ With this plugin, you can now configure (on a per-widget basis):
 * Initial release.
 
 
-== Upgrade Notice ==
+== To-Do List ==
 
+* To Add: adjustable row/column gaps
+* To Add: highlight tags matching content on the page
+* To Add: better control over :hover effects - ie. font size change, border width
+* To Add: different way relative sizes are calculated - ie. log
 
+* To Fix: changing what taxonomies to use doesn't automatically update the widget re what terms to exclude etc - save it first
+* To Fix: only clearing a color doesn't trip the make-wp-recognize-its-own-jquery trigger
+
+* To Add much later: use as a drop widget to make a cloud out of the words of a post, ignoring stop words
+* To Add much later: and then combine with your word cloud work to make images...
