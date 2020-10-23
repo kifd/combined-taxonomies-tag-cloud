@@ -17,15 +17,17 @@ The normal WP Tag Cloud widget only uses one taxonomy at a time, and doesn't han
 With this plugin, you can now configure (on a per-widget basis):
 
 * which taxonomies and post types are to be included,
-* the size of the smallest and largest tags (in different font units),
 * which terms should always be excluded from the cloud,
-* the maximum number of tags to show in the cloud,
+* tag text font, text color and tag size scaling,
+* what case the tags should appear in, and their :hover decoration,
+* the widget background, tag border and tag background colours,
+* the tag cloud horizontal and vertical alignment,
 * how to order the tags - alphabetically or by number of tagged posts (ascending or descending), or just randomly,
-* how to treat tags with just one entry - leave alone, remove them or link directly to that post,
+* how to treat tags with just one entry - leave alone, remove them or link directly to that post,,
+* the maximum number of tags to show in the cloud,
 * whether to make links no-follow,
-* what case the tags should appear as,
-* the widget background and tag background/foreground colours,
-* and how long each widget's output should be saved for, if at all.
+* how long each widget's output should be saved for, if at all,
+* and now also generate a shortcode for each widget instance and use them within posts.
 
 
 == Installation ==
@@ -43,6 +45,12 @@ Depending on your operating system, you can normally use shift+click to select a
 
 You can also combine them if needed - selected loads of options with shift+click first, and then unselect a few individual ones with ctrl+click.
 
+= How do I show a cloud with the shortcode? =
+
+Save an instance of the widget as normal, and the shortcode text will be created at the bottom of the widget form. Copy and paste that snippet where your want the cloud to be displayed - though make sure your theme supports shortcodes there!
+
+If you don't want to display that cloud in a sidebar, then you can either drag it to the "Inactive Widgets" area of the Widgets admin after making it, or create it there directly.
+
 
 == Screenshots ==
 
@@ -57,7 +65,8 @@ Note all screenshots are for versions older than 0.22 at the mo...
 
 = 0.30 =
 * Enhancement: added ability to display the widget via a shortcode
-
+* Enhancement: can copy the shortcode to the clipboard with a click
+* Bugfix: clearing just a color will also tell WP the form needs saving
 
 = 0.23 =
 * Enhancement: added 'show count' option
@@ -95,11 +104,11 @@ Note all screenshots are for versions older than 0.22 at the mo...
 = 0.21 =
 * Bugfix: crashed if you deleted a taxonomy while it was selected in a widget
 
-= 0.2 =
+= 0.20 =
 * Enhancement: added colour pickers
 * Bugfix: tidied up the stylesheet
 
-= 0.1 =
+= 0.10 =
 * Initial release.
 
 
@@ -109,9 +118,12 @@ Note all screenshots are for versions older than 0.22 at the mo...
 * To Add: highlight tags matching content on the page
 * To Add: better control over :hover effects - ie. font size change, border width
 * To Add: different way relative sizes are calculated - ie. log
+* To Add: smarter colours, so to avoid transparent text etc
+* To Add: temporarily save widget fieldset open/close states while editing
+
+* New Screenshots...
 
 * To Fix: changing what taxonomies to use doesn't automatically update the widget re what terms to exclude etc - save it first
-* To Fix: only clearing a color doesn't trip the make-wp-recognize-its-own-jquery trigger
 
 * To Add much later: use as a drop widget to make a cloud out of the words of a post, ignoring stop words
 * To Add much later: and then combine with your word cloud work to make images...

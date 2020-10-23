@@ -11,8 +11,8 @@ class CombinedTaxonomiesTagCloudWidget extends WP_Widget {
 				'classname' => 'widget_tag_cloud',
 			));
 		
-		// only load if we're using the widget
-		if (is_admin() OR is_active_widget(false, false, $this->id_base, true)) {
+		// only load if we're using the widget (include inactive ones now we've got the shortcode way)
+		if (is_admin() OR is_active_widget(false, false, $this->id_base, false)) {
 			add_action('wp_loaded', array($this, 'make_default_selections'));
 			// admin needs the colour picker and its javascript, as well as a mini form styling
 			add_action('admin_enqueue_scripts', function() {
@@ -28,6 +28,7 @@ class CombinedTaxonomiesTagCloudWidget extends WP_Widget {
 			add_action('wp_footer', function() {
 				wp_enqueue_style('combined-taxonomies-tag-cloud-style');
 			});
+		
 		}
 	}
 
@@ -670,7 +671,11 @@ class CombinedTaxonomiesTagCloudWidget extends WP_Widget {
 						__('You can use this shortcode to display the widget on its own', 'CombinedTaxonomiesTagCloud'),
 						($this->number == '__i__')
 							? __('Save the widget to make the shortcode', 'CombinedTaxonomiesTagCloud')
-							: sprintf('[cttc cloud=%d]', $this->number)
+							: sprintf('<span data-copy-text="%s">%s: %s</span>',
+								sprintf('[cttc cloud=%d]', $this->number),
+								__('Copy and paste this', 'CombinedTaxonomiesTagCloud'),
+								sprintf('[cttc cloud=%d]', $this->number)
+							)
 						)
 				. '</div></fieldset>'
 				
