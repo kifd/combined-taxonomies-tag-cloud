@@ -146,6 +146,26 @@
 				text-align: center;
 				cursor: pointer;
 			}
+			
+			&.color-demo {
+				label.half {
+					flex-basis: 50%;
+				}
+				span {
+					display: block;
+					padding: 0.4em;
+					text-align: center;
+					
+					&.ratio {
+						flex-basis: 20%;
+					}
+					&.wcag {
+						flex-basis: 20%;
+						font-weight: bold;
+						
+					}
+				}
+			}
 		}
 		
 		

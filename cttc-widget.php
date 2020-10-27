@@ -14,13 +14,16 @@ class CombinedTaxonomiesTagCloudWidget extends WP_Widget {
 		// only load if we're using the widget (include inactive ones now we've got the shortcode way)
 		if (is_admin() OR is_active_widget(false, false, $this->id_base, false)) {
 			add_action('wp_loaded', array($this, 'make_default_selections'));
+			
 			// admin needs the colour picker and its javascript, as well as a mini form styling
 			add_action('admin_enqueue_scripts', function() {
 				wp_enqueue_style('combined-taxonomies-tag-cloud-admin-style', plugins_url('admin.css', __FILE__), false, null);
 				wp_enqueue_style('wp-color-picker'); 
 				wp_enqueue_script('combined-taxonomies-tag-cloud-admin-script', plugins_url('admin.js', __FILE__), array('wp-color-picker'), null, true);
 				wp_localize_script('combined-taxonomies-tag-cloud-admin-script', 'font_stacks', $this->get_font_stacks());
+				wp_localize_script('combined-taxonomies-tag-cloud-admin-script', 'cttc_ajax', $this->get_ajax());
 			});
+			
 			// only need our stylesheet on the front end, but we can't just use the wp_enqueue_scripts action as we may be adding inline styles
 			add_action('wp_head', function() {
 				wp_register_style('combined-taxonomies-tag-cloud-style', plugins_url('style.css', __FILE__), false, null);
@@ -29,6 +32,7 @@ class CombinedTaxonomiesTagCloudWidget extends WP_Widget {
 				wp_enqueue_style('combined-taxonomies-tag-cloud-style');
 			});
 		
+			add_action('wp_ajax_update_contrast_demo', array($this, 'update_contrast_demo'));
 		}
 	}
 
@@ -66,6 +70,7 @@ class CombinedTaxonomiesTagCloudWidget extends WP_Widget {
 		
 		return $fonts;
 	}
+	
 	
 	
 	
@@ -147,10 +152,15 @@ class CombinedTaxonomiesTagCloudWidget extends WP_Widget {
 	public function widget($args, $instance) {
 		$instance = wp_parse_args($instance, $this->defaults);
 		$args = array_merge($args, $instance);
-
+		
+		$page_term_ids = $this->get_highlight_ids($args, $instance);
+		
+		
+		
 		$this->transient = 'combined_taxonomies_tag_cloud_'.$this->id;
 		$output = get_transient($this->transient);
-
+		
+		
 		if (! $output OR $instance['save'] == 0) {
 
 			// need wpdb for the query and wp_post_types to get the labels (names to use in the post counts)
@@ -253,6 +263,7 @@ class CombinedTaxonomiesTagCloudWidget extends WP_Widget {
 					$args['text_case'],
 					($midway >= $size) ? 'smaller' : 'larger',
 					($args['text_decoration'] != '') ? $args['text_decoration'] : '',
+					(in_array($tag['term_id'], $page_term_ids)) ? 'highlight' : '',
 				));
 
 				// build our link title from the component post type counts
@@ -593,6 +604,12 @@ class CombinedTaxonomiesTagCloudWidget extends WP_Widget {
 						esc_attr($this->get_field_name('tforeground')),
 						$instance['tforeground']
 					)
+				. sprintf('<p title="%s" class="full color-demo"><label class="half">%s</label><span class="ratio">%s</span><span class="wcag"></span></p>',
+						__('Check if your tag colors meet WCAG guidelines', 'CombinedTaxonomiesTagCloud'),
+						__('Tag Contrast Ratio', 'CombinedTaxonomiesTagCloud'),
+						$this->get_contrast_ratio(array($instance['tforeground'], $instance['tbackground']))
+					)
+				
 				. '</div></fieldset>'
 				
 				// ALIGNMENT
@@ -684,6 +701,58 @@ class CombinedTaxonomiesTagCloudWidget extends WP_Widget {
 		echo $output;
 	}
 
+	
+	
+	private function get_highlight_ids($args, $instance) {
+		$page_term_ids = array();
+		
+		// highlight when on single pages of selected post types
+		if (is_singular($args['post_types'])) {
+			$post_id = get_the_ID();
+			// using multiple get_the_terms because they're likely to have been cached already
+			foreach ($instance['taxonomies'] as $tax) {
+				// collect all the terms this post has from all our selected taxonomies
+				$page_term_ids = array_merge($page_term_ids, (array) get_the_terms($post_id, $tax));
+			}
+			
+			$page_term_ids = array_column($page_term_ids, 'term_id');
+		
+		// highlight when on an archive page of selected post types
+		} elseif (is_post_type_archive($args['post_types'])) {
+			// which post archive is it
+			$post_type = get_query_var('post_type');
+			if (is_array($post_type)) $post_type = reset($post_type);
+			$post_type_obj = get_post_type_object($post_type);
+			// what taxonomies does that type of post have
+			$object_taxonomies = get_object_taxonomies($post_type_obj->name);
+			// and what terms are in those taxonomies
+			$page_term_ids = get_terms(array(
+				'taxonomy' => $object_taxonomies,
+				'hide_empty' => false,
+			));
+			
+			$page_term_ids = array_column($page_term_ids, 'term_id');
+		
+		// highlight when on an archive page of selected taxonomies
+		} elseif (is_tax($args['taxonomies'])) {
+		
+			print_r("hello");
+		// and what terms are in those taxonomies
+			$page_term_ids = get_terms(array(
+				'taxonomy' => is_tax($args['taxonomies']),
+				'hide_empty' => false,
+			));
+			
+			$page_term_ids = array_column($page_term_ids, 'term_id');
+		}
+		
+		
+		
+		// print_r($page_term_ids);
+		return $page_term_ids;
+	}
+	
+	
 	private function display_options_recursively($terms = array(), $level = 0) {
 		$output = '';
 		foreach ($terms as $i => $term) {
@@ -712,5 +781,90 @@ class CombinedTaxonomiesTagCloudWidget extends WP_Widget {
 	private function is_valid_colour($value) {
 		return preg_match('/^#(?:[0-9a-f]{3}){1,2}$/i', $value);
 	}
+	
+	
+	
+	
+	
+	
+	
+	public function get_ajax() {
+		return array(
+			'url'	=> admin_url('admin-ajax.php'),
+			'nonce'	=> wp_create_nonce('cttc_nonce'),
+		);
+	}
+	
+	// called via ajax to show the difference between two colours
+	public function update_contrast_demo() {
+		$response = array(
+			'ok'	=> false,
+			'ratio'	=> __('n/a', 'CombinedTaxonomiesTagCloud'),
+			'wcag'	=> __('n/a', 'CombinedTaxonomiesTagCloud'),
+		);
+		
+		if (check_ajax_referer('cttc_nonce')) {
+			$colour1 = (isset($_POST['colour1'])) ? $_POST['colour1'] : '';
+			$colour2 = (isset($_POST['colour2'])) ? $_POST['colour2'] : '';
+			
+			if ($this->is_valid_colour($colour1) AND $this->is_valid_colour($colour2)) {
+				// https://www.w3.org/TR/UNDERSTANDING-WCAG20/visual-audio-contrast-contrast.html
+				$ratio = $this->get_contrast_ratio(array($colour1, $colour2));
 
+				if ($ratio >= 7)
+					$wcag = 'AAA';
+				else if ($ratio >= 4.5)
+					$wcag = 'AA';
+				else if ($ratio >= 3)
+					$wcag = 'A';
+				else
+					$wcag = __('Fail', 'CombinedTaxonomiesTagCloud');
+				
+				$response = array(
+					'ok'	=> true,
+					'ratio'	=> $ratio,
+					'wcag'	=> $wcag,
+				);
+			}
+		}
+		
+		echo json_encode($response);
+		wp_die();
+	}
+	
+	
+	private function get_contrast_ratio(array $colours): float {
+		// $colours should be an array of two strings (hex codes)
+		$colours = array_map([$this, 'get_luminance'], $colours); rsort($colours);
+		$contrast = ($colours[0] + 0.05) / ($colours[1] + 0.05);
+		return round($contrast, 3);
+	}
+	
+	
+	private function get_luminance(string $hex): float {
+		// convert hex code into linear (0-1) colour values
+		$channels = array_map(array($this, 'convert_rgb_to_linear'), $this->get_decimal_color($hex));
+		// get Y
+		$luminance = (0.2126*$channels[0] + 0.7152*$channels[1] + 0.0722*$channels[2]);
+		return $luminance;
+	}
+	
+	// https://stackoverflow.com/a/56678483
+	private function get_perceptual_lightness(string $hex): float {
+		$luminance = $this->get_luminance($hex);
+		// and convert to L*
+		$lightness = ($luminance <= 0.008856) ? $luminance * 903.3 : (pow($luminance, (1/3)) * 116) - 16;
+		return $lightness;
+	}
+	
+	private function get_decimal_color(string $hex): array {
+		list($r, $g, $b) = sscanf($hex, "#%02x%02x%02x");
+		return array($r / 255, $g / 255, $b / 255);
+	}
+
+	private function convert_rgb_to_linear(float $value): float {
+		return ($value <= 0.04045) ? $value / 12.92 : pow((($value + 0.055)/1.055), 2.4);
+	}
+	
+	
 }

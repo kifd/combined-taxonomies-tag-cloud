@@ -120,6 +120,9 @@ Note all screenshots are for versions older than 0.22 at the mo...
 * To Add: different way relative sizes are calculated - ie. log
 * To Add: smarter colours, so to avoid transparent text etc
 * To Add: temporarily save widget fieldset open/close states while editing
+* To Add: colors per term - use termmeta?
+* To Add: setting to toggle white-space wrap
+* To Add: ? only show tags for terms used in the category being viewed
 
 * New Screenshots...
 

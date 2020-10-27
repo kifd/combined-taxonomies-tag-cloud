@@ -89,6 +89,10 @@
 			&.under_always {
 				text-decoration: underline;
 			}
+			
+			&.highlight {
+				color: red !important;
+			}
 
 		}
 		

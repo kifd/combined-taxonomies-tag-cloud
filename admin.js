@@ -13,6 +13,10 @@
 			},
 			clear: function(e) {
 				$(e.target).trigger('change'); // likewise if we clear the color
+				
+				var _id = '#' + $(this).parent().find('.color-field').attr('id');
+				checkContrast(_id);
+				
 			},
 		});
 		
@@ -25,6 +29,11 @@
 		
 		$('.combined-taxonomies-tag-cloud .scale_tag', widget).each(function() { toggleScaleFields($(this), ! $(this).is(':checked')); });
 		// NOTE: using .trigger() for the .scale_tag worked but made wp think it always needed saving for some reason
+		
+		
+		$('.combined-taxonomies-tag-cloud .color-field[id$="tforeground"]', widget).each(function() { 
+			checkContrast('#' + $(this).attr('id'));
+		});
 		
 	});
 	
@@ -53,6 +62,59 @@
 	});
 	
 	
+	$(document).on('change', '.color-field', function() {
+		checkContrast('#' + $(this).attr('id'));
+	});
+	
+	
+	function checkContrast(id) {
+		var _foreid = false;
+		var _backid = false;
+		
+		if (id.indexOf('tforeground') != -1) {
+			_foreid = id;
+			_backid = id.replace(/tforeground/i, 'tbackground');
+		} else if (id.indexOf('tbackground') != -1) {
+			_foreid = id.replace(/tbackground/i, 'tforeground');
+			_backid = id;
+		}
+		
+		if (_foreid != false && _backid != false) {
+			updateContrastDemo(_foreid, _backid);
+		}
+	}
+	
+	
+	
+	
+	function updateContrastDemo(_foreid, _backid) {
+		$.ajax({
+			type:			'POST',
+			url:			cttc_ajax.url,
+			data:			{
+								'action': 'update_contrast_demo',
+								'_ajax_nonce': cttc_ajax.nonce,
+								'colour1': $(_foreid).val(),
+								'colour2': $(_backid).val(),
+							},
+			success:		function(response) {
+								var demo = $(_foreid).parents('p.full').siblings('p.color-demo');
+								var ratio = demo.children('span.ratio');
+								ratio.css('color', $(_foreid).val());
+								ratio.css('background-color', $(_backid).val());
+								ratio.html(response.ratio);
+								
+								if (response.ok == true) {
+									demo.children('span.wcag').html(response.wcag);
+								} else {
+									console.log(response);
+									demo.children('span.wcag').html('');
+								}
+							},
+			dataType:		'json',
+		});
+	}
+	
 	// like toggleClass except won't open a closed one if you didn't want it to 
 	function toggleFieldSet(dom, close = true) {
 		if (close && ! dom.hasClass('closed')) {
@@ -73,6 +135,7 @@
 	}
 	
 })(jQuery);
+
 
 
 // https://www.jasongaylord.com/blog/2020/05/21/copy-to-clipboard-using-javascript
