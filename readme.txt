@@ -14,7 +14,7 @@ A widget to make tag clouds out of multiple taxonomies, across multiple post typ
 
 The normal WP Tag Cloud widget only uses one taxonomy at a time, and doesn't handle the default post_tag or category taxonomies being assigned to custom post types.
 
-With this plugin, you can now configure (on a per-widget basis):
+With this plugin, you can configure (for each widget):
 
 * which taxonomies and post types are to be included,
 * which terms should always be excluded from the cloud,
@@ -66,6 +66,7 @@ Note all screenshots are for versions older than 0.22 at the mo...
 = 0.30 =
 * Enhancement: added ability to display the widget via a shortcode
 * Enhancement: can copy the shortcode to the clipboard with a click
+* Enhancement: added WCAG tag color contast checker
 * Bugfix: clearing just a color will also tell WP the form needs saving
 
 = 0.23 =
@@ -123,6 +124,8 @@ Note all screenshots are for versions older than 0.22 at the mo...
 * To Add: colors per term - use termmeta?
 * To Add: setting to toggle white-space wrap
 * To Add: ? only show tags for terms used in the category being viewed
+* To Add: apply font stack to title
+
 
 * New Screenshots...
 

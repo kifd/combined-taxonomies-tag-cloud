@@ -15,6 +15,7 @@
 			
 			&:hover {
 				background-color: #efefef;
+				color: #000000;
 				&:after {
 					color: #92777c;
 				}
@@ -44,6 +45,8 @@
 		
 		p {
 			display: flex;
+			flex-wrap: wrap;
+
 			margin: 0.2em 0 0.4em;
 			align-items: center;
 			width: 100%;
@@ -52,26 +55,30 @@
 				margin-top: 0.4em;
 			}
 			
-			&.full {
-				flex-wrap: wrap;
-				justify-content: space-between;
-				label.half {
-					flex-basis: 45%;
-					& + select {
-						width: 49%;
-					}
+			label {
+				flex-basis: 50%;
+				flex-grow: 1;
+				max-width: 50%;
+				box-sizing: border-box;
+			
+				& + * {
+					flex-basis: 50%;
+					flex-grow: 1;
+					max-width: 50%;
+					box-sizing: border-box;
 				}
-				select {
+				
+				& + select[multiple] {
+					flex-basis: 100%;
+					max-width: 100%;
 					width: 100%;
 				}
 			}
-			&.half {
+			
+			&.full {
 				label {
-					flex-basis: 49%;
-					& + select,
-					& + input[type=number] {
-						width: 49%;
-					}
+					flex-basis: 100%;
+					max-width: 100%;
 				}
 			}
 		
@@ -85,8 +92,10 @@
 			input {
 				margin: 0.4em 0;
 				height: 1.8em;
+				
 				&[type=checkbox] {
 					height: 1.8em; width: 1.8em;
+					flex-basis: unset; flex-grow: 0;
 					margin: 0.4em 0!important;
 					position: relative;
 					&:checked::before {
@@ -109,8 +118,8 @@
 			}
 	
 			.wp-picker-container {
-				flex-basis: 49%;
-				max-width: 49%;
+				margin: 0.4em 0;
+				
 				.wp-color-result.button {
 					margin: 0;
 					width: 100%;

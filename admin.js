@@ -98,7 +98,7 @@
 								'colour2': $(_backid).val(),
 							},
 			success:		function(response) {
-								var demo = $(_foreid).parents('p.full').siblings('p.color-demo');
+								var demo = $(_foreid).parents('p').siblings('p.color-demo');
 								var ratio = demo.children('span.ratio');
 								ratio.css('color', $(_foreid).val());
 								ratio.css('background-color', $(_backid).val());

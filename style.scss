@@ -90,10 +90,15 @@
 				text-decoration: underline;
 			}
 			
-			&.highlight {
-				color: red !important;
+			&.effect1:hover {
+				background-image: linear-gradient(to right, #ff8a00, #e52e71);
+				background-clip: border-box;
+				-webkit-background-clip: text;
+				-webkit-text-fill-color: transparent;
+				-webkit-box-decoration-break: clone;
+				box-decoration-break: clone;
+				text-shadow: none;
 			}
-
 		}
 		
 	}
