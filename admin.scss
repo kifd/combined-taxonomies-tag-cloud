@@ -1,20 +1,24 @@
+$colour-fieldset: #fafafa;
+$colour-legend: #eaeaea;
+
+
 .combined-taxonomies-tag-cloud {
 	margin:0 -5px 1em;
 	
 	fieldset {
-		margin:1em 0; padding:0.2em 0.4em;
-		background-color: #fafafa;
+		margin:1em 0; padding:0.2em 0;
+		background-color: $colour-fieldset;
 		
 		legend {
-			background-color: #eaeaea;
-			border-top: 0.1em dotted #ccc;
-			margin:0 -0.4em; padding: 0.4em;
+			background-color: $colour-legend;
+			border-top: 0.1em dotted darken($colour-legend, 10%);
+			margin: 0 -0.4em; padding: 0.4em;
 			font-weight: bold;
 			width: 100%;
 			cursor: pointer;
 			
 			&:hover {
-				background-color: #efefef;
+				background-color: darken($colour-legend, 30%);
 				color: #000000;
 				&:after {
 					color: #92777c;
@@ -35,10 +39,23 @@
 			
 			& + div {
 				display: block;
+				margin: 0 -0.4em; padding: 0 0.4em;
+				background-color: $colour-fieldset;
 			}
 			
 			&.closed + div {
 				display: none;
+			}
+		}
+		
+
+		&:hover {
+			legend {
+				background-color: darken($colour-legend, 20%);
+				color: #000000;
+				& + div {
+					background-color: darken($colour-fieldset, 5%);
+				}
 			}
 		}
 		
@@ -47,12 +64,12 @@
 			display: flex;
 			flex-wrap: wrap;
 
-			margin: 0.2em 0 0.4em;
+			margin: 0; padding: 0.2em 0 0.4em;
 			align-items: center;
 			width: 100%;
 			
 			&:first-of-type {
-				margin-top: 0.4em;
+				padding-top: 0.4em;
 			}
 			
 			label {
@@ -62,7 +79,7 @@
 				box-sizing: border-box;
 			
 				& + * {
-					flex-basis: 50%;
+					flex-basis: auto;
 					flex-grow: 1;
 					max-width: 50%;
 					box-sizing: border-box;
@@ -116,7 +133,13 @@
 				font-size: smaller;
 				color: gray;
 			}
-	
+			
+			.font_units {
+				display: block;
+				text-align: right;
+				padding-left: 1em;
+			}
+			
 			.wp-picker-container {
 				margin: 0.4em 0;
 				

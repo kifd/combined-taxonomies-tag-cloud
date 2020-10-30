@@ -1,7 +1,7 @@
 <?php
 /*
 Plugin Name: Combined Taxonomies Tag Cloud
-Version: 0.30
+Version: 0.31
 Description: Makes a tag cloud widget out of multiple taxonomies across multiple post types.
 Author: Keith Drakard
 Author URI: https://drakard.com/

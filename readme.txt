@@ -4,6 +4,7 @@ Author Link: https://drakard.com/
 Tags: tag cloud, taxonomy tag cloud, tag cloud widget, tag, cloud, widget, tag cloud post type, custom tag cloud, combined tag cloud, custom post tag cloud, change tag cloud, redirect single tag, remove single tag
 Requires at least: 3.8 or higher
 Tested up to: 5.5
+Requires PHP: 7.2
 Stable tag: 0.30
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -43,7 +44,7 @@ With this plugin, you can configure (for each widget):
 
 Depending on your operating system, you can normally use shift+click to select a range of options in a big dropdown on any webpage, or ctrl+click to select multiple individual ones.
 
-You can also combine them if needed - selected loads of options with shift+click first, and then unselect a few individual ones with ctrl+click.
+You can also combine them if needed - select loads of options with shift+click first, and then unselect a few individual ones with ctrl+click.
 
 = How do I show a cloud with the shortcode? =
 
@@ -63,10 +64,20 @@ Note all screenshots are for versions older than 0.22 at the mo...
 
 == Changelog ==
 
+= 0.31 =
+* Enhancement: font unit selection now reflected across relevant options
+* Enhancement: font stack applies to widget title as well
+* Enhancement: added choice of tag highlighting effects, now uses CSS vars for coloring
+* Bugfix: more code tidying and UI fiddling
+* Bugfix: requires php7+ now due to type hinting etc
+
+
 = 0.30 =
 * Enhancement: added ability to display the widget via a shortcode
-* Enhancement: can copy the shortcode to the clipboard with a click
 * Enhancement: added WCAG tag color contast checker
+* Enhancement: added option to automatically highlight tags in the cloud that match the tags in the current post
+* Enhancement: added adjustable row/column gaps
+* Enhancement: can copy the shortcode to the clipboard with a click
 * Bugfix: clearing just a color will also tell WP the form needs saving
 
 = 0.23 =
@@ -115,16 +126,14 @@ Note all screenshots are for versions older than 0.22 at the mo...
 
 == To-Do List ==
 
-* To Add: adjustable row/column gaps
-* To Add: highlight tags matching content on the page
-* To Add: better control over :hover effects - ie. font size change, border width
+* To Add: auto highlight matching tags on archive pages
+* To Add: choice of highlight effects / better control over :hover - ie. font size change, border width
 * To Add: different way relative sizes are calculated - ie. log
-* To Add: smarter colours, so to avoid transparent text etc
+* To Add: smarter colours, so to avoid transparent text etc - maybe auto?
 * To Add: temporarily save widget fieldset open/close states while editing
 * To Add: colors per term - use termmeta?
 * To Add: setting to toggle white-space wrap
 * To Add: ? only show tags for terms used in the category being viewed
-* To Add: apply font stack to title
 
 
 * New Screenshots...
