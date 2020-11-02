@@ -13,57 +13,62 @@ class CombinedTaxonomiesTagCloudWidget extends WP_Widget {
 		
 		// only load if we're using the widget (include inactive ones now we've got the shortcode way)
 		if (is_admin() OR is_active_widget(false, false, $this->id_base, false)) {
-			add_action('wp_loaded', array($this, 'make_default_selections'));
+			// load the config after wp has finished loading, else you won't have all the CPTs...
+			add_action('wp_loaded', array($this, 'load_config'));
 			
 			// admin needs the colour picker and its javascript, as well as a mini form styling
 			add_action('admin_enqueue_scripts', function() {
-				wp_enqueue_style('combined-taxonomies-tag-cloud-admin-style', plugins_url('admin.css', __FILE__), false, null);
-				wp_enqueue_style('wp-color-picker'); 
-				wp_enqueue_script('combined-taxonomies-tag-cloud-admin-script', plugins_url('admin.js', __FILE__), array('wp-color-picker'), null, true);
+				// general admin form styling
+				wp_enqueue_style('combined-taxonomies-tag-cloud-admin-style', plugins_url('resources/css/admin.css', __FILE__), false, null);
+				
+				// https://github.com/Automattic/Iris/issues/13 - now 7+ years and counting
+				wp_enqueue_style('wp-color-picker');
+				wp_enqueue_script('wp-color-picker-alpha', plugins_url('resources/wp-color-picker-alpha/src/wp-color-picker-alpha.js', __FILE__), array('wp-color-picker'), null, true);
+				
+				//wp_enqueue_script('alpha-color-picker', plugins_url('resources/alpha-color-picker/alpha-color-picker.js', __FILE__), array('jquery', 'wp-color-picker'), null, true);
+				//wp_enqueue_style('alpha-color-picker', plugins_url('resources/alpha-color-picker/alpha-color-picker.css', __FILE__), array('wp-color-picker'));
+				
+				// admin js
+				wp_enqueue_script('combined-taxonomies-tag-cloud-admin-script', plugins_url('resources/js/admin.js', __FILE__), array('wp-color-picker-alpha'), null, true);
 				wp_localize_script('combined-taxonomies-tag-cloud-admin-script', 'font_stacks', $this->get_font_stacks());
 				wp_localize_script('combined-taxonomies-tag-cloud-admin-script', 'cttc_ajax', $this->get_ajax());
+				
+				// and include the front styling so we can demo the tag effects
+				wp_enqueue_style('combined-taxonomies-tag-cloud-style', plugins_url('resources/css/style.css', __FILE__), false, null);
 			});
+			
+			// done in php via ajax (rather than purely js) pretty much because I wanted the other colour functions for auto text colours / validation
+			add_action('wp_ajax_update_contrast_demo', array($this, 'update_contrast_demo'));
 			
 			// only need our stylesheet on the front end, but we can't just use the wp_enqueue_scripts action as we may be adding inline styles
 			add_action('wp_head', function() {
-				wp_register_style('combined-taxonomies-tag-cloud-style', plugins_url('style.css', __FILE__), false, null);
+				wp_register_style('combined-taxonomies-tag-cloud-style', plugins_url('resources/css/style.css', __FILE__), false, null);
 			});
 			add_action('wp_footer', function() {
 				wp_enqueue_style('combined-taxonomies-tag-cloud-style');
 			});
-		
-			add_action('wp_ajax_update_contrast_demo', array($this, 'update_contrast_demo'));
 		}
 	}
-
+	
+	
+	// array definitions were getting a bit on the long side, so moved out to a separate file
+	public function load_config() {
+		require_once 'config.php';
+		foreach ($config as $key => $value) {
+			$this->{$key} = $value;
+		}
+		$this->choices['font_family'] += array_keys($this->get_font_stacks());
+	}
+	
 	
 	private function get_font_stacks(string $key = '') {
-		// from https://gist.github.com/don1138/5761014
-		$fonts = array(
-			'System' => 
-				'system, -apple-system, ".SFNSText-Regular", "San Francisco", "Roboto", "Segoe UI", "Helvetica Neue", "Lucida Grande", sans-serif',
-			'Times New Roman' =>
-				'Cambria, "Hoefler Text", Utopia, "Liberation Serif", "Nimbus Roman No9 L Regular", Times, "Times New Roman", serif',
-			'Georgia' =>
-				'Constantia, "Lucida Bright", Lucidabright, "Lucida Serif", Lucida, "DejaVu Serif", "Bitstream Vera Serif", "Liberation Serif", Georgia, serif',
-			'Garamond' =>
-				'"Palatino Linotype", Palatino, Palladio, "URW Palladio L", "Book Antiqua", Baskerville, "Bookman Old Style", "Bitstream Charter", "Nimbus Roman No9 L", Garamond, "Apple Garamond", "ITC Garamond Narrow", "New Century Schoolbook", "Century Schoolbook", "Century Schoolbook L", Georgia, serif',
-			'Helvetica/Arial' =>
-				'Frutiger, "Frutiger Linotype", Univers, Calibri, "Gill Sans", "Gill Sans MT", "Myriad Pro", Myriad, "DejaVu Sans Condensed", "Liberation Sans", "Nimbus Sans L", Tahoma, Geneva, "Helvetica Neue", Helvetica, Arial, sans-serif',
-			'Verdana' =>
-				'Corbel, "Lucida Grande", "Lucida Sans Unicode", "Lucida Sans", "DejaVu Sans", "Bitstream Vera Sans", "Liberation Sans", Verdana, "Verdana Ref", sans-serif',
-			'Trebuchet' =>
-				'"Segoe UI", Candara, "Bitstream Vera Sans", "DejaVu Sans", "Bitstream Vera Sans", "Trebuchet MS", Verdana, "Verdana Ref", sans-serif',
-			'Impact' =>
-				'Impact, Haettenschweiler, "Franklin Gothic Bold", Charcoal, "Helvetica Inserat", "Bitstream Vera Sans Bold", "Arial Black", sans-serif',
-			'Monospace' =>
-				'Consolas, "Andale Mono WT", "Andale Mono", "Lucida Console", "Lucida Sans Typewriter", "DejaVu Sans Mono", "Bitstream Vera Sans Mono", "Liberation Mono", "Nimbus Mono L", Monaco, "Courier New", Courier, monospace',
-		);
 		
-		if (isset($fonts[$key])) {
-			$fonts = $fonts[$key];
+		if (isset($this->fonts[$key])) {
+			$fonts = $this->fonts[$key];
+			
 		} elseif ($key == '') {
-			asort($fonts);
+			$fonts = $this->fonts;
+			
 		} else {
 			$fonts = '';
 		}
@@ -74,105 +79,6 @@ class CombinedTaxonomiesTagCloudWidget extends WP_Widget {
 	
 	
 	
-	public function make_default_selections() {
-		// NOTE: $fields var in form() function below must having matching keys
-		$this->choices = array(
-			'align_h'			=> array(
-									'left'			=> __('Left', 'CombinedTaxonomiesTagCloud'),
-									'center'		=> __('Center', 'CombinedTaxonomiesTagCloud'),
-									'right'			=> __('Right', 'CombinedTaxonomiesTagCloud'),
-								),
-			'align_v'			=> array(
-									'top'			=> __('Top', 'CombinedTaxonomiesTagCloud'),
-									'middle'		=> __('Center', 'CombinedTaxonomiesTagCloud'),
-									'bottom'		=> __('Bottom', 'CombinedTaxonomiesTagCloud'),
-								),
-			'border_style'		=> array(
-									''				=> array(
-										'name'			=> __('None', 'CombinedTaxonomiesTagCloud'),
-										'hide-these'	=> array('tborder', 'border_width'),
-									),
-									'solid'			=> __('Solid', 'CombinedTaxonomiesTagCloud'),
-									'dotted'		=> __('Dots', 'CombinedTaxonomiesTagCloud'),
-									'dashed'		=> __('Dashes', 'CombinedTaxonomiesTagCloud'),
-								),
-			'effects'			=> array(
-									'' 				=> __('Leave Alone', 'CombinedTaxonomiesTagCloud'),
-									'fx_invert'		=> __('Invert', 'CombinedTaxonomiesTagCloud'),
-									'fx_backg_up'	=> __('Background Up', 'CombinedTaxonomiesTagCloud'),
-								),
-			'font_family'		=> array(__('Leave Alone', 'CombinedTaxonomiesTagCloud')) + array_keys($this->get_font_stacks()),
-			'font_unit'			=> array('rem', 'em', 'pt', 'px', 'vw'),
-			'highlight'			=> array(
-									''				=> __('None', 'CombinedTaxonomiesTagCloud'),
-									'single'		=> __('On Single Pages', 'CombinedTaxonomiesTagCloud'),
-								),
-			'orderby'			=> array(
-									'name'			=> __('Alphabetically', 'CombinedTaxonomiesTagCloud'),
-									'count'			=> __('By Count', 'CombinedTaxonomiesTagCloud'),
-									'random'		=> __('Randomly', 'CombinedTaxonomiesTagCloud')
-								),
-			'post_types'		=> get_post_types(array('show_ui' => true), 'objects'),
-			'save'				=> array(0, 1, 2, 4, 8, 12, 24, 48, 96), // hours
-			'single'			=> array(
-									''				=> __('Leave Alone', 'CombinedTaxonomiesTagCloud'),
-									'remove'		=> __('Remove', 'CombinedTaxonomiesTagCloud'),
-									'link'			=> __('Link to Entry', 'CombinedTaxonomiesTagCloud')
-								),
-			'taxonomies'		=> get_taxonomies(array('show_ui' => true), 'objects'),
-			'text_case'			=> array(
-									''				=> __('Leave Alone', 'CombinedTaxonomiesTagCloud'),
-									'lower'			=> __('lowercase', 'CombinedTaxonomiesTagCloud'),
-									'upper'			=> __('UPPERCASE', 'CombinedTaxonomiesTagCloud')
-								),
-			'text_decoration'	=> array(
-									''				=> __('Leave Alone', 'CombinedTaxonomiesTagCloud'),
-									'no_text_deco'	=> __('None', 'CombinedTaxonomiesTagCloud'),
-									'under_always'	=> __('Always Underline', 'CombinedTaxonomiesTagCloud'),
-									'under_hover'	=> __('Underline on Hover', 'CombinedTaxonomiesTagCloud'),
-									'box_hover'		=> __('Box Shadow on Hover', 'CombinedTaxonomiesTagCloud'),
-								),
-		);
-		sort($this->choices['taxonomies']);
-		sort($this->choices['post_types']);
-		
-		$this->defaults = array(
-			'align_h'			=> 'left',
-			'align_v'			=> 'bottom',
-			'border_radius'		=> 0.10,
-			'border_style'		=> '',
-			'border_width'		=> 0.00,
-			'column_gap'		=> 0.50,
-			'effects'			=> '',
-			'exclude'			=> array(0),
-			'font_family'		=> __('Leave Alone', 'CombinedTaxonomiesTagCloud'),
-			'font_unit'			=> 'em',
-			'highlight'			=> '',
-			'largest' 			=> 1.40,
-			'maximum'			=> 999,
-			'nofollow'			=> 0,
-			'order'				=> 0, // 0 = asc, 1 = desc
-			'orderby'			=> 'name',
-			'post_types'		=> array('post'),
-			'row_gap'			=> 0.50,
-			'save'				=> 0,
-			'scale_tag'			=> 0,
-			'show_count'		=> 1,
-			'single'			=> '',
-			'smallest' 			=> 0.60,
-			'taxonomies'		=> array('post_tag'),
-			'tbackground'		=> '#ffffff',
-			'tborder'			=> '#ffffff',
-			'text_case'			=> '',
-			'text_decoration'	=> 'under_hover',
-			'tforeground'		=> '#000000',
-			'title' 			=> '',
-			'wbackground'		=> '#ffffff',
-		);
-	}
-
-
-
 	// display the widget -----------------------------------
 	public function widget($args, $instance) {
 		$instance = wp_parse_args($instance, $this->defaults);
@@ -269,7 +175,6 @@ class CombinedTaxonomiesTagCloudWidget extends WP_Widget {
 			$step = ($args['largest'] - $args['smallest']) / $spread; // set the font-size increment
 			$midway = round($args['smallest'] + (($args['largest'] - $args['smallest']) / 2), 2); // halfway point used to alter CSS effects
 
-
 			// build our cloud
 			$cloud = array();
 			foreach ($tags as $i => $tag) {
@@ -291,7 +196,7 @@ class CombinedTaxonomiesTagCloudWidget extends WP_Widget {
 				$classes = implode(' ', array(
 					$tag['taxonomy'],
 					$args['text_case'],
-					$args['effects'],
+					$args['fx_two_dee'].' '.$args['fx_backgrounds'].' '.$args['fx_shadows'],
 					($midway >= $size) ? 'smaller' : 'larger',
 					($args['text_decoration'] != '') ? $args['text_decoration'] : '',
 					(in_array($tag['term_id'], $page_term_ids)) ? 'highlight' : '',
@@ -314,7 +219,7 @@ class CombinedTaxonomiesTagCloudWidget extends WP_Widget {
 			}
 			
 			// NOTE: twentytwenty theme (at least) doesn't output widget IDs, unlike every other default WP theme,
-			// so make sure there's something we can use to recognize individual widgets
+			//       so make sure there's something we can use to recognize individual widgets
 			if (! stristr($args['before_widget'], ' id=')) {
 				// only want to replace it once, so can't just use str_replace
 				$pos = strpos($args['before_widget'], '>');
@@ -332,7 +237,7 @@ class CombinedTaxonomiesTagCloudWidget extends WP_Widget {
 			// make the html
 			$output = $args['before_widget']."\r\n"
 					. $title."\n"
-					. sprintf('<ul class="combinedtagcloud %s" role="list">%s</ul>',
+					. sprintf('<ul class="combined-taxonomies-tag-cloud %s" role="list">%s</ul>',
 						$extra_classes,
 						'<li>'.implode("</li>\r\n<li>", $cloud).'</li>'
 					)."\r\n"
@@ -348,28 +253,33 @@ class CombinedTaxonomiesTagCloudWidget extends WP_Widget {
 		$custom_css = '';
 		
 		if ($args['font_family'] != __('Leave Alone', 'CombinedTaxonomiesTagCloud')) {
-			$custom_css.= sprintf('#%s .widget-title, #%s .combinedtagcloud a { font-family:%s; }',
+			$custom_css.= sprintf('#%s .widget-title, #%s .combined-taxonomies-tag-cloud a { font-family:%s; }',
 				$args['widget_id'], $args['widget_id'], $this->get_font_stacks($args['font_family'])
 			);
 		}
-
-		$custom_css.= sprintf('#%s .combinedtagcloud { %s %s %s }', $args['widget_id'], 
-			($args['column_gap'] != '') ? sprintf('column-gap:%.1f%s;', $args['column_gap'], $args['font_unit']) : '',
-			($args['row_gap'] != '') ? sprintf('row-gap:%.1f%s;', $args['row_gap'], $args['font_unit']) : '',
-			($args['wbackground'] != '') ? sprintf('background-color:%s;', $args['wbackground']) : ''
-		);
 		
-		$custom_css.= sprintf('#%s .combinedtagcloud li a { %s %s %s %s %s %s %s }', $args['widget_id'],
-			($args['tbackground'] != '') ? sprintf('--backColor:%s;', $args['tbackground']) : '',
-			($args['tbackground'] != '') ? sprintf('--textOnBackColor:%s;', $this->get_contrasting_text_color($args['tbackground'])) : '',
-			($args['tforeground'] != '') ? sprintf('--textColor:%s;', $args['tforeground']) : '',
+		
+		$css_vars = array(
+			($args['wbackground'] != '') ? sprintf('--widgetBackgroundColor:%s;', $args['wbackground']) : '',
+			
+			($args['column_gap'] != '') ? sprintf('--columnGap:%.1f%s;', $args['column_gap'], $args['font_unit']) : '',
+			($args['row_gap'] != '') ? sprintf('--rowGap:%.1f%s;', $args['row_gap'], $args['font_unit']) : '',
+		
+			sprintf('--backColor1:%s;', $args['tcolor1']),
+			sprintf('--backColor2:%s;', $args['tcolor2']),
+			sprintf('--textColor1:%s;', $this->get_contrasting_text_color($args['tcolor1'])),
+			sprintf('--textColor2:%s;', $this->get_contrasting_text_color($args['tcolor2'])),
 			
 			($args['border_radius'] != '') ? sprintf('--borderRadius:%.2f%s;', $args['border_radius'], $args['font_unit']) : '',
-			($args['border_style'] != '') ? sprintf('--borderStyle:%s;', $args['border_style']) : '',
 			
-			($args['tborder'] != '') ? sprintf('--borderColor:%s;', $args['tborder']) : '',
-			($args['border_width'] != '') ? sprintf('--borderWidth:%.2f%s;', $args['border_width'], $args['font_unit']) : ''
+			($args['border_style'] != '') ? sprintf('--borderStyle:%s;', $args['border_style']) : '',
+			($args['border_style'] != '' AND $args['tborder'] != '') ? sprintf('--borderColor:%s;', $args['tborder']) : '',
+			($args['border_style'] != '' AND $args['border_width'] != '') ? sprintf('--borderWidth:%.2f%s;', $args['border_width'], $args['font_unit']) : '',
 		);
+		
+		
+		// like the sql prepare statement
+		$custom_css.= call_user_func_array('sprintf', array_merge(array('#%s { '.implode(' ', array_fill(0, count($css_vars), '%s')).' }'), array($args['widget_id']), $css_vars));
 		
 		
 		wp_add_inline_style('combined-taxonomies-tag-cloud-style', $custom_css);
@@ -412,17 +322,18 @@ class CombinedTaxonomiesTagCloudWidget extends WP_Widget {
 		if (in_array($new['save'], $this->choices['save']))
 			$instance['save'] = $new['save'];
 
-		$keys = array('align_h', 'align_v', 'border_style', 'effects', 'highlight', 'orderby', 'single', 'text_case', 'text_decoration');
+		$keys = array('align_h', 'align_v', 'border_style', 'fx_backgrounds', 'fx_shadows', 'fx_two_dee', 'highlight', 'orderby', 'single', 'text_case', 'text_decoration');
 		foreach ($keys as $key) {
 			if (in_array($new[$key], array_keys($this->choices[$key]))) $instance[$key] = $new[$key];
 		}
 		
 		
 		// and colors now need to always be defined (hard to work out contrasting colours if you don't know what to contrast)
-		$instance['wbackground'] = ($this->is_valid_color($new['wbackground'])) ? $new['wbackground'] : $this->defaults['wbackground'];
+		$instance['wbackground'] = ($this->is_valid_color($new['wbackground']) OR $new['wbackground'] == '')
+			? $new['wbackground'] : $this->defaults['wbackground'];
 		$instance['tborder'] = ($this->is_valid_color($new['tborder'])) ? $new['tborder'] : $this->defaults['tborder'];
-		$instance['tbackground'] = ($this->is_valid_color($new['tbackground'])) ? $new['tbackground'] : $this->defaults['tbackground'];
-		$instance['tforeground'] = ($this->is_valid_color($new['tforeground'])) ? $new['tforeground'] : $this->defaults['tforeground'];
+		$instance['tcolor1'] = ($this->is_valid_color($new['tcolor1'])) ? $new['tcolor1'] : $this->defaults['tcolor1'];
+		$instance['tcolor2'] = ($this->is_valid_color($new['tcolor2'])) ? $new['tcolor2'] : $this->defaults['tcolor2'];
 		
 		
 		// either something's changed or we pressed the save button for the sake of it. regardless, delete our saved html and start again
@@ -446,7 +357,9 @@ class CombinedTaxonomiesTagCloudWidget extends WP_Widget {
 			'align_h' => 1,
 			'align_v' => 1,
 			'border_style' => 1,
-			'effects' => 1,
+			'fx_backgrounds' => 1,
+			'fx_shadows' => 1,
+			'fx_two_dee' => 1,
 			'font_family' => 2,
 			'font_unit' => 2,
 			'highlight' => 1,
@@ -461,10 +374,10 @@ class CombinedTaxonomiesTagCloudWidget extends WP_Widget {
 		
 		$select = array();
 		foreach ($fields as $field => $option) {
-			$select[$field] = (0 == $option) // conveniently, only the 0s need a wide, multiple select... 
-				? '<select id="'.esc_attr($this->get_field_id($field)).'[]" name="'.esc_attr($this->get_field_name($field)).'[]" class="widefat" size="6" multiple="true">'
-				: '<select id="'.esc_attr($this->get_field_id($field)).'" class="'.$field.'" name="'.esc_attr($this->get_field_name($field)).'">';
-
+		
+			$options = array();
+			$controls_others = false;
+			
 			foreach ($this->choices[$field] as $key => $value) {
 				switch ($option) {
 					case 0:		$key = $value->name; $value = $value->labels->name;
@@ -482,18 +395,33 @@ class CombinedTaxonomiesTagCloudWidget extends WP_Widget {
 							$data_value = implode(',', $data_value);
 						}
 						$data_attrs.= sprintf('data-%s="%s" ', strtolower($data_key), $data_value);
+						
+						if (in_array($data_key, array('hide-these', 'show-these'))) {
+							$controls_others = true;
+						}
 					}
 					$value = $name;
 				}
 				
-				$select[$field].= sprintf('<option value="%s" %s %s>%s</option>',
+				$options[] = sprintf('<option value="%s" %s %s>%s</option>',
 					esc_attr($key),
 					($selected) ? ' selected="selected"' : '',
 					$data_attrs,
 					$value
 				);
 			}
-			$select[$field].= '</select>';
+			
+			$select[$field] = sprintf('<select id="%s%s" class="%s%s" name="%s%s"%s%s>%s</select>',
+				esc_attr($this->get_field_id($field)),
+				(0 == $option) ? '[]' : '',
+				(0 == $option) ? 'widefat ' : '',
+				esc_attr($field),
+				esc_attr($this->get_field_name($field)),
+				(0 == $option) ? '[]' : '',
+				(0 == $option) ? ' size="6" multiple="true"' : '',
+				($controls_others) ? ' data-controls-others="true"' : '',
+				implode('', $options)
+			);
 		}
 
 		// taxonomies could've been deleted since we made this widget, and get_terms() crashes if any don't exist...
@@ -507,7 +435,7 @@ class CombinedTaxonomiesTagCloudWidget extends WP_Widget {
 		$sorted = array(); $this->sort_terms_hierarchically($all_terms, $sorted);
 
 		$this->selected = $instance['exclude'];
-		$select['excluded'] = '<select class="widefat"  id="'.esc_attr($this->get_field_id('exclude')).'[]" name="'.esc_attr($this->get_field_name('exclude')).'[]" size="10" multiple="true">'
+		$select['excluded'] = '<select class="widefat exclude" id="'.esc_attr($this->get_field_id('exclude')).'[]" name="'.esc_attr($this->get_field_name('exclude')).'[]" size="10" multiple="true">'
 						. $this->display_options_recursively($sorted)
 						. '</select>';
 
@@ -603,6 +531,16 @@ class CombinedTaxonomiesTagCloudWidget extends WP_Widget {
 						__('Vertical Alignment', 'CombinedTaxonomiesTagCloud'),
 						$select['align_v']
 					)
+					
+				. sprintf('<p title="%s"><label for="%s">%s:</label><input class="color-picker" type="text" size="5" id="%s" name="%s" value="%s" data-alpha-enabled="true"></p>',
+						__('Set the background color of the whole widget', 'CombinedTaxonomiesTagCloud'),
+						esc_attr($this->get_field_id('wbackground')),
+						__('Widget Background', 'CombinedTaxonomiesTagCloud'),
+						esc_attr($this->get_field_id('wbackground')),
+						esc_attr($this->get_field_name('wbackground')),
+						$instance['wbackground'],
+						$this->defaults['wbackground']
+					)
 				
 				. '</div></fieldset>'
 				
@@ -630,7 +568,7 @@ class CombinedTaxonomiesTagCloudWidget extends WP_Widget {
 						$select['text_decoration']
 					)
 					
-				. sprintf('<p title="%s"><label for="%s">%s:</label><input type="checkbox" id="%s" class="%s" name="%s" data-hide-these="smallest,largest" data-hide-invert value="1"%s></p>',
+				. sprintf('<p title="%s"><label for="%s">%s:</label><input type="checkbox" id="%s" class="%s" name="%s" data-controls-others="true" data-show-these="smallest,largest" value="1"%s></p>',
 						__('Make the size of the tag bigger if more posts have it', 'CombinedTaxonomiesTagCloud'),
 						esc_attr($this->get_field_id('scale_tag')),
 						__('Scale Font', 'CombinedTaxonomiesTagCloud'),
@@ -667,7 +605,7 @@ class CombinedTaxonomiesTagCloudWidget extends WP_Widget {
 						$select['border_style']
 					)
 					
-				. sprintf('<p title="%s"><label for="%s">%s:</label><input class="color-field" type="text" size="5" id="%s" name="%s" value="%s" data-default-color="%s"></p>',
+				. sprintf('<p title="%s"><label for="%s">%s:</label><input class="color-picker" type="text" size="5" id="%s" name="%s" value="%s" data-default-color="%s" data-alpha-enabled="true"></p>',
 						__('Choose the border color of a tag', 'CombinedTaxonomiesTagCloud'),
 						esc_attr($this->get_field_id('tborder')),
 						__('Color', 'CombinedTaxonomiesTagCloud'),
@@ -697,50 +635,59 @@ class CombinedTaxonomiesTagCloudWidget extends WP_Widget {
 				. '</div></fieldset>'
 				
 				
-				. sprintf('<fieldset><legend>%s</legend><div>', __('Colors and Effects', 'CombinedTaxonomiesTagCloud'))
+				. sprintf('<fieldset><legend>%s</legend><div>', __('Tag Effects', 'CombinedTaxonomiesTagCloud'))
 				
-				. sprintf('<p title="%s"><label for="%s">%s:</label><input class="color-field" type="text" size="5" id="%s" name="%s" value="%s" data-default-color="%s"></p>',
-						__('Choose the background color of the whole widget', 'CombinedTaxonomiesTagCloud'),
-						esc_attr($this->get_field_id('wbackground')),
-						__('Widget Background', 'CombinedTaxonomiesTagCloud'),
-						esc_attr($this->get_field_id('wbackground')),
-						esc_attr($this->get_field_name('wbackground')),
-						$instance['wbackground'],
-						$this->defaults['wbackground']
+				. sprintf('<p title="%s"><label for="%s">%s:</label>%s</p>',
+						__('What background effect to apply to these tags', 'CombinedTaxonomiesTagCloud'),
+						esc_attr($this->get_field_id('fx_backgrounds')),
+						__('Background FX', 'CombinedTaxonomiesTagCloud'),
+						$select['fx_backgrounds']
 					)
 				
-				. sprintf('<p title="%s"><label for="%s">%s:</label><input class="color-field" type="text" size="5" id="%s" name="%s" value="%s" data-default-color="%s"></p>',
-						__('Choose the background color of a tag', 'CombinedTaxonomiesTagCloud'),
-						esc_attr($this->get_field_id('tbackground')),
-						__('Background', 'CombinedTaxonomiesTagCloud'),
-						esc_attr($this->get_field_id('tbackground')),
-						esc_attr($this->get_field_name('tbackground')),
-						$instance['tbackground'],
-						$this->defaults['tbackground']
+				. sprintf('<p title="%s"><label for="%s">%s:</label><input class="color-picker" type="text" size="5" id="%s" name="%s" value="%s" data-default-color="%s" data-alpha-enabled="true"></p>',
+						__('Choose the first color this effect uses', 'CombinedTaxonomiesTagCloud'),
+						esc_attr($this->get_field_id('tcolor1')),
+						__('Color 1', 'CombinedTaxonomiesTagCloud'),
+						esc_attr($this->get_field_id('tcolor1')),
+						esc_attr($this->get_field_name('tcolor1')),
+						$instance['tcolor1'],
+						$this->defaults['tcolor1']
 					)
-				. sprintf('<p title="%s"><label for="%s">%s:</label><input class="color-field" type="text" size="5" id="%s" name="%s" value="%s" data-default-color="%s"></p>',
-						__('Choose the text color of a tag', 'CombinedTaxonomiesTagCloud'),
-						esc_attr($this->get_field_id('tforeground')),
-						__('Text', 'CombinedTaxonomiesTagCloud'),
-						esc_attr($this->get_field_id('tforeground')),
-						esc_attr($this->get_field_name('tforeground')),
-						$instance['tforeground'],
-						$this->defaults['tforeground']
+				. sprintf('<p title="%s"><label for="%s">%s:</label><input class="color-picker" type="text" size="5" id="%s" name="%s" value="%s" data-default-color="%s" data-alpha-enabled="true"></p>',
+						__('Choose the second color this effect uses', 'CombinedTaxonomiesTagCloud'),
+						esc_attr($this->get_field_id('tcolor2')),
+						__('Color 2', 'CombinedTaxonomiesTagCloud'),
+						esc_attr($this->get_field_id('tcolor2')),
+						esc_attr($this->get_field_name('tcolor2')),
+						$instance['tcolor2'],
+						$this->defaults['tcolor2']
 					)
-				. sprintf('<p title="%s" class="color-demo"><label>%s</label><span class="ratio">%s</span><span class="wcag"></span></p>',
-						__('Check if your tag colors meet WCAG guidelines', 'CombinedTaxonomiesTagCloud'),
-						__('Contrast Ratio', 'CombinedTaxonomiesTagCloud'),
-						$this->get_contrast_ratio(array($instance['tforeground'], $instance['tbackground']))
+					
+				. sprintf('<p title="%s"><label for="%s">%s:</label>%s</p>',
+						__('What shadow effect to apply to these tags', 'CombinedTaxonomiesTagCloud'),
+						esc_attr($this->get_field_id('fx_shadows')),
+						__('Shadow FX', 'CombinedTaxonomiesTagCloud'),
+						$select['fx_shadows']
 					)
 					
 				
 				. sprintf('<p title="%s"><label for="%s">%s:</label>%s</p>',
-						__('What kind of effect do you want applied on :hover and highlighting', 'CombinedTaxonomiesTagCloud'),
-						esc_attr($this->get_field_id('effects')),
-						__('Rollover Effect', 'CombinedTaxonomiesTagCloud'),
-						$select['effects']
+						__('What 2D transition effect will apply to these tags', 'CombinedTaxonomiesTagCloud'),
+						esc_attr($this->get_field_id('fx_two_dee')),
+						__('2D FX', 'CombinedTaxonomiesTagCloud'),
+						$select['fx_two_dee']
 					)
 				
+					
+				. sprintf('<p title="%s" class="tag-demo"><label>%s</label><span class="half"><a class="%s">%s</a><span class="wcag" title="%s">%s</span></span></p>',
+						__('See what the tags will look like', 'CombinedTaxonomiesTagCloud'),
+						__('Demo', 'CombinedTaxonomiesTagCloud'),
+						$instance['fx_two_dee'].' '.$instance['fx_backgrounds'].' '.$instance['fx_shadows'],
+						__('Tag Text', 'CombinedTaxonomiesTagCloud'),
+						__('Does this color combination meet WCAG guidelines for contrast?', 'CombinedTaxonomiesTagCloud'),
+						$this->get_contrast_ratio(array($instance['tcolor1'], $instance['tcolor2']))
+					)
+					
 				. '</div></fieldset>'
 				
 				
@@ -895,7 +842,11 @@ class CombinedTaxonomiesTagCloudWidget extends WP_Widget {
 	}
 
 	private function is_valid_color($value) {
-		return preg_match('/^#(?:[0-9a-f]{3}){1,2}$/i', $value);
+		return
+			preg_match('/^#(?:[0-9a-f]{3}){1,2}$/i', $value) or 
+			// NOTE: won't catch invalid RGB values > 255 but the regex is simpler and colour values like that will just wrap
+			preg_match('/^rgb\((?:\s*\d+\s*,){2}\s*[\d]+\)$/i', $value) or
+			preg_match('/^rgba\((\s*\d+\s*,){3}[\d\.]+\)$/i', $value);
 	}
 	
 	
@@ -940,7 +891,8 @@ class CombinedTaxonomiesTagCloudWidget extends WP_Widget {
 					'ok'	=> true,
 					'ratio'	=> $ratio,
 					'wcag'	=> $wcag,
-					'auto'	=> $this->get_contrasting_text_color($color1),
+					'text1'	=> $this->get_contrasting_text_color($color1),
+					'text2'	=> $this->get_contrasting_text_color($color2),
 				);
 			}
 		}

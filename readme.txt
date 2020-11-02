@@ -5,7 +5,7 @@ Tags: tag cloud, taxonomy tag cloud, tag cloud widget, tag, cloud, widget, tag c
 Requires at least: 3.8 or higher
 Tested up to: 5.5
 Requires PHP: 7.2
-Stable tag: 0.30
+Stable tag: 0.32
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -16,6 +16,8 @@ A widget to make tag clouds out of multiple taxonomies, across multiple post typ
 The normal WP Tag Cloud widget only uses one taxonomy at a time, and doesn't handle the default post_tag or category taxonomies being assigned to custom post types.
 
 With this plugin, you can configure (for each widget):
+
+* NOTE: this list needs updating
 
 * which taxonomies and post types are to be included,
 * which terms should always be excluded from the cloud,
@@ -64,13 +66,20 @@ Note all screenshots are for versions older than 0.22 at the mo...
 
 == Changelog ==
 
+= 0.32 =
+* Enhancement: changed default wpColorPicker to one that has transparency control
+* Enhancement: added more choices of effects
+* Enhancement: added demo of tag effect into the widget form
+* Enhancement: automatic contrasting text color over backgrounds
+* Enhancement: more general widget appearance control (title color, widget padding etc)
+
 = 0.31 =
 * Enhancement: font unit selection now reflected across relevant options
 * Enhancement: font stack applies to widget title as well
-* Enhancement: added choice of tag highlighting effects, now uses CSS vars for coloring
+* Enhancement: added choice of tag highlighting effects
+* Enhancement: now uses CSS vars for easier customising
 * Bugfix: more code tidying and UI fiddling
 * Bugfix: requires php7+ now due to type hinting etc
-
 
 = 0.30 =
 * Enhancement: added ability to display the widget via a shortcode
@@ -128,12 +137,14 @@ Note all screenshots are for versions older than 0.22 at the mo...
 
 * To Add: auto highlight matching tags on archive pages
 * To Add: choice of highlight effects / better control over :hover - ie. font size change, border width
+
 * To Add: different way relative sizes are calculated - ie. log
 * To Add: smarter colours, so to avoid transparent text etc - maybe auto?
 * To Add: temporarily save widget fieldset open/close states while editing
 * To Add: colors per term - use termmeta?
 * To Add: setting to toggle white-space wrap
 * To Add: ? only show tags for terms used in the category being viewed
+* To Add: demo of rollover effect next to the dropdown
 
 
 * New Screenshots...

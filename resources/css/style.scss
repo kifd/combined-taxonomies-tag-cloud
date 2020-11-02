@@ -1,0 +1,394 @@
+.widget {
+
+	.combined-taxonomies-tag-cloud {
+		display: flex;
+		flex-wrap: wrap;
+		list-style: none;
+		margin: 0; padding: 0;
+		
+		li {
+			margin: 0; padding: 0; border: 0; background-color: transparent;
+			max-width: 100%;
+		}
+		
+		// NOTE: default look for browsers that don't support CSS vars is approx
+		//       the standard WP 2016 tag cloud, no extra frills
+		a:not([class^='iris-']) {
+			display: block;
+			width: auto;
+			
+			line-height: 1;
+			margin: 0; padding: 0.5em 1em;
+			
+			word-wrap: break-word;
+			white-space: break-spaces;
+			outline: 0;
+			
+			border: 1px solid #d1d1d1;
+			border-radius: 2px;
+			background-color: transparent;
+			color: #007acc;
+			font-size: 1em;
+			
+			&:hover {
+				border-color: #007acc;
+			}
+		}
+		
+		&.left {
+			justify-content: left;
+		}
+		&.center {
+			justify-content: center;
+		}
+		&.right {
+			justify-content: right;
+		}
+		&.top li {
+			align-self: start;
+		}
+		&.middle li {
+			align-self: center;
+		}
+		&.bottom li {
+			align-self: end;
+		}
+		
+		a {
+			&.smaller {
+				letter-spacing: 0;
+			}
+			&.larger {
+				
+			}
+			
+			&.lower {
+				text-transform: lowercase;
+			}
+			&.upper {
+				text-transform: uppercase;
+			}
+			
+			&.no_text_deco,
+			&.under_hover,
+			&.box_hover {
+				text-decoration: none;
+			}
+			&.under_hover:hover {
+				text-decoration: underline;
+			}
+			&.box_hover:hover {
+				box-shadow: inset 0 0 0 rgba(0,0,0,0), 0 3px 0 rgba(0,0,0, 1);
+			}
+			&.under_always {
+				text-decoration: underline;
+			}
+		}
+	}
+}
+
+
+
+@supports (--css: variables) {
+	.widget {
+		
+		// front end
+		&.widget_tag_cloud {
+			background-color: var(--widgetBackgroundColor, transparent);
+			padding: var(--widgetPadding, 0);
+			border-radius: var(--widgetBorderRadius, 0);
+			
+			.widget-title {
+				color: var(--widgetTitleColor, #000000);
+			}
+			
+			.combined-taxonomies-tag-cloud {
+				column-gap: var(--columnGap, 0.5em);
+				row-gap: var(--rowGap, 0.5em);
+			}
+		}
+		
+		
+		// both front and back from here on
+		.combined-taxonomies-tag-cloud {
+			
+			a:not([class^='iris-']) {
+				position: relative;
+				
+				margin: 0;
+				padding: var(--linkPaddingX, 0.5em) var(--linkPaddingX, 1em);
+				
+				word-wrap: break-word;
+				white-space: break-spaces;
+				overflow: hidden;
+				
+				border: var(--borderWidth, 0) var(--borderStyle, solid) var(--borderColor, transparent);
+				
+				background-color: var(--backColor1);
+				color: var(--textColor1);
+				
+				transition: color 0.3s, background-color 0.3s;
+
+				border-radius: var(--borderRadius, 0.1em);
+				font-size: var(--linkBaseSize, 1em);
+				
+				&.highlight, &:hover {
+					background-color: var(--backColor2);
+					color: var(--textColor2);
+					border-color: var(--borderColor, transparent);
+				}
+				
+				&:before {
+					position: absolute;
+					content: '';
+					border-radius: var(--borderRadius, 0.1em);
+					z-index: -1;
+					top: 0; bottom: 0; left: 0; right: 0;
+					transition: all 0.3s ease-out;
+				}
+				
+				
+				// NOTE: all fx_ adapted from https://ianlunn.github.io/Hover/ under the Open Source MIT License
+				//       any bugs introduced in the adaption are 99.99% likely to be mine :)
+				
+				
+				// 2d transforms -------------------------------------------------------------------------------------------------------
+				
+				&.fx_2d_grow {
+					&:hover {
+						transform: scale(1.1);
+					}
+				}
+				
+				&.fx_2d_shrink {
+					&:hover {
+						transform: scale(0.9);
+					}
+				}
+				
+				&.fx_2d_rotate {
+					&:hover {
+						transform: rotate(4deg);
+					}
+				}
+				
+				&.fx_2d_grow_rotate {
+					&:hover {
+						transform: scale(1.1) rotate(4deg);
+					}
+				}
+				
+				
+				
+				// backgrounds ---------------------------------------------------------------------------------------------------------
+				
+				&.fx_bg_sweep_up,
+				&.fx_bg_sweep_down,
+				&.fx_bg_sweep_left,
+				&.fx_bg_sweep_right {
+					transform: perspective(1px) translateZ(0);
+					
+					&:before {
+						background-color: var(--backColor2);
+						transform: scaleY(0);
+						transform-origin: 50% 100%;
+					}
+					
+					&.highlight, &:hover {
+						background-color: var(--backColor1);
+						color: var(--textColor2);
+						&:before {
+							transform: scaleY(1);
+						}
+					}
+				}
+				&.fx_bg_sweep_down:before {
+					transform-origin: 50% 0%;
+				}
+				
+				&.fx_bg_sweep_left,
+				&.fx_bg_sweep_right {
+					&:before {
+						transform-origin: 100% 50%;
+						transform: scaleX(0);
+					}
+					&.highlight, &:hover {
+						&:before {
+							transform: scaleX(1);
+						}
+					}
+				}
+				&.fx_bg_sweep_right:before {
+					transform-origin: 0% 50%;
+				}
+				
+				
+				&.fx_bg_radial_in,
+				&.fx_bg_radial_out {
+					transform: perspective(1px) translateZ(0);
+					
+					&:before {
+						background-color: var(--backColor2);
+						border-radius: 100%;
+						transform: scale(0);
+					}
+					&.highlight, &:hover {
+						&:before {
+							transform: scale(2);
+						}
+					}
+				}
+				
+				
+				&.fx_bg_radial_in {
+					background-color: var(--backColor2);
+					
+					&:before {
+						background-color: var(--backColor1);
+						transform: scale(2);
+					}
+					&.highlight, &:hover {
+						&:before {
+							transform: scale(0);
+						}
+					}
+				}
+				
+				
+				
+				// shadows and glows ---------------------------------------------------------------------------------------------------
+				
+				&.fx_sh_shadow {
+					&.highlight, &:hover {
+						box-shadow: 0 10px 10px -10px rgba(0, 0, 0, 0.5);
+					}
+				}
+				
+				&.fx_sh_glow {
+					&.highlight, &:hover {
+						box-shadow: 0 0 8px rgba(0, 0, 0, 0.6);
+					}
+				}
+				
+				&.fx_sh_box_inset {
+					&.highlight, &:hover {
+						box-shadow: inset 2px 2px 2px rgba(0, 0, 0, 0.6), 0 0 1px rgba(0, 0, 0, 0);
+					}
+				}
+				
+				&.fx_sh_box_outset {
+					&.highlight, &:hover {
+						box-shadow: 2px 2px 2px rgba(0, 0, 0, 0.6);
+					}
+				}
+				
+				
+				&.fx_sh_float_shadow {
+					&:after {
+						pointer-events: none;
+						position: absolute;
+						z-index: -1;
+						content: '';
+						top: 100%; left: 5%;
+						height: 10px; width: 90%;
+						opacity: 0;
+						background: radial-gradient(ellipse at center, rgba(0, 0, 0, 0.35) 0%, rgba(0, 0, 0, 0) 80%);
+					}
+
+					&.highlight, &:hover {
+						transform: translateY(-5px);
+						&:after {
+							opacity: 1;
+							transform: translateY(5px);
+						}
+					}
+				}
+				
+				
+			}
+			
+		}
+	}
+}
+
+
+
+
+/*
+ * 
+ * delete
+ * 
+ * 
+				
+				&.fx_invert {
+					&.highlight, &:hover {
+						background-color: var(--textColor1);
+						color: var(--backColor1);
+					}
+				}
+ * 
+				&.fx_line_up { // https://codepen.io/geoffgraham/pen/GXoOdK
+					background: linear-gradient(to bottom, var(--backColor2) 0%, var(--backColor2) 100%);
+					background-position: 0 100%;
+					background-repeat: repeat-x;
+					background-size: 1% 8%;
+					
+					&.highlight, &:hover {
+						background-size: 1% 100%;
+					}
+				}
+				&.fx_line_down {
+					background: linear-gradient(to bottom, var(--backColor2) 0%, var(--backColor2) 100%);
+					background-position: 0 0%;
+					background-repeat: repeat-x;
+					background-size: 1% 8%;
+					
+					&.highlight, &:hover {
+						background-size: 1% 100%;
+					}
+				}
+				
+				
+				
+				
+				
+				
+				
+				
+				
+				
+				
+				&.effect1:hover {
+					background-image: linear-gradient(to right, #ff8a00, #e52e71);
+					background-clip: border-box;
+					-webkit-background-clip: text;
+					-webkit-text-fill-color: transparent;
+					-webkit-box-decoration-break: clone;
+					box-decoration-break: clone;
+					text-shadow: none;
+				}
+				// NOTE: not suitable for small size text like tags...
+				&.effect3 { // https://codepen.io/geoffgraham/pen/gdPpyE
+					color: var(--backColor);
+					text-decoration: none;
+					&:hover {
+						color: transparent;
+						-webkit-text-stroke: 2px var(--backColor);
+					}
+				}
+				
+				
+
+@supports not(-webkit-text-stroke: 2px red) {
+	a.effect3 {
+		text-shadow:
+			3px 3px 0 var(--backColor),
+			-1px -1px 0 var(--backColor),
+			1px -1px 0 var(--backColor),
+			-1px 1px 0 var(--backColor),
+			1px 1px 0 var(--backColor);
+	}
+}
+
+
+*/

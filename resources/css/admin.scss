@@ -3,11 +3,19 @@ $colour-legend: #eaeaea;
 
 
 .combined-taxonomies-tag-cloud {
-	margin:0 -5px 1em;
+	margin: 0 -5px 1em;
+	flex-direction: column;
 	
 	fieldset {
-		margin:1em 0; padding:0.2em 0;
+		margin: 0 0 0.2em; padding: 0.2em 0;
 		background-color: $colour-fieldset;
+		
+		&:first-of-type {
+			margin-top: 1em;
+		}
+		&:last-of-type {
+			margin-bottom: 1em;
+		}
 		
 		legend {
 			background-color: $colour-legend;
@@ -78,7 +86,7 @@ $colour-legend: #eaeaea;
 				max-width: 50%;
 				box-sizing: border-box;
 			
-				& + * {
+				& + input, & + select, & + .half {
 					flex-basis: auto;
 					flex-grow: 1;
 					max-width: 50%;
@@ -137,7 +145,7 @@ $colour-legend: #eaeaea;
 			.font_units {
 				display: block;
 				text-align: right;
-				padding-left: 1em;
+				padding: 0 0.2em 0 1em;
 			}
 			
 			.wp-picker-container {
@@ -148,7 +156,6 @@ $colour-legend: #eaeaea;
 					width: 100%;
 				}
 				
-				
 				&.wp-picker-active {
 					display: contents;
 					.wp-color-result.button {
@@ -156,6 +163,9 @@ $colour-legend: #eaeaea;
 					}
 					.wp-picker-input-wrap {
 						margin: 0.8em auto 0.2em;
+						label {
+							max-width: unset;
+						}
 					}
 					.wp-picker-holder {
 						display: flex;
@@ -163,7 +173,6 @@ $colour-legend: #eaeaea;
 						width: 100%;
 					}
 				}
-				
 				
 				.wp-color-result-text {
 					padding: 0 1vw;
@@ -179,23 +188,21 @@ $colour-legend: #eaeaea;
 				cursor: pointer;
 			}
 			
-			&.color-demo {
+			&.tag-demo {
 				label.half {
 					flex-basis: 50%;
 				}
-				span {
+				a {
+					cursor: pointer;
+					text-align: center;
+					flex-basis: 20%;
+				}
+				.wcag {
 					display: block;
 					padding: 0.4em;
 					text-align: center;
-					
-					&.ratio {
-						flex-basis: 20%;
-					}
-					&.wcag {
-						flex-basis: 20%;
-						font-weight: bold;
-						
-					}
+					flex-basis: 20%;
+					font-weight: bold;
 				}
 			}
 		}
