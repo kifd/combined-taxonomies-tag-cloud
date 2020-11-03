@@ -97,9 +97,11 @@
 			background-color: var(--widgetBackgroundColor, transparent);
 			padding: var(--widgetPadding, 0);
 			border-radius: var(--widgetBorderRadius, 0);
+			font-size: var(--widgetFontSize, 1em);
 			
 			.widget-title {
 				color: var(--widgetTitleColor, #000000);
+				text-align: var(--titleAlignment, left);
 			}
 			
 			.combined-taxonomies-tag-cloud {
@@ -116,7 +118,7 @@
 				position: relative;
 				
 				margin: 0;
-				padding: var(--linkPaddingX, 0.5em) var(--linkPaddingX, 1em);
+				padding: var(--linkPaddingX, 0.5em) var(--linkPaddingY, 1em);
 				
 				word-wrap: break-word;
 				white-space: break-spaces;
@@ -147,6 +149,14 @@
 					transition: all 0.3s ease-out;
 				}
 				
+				&:after {
+					position: absolute;
+					content: '';
+					z-index: 0;
+					top: 0; bottom: 0; left: 0; right: 0;
+					transition: all 0.3s ease-out;
+				}
+				
 				
 				// NOTE: all fx_ adapted from https://ianlunn.github.io/Hover/ under the Open Source MIT License
 				//       any bugs introduced in the adaption are 99.99% likely to be mine :)
@@ -155,25 +165,25 @@
 				// 2d transforms -------------------------------------------------------------------------------------------------------
 				
 				&.fx_2d_grow {
-					&:hover {
+					&.highlight, &:hover {
 						transform: scale(1.1);
 					}
 				}
 				
 				&.fx_2d_shrink {
-					&:hover {
+					&.highlight, &:hover {
 						transform: scale(0.9);
 					}
 				}
 				
 				&.fx_2d_rotate {
-					&:hover {
+					&.highlight, &:hover {
 						transform: rotate(4deg);
 					}
 				}
 				
 				&.fx_2d_grow_rotate {
-					&:hover {
+					&.highlight, &:hover {
 						transform: scale(1.1) rotate(4deg);
 					}
 				}
@@ -260,50 +270,29 @@
 				
 				&.fx_sh_shadow {
 					&.highlight, &:hover {
-						box-shadow: 0 10px 10px -10px rgba(0, 0, 0, 0.5);
+						box-shadow: 0 10px 10px -10px var(--shadowColor, rgba(0,0,0, 0.5));
 					}
 				}
 				
 				&.fx_sh_glow {
 					&.highlight, &:hover {
-						box-shadow: 0 0 8px rgba(0, 0, 0, 0.6);
+						box-shadow: 0 0 8px var(--shadowColor, rgba(0,0,0, 0.5));
 					}
 				}
 				
 				&.fx_sh_box_inset {
 					&.highlight, &:hover {
-						box-shadow: inset 2px 2px 2px rgba(0, 0, 0, 0.6), 0 0 1px rgba(0, 0, 0, 0);
+						&:after {
+							box-shadow: inset 2px 2px 2px var(--shadowColor, rgba(0,0,0, 0.5)), 0 0 1px transparent;
+						}
 					}
 				}
 				
 				&.fx_sh_box_outset {
 					&.highlight, &:hover {
-						box-shadow: 2px 2px 2px rgba(0, 0, 0, 0.6);
+						box-shadow: 2px 2px 2px var(--shadowColor, rgba(0,0,0, 0.5));
 					}
 				}
-				
-				
-				&.fx_sh_float_shadow {
-					&:after {
-						pointer-events: none;
-						position: absolute;
-						z-index: -1;
-						content: '';
-						top: 100%; left: 5%;
-						height: 10px; width: 90%;
-						opacity: 0;
-						background: radial-gradient(ellipse at center, rgba(0, 0, 0, 0.35) 0%, rgba(0, 0, 0, 0) 80%);
-					}
-
-					&.highlight, &:hover {
-						transform: translateY(-5px);
-						&:after {
-							opacity: 1;
-							transform: translateY(5px);
-						}
-					}
-				}
-				
 				
 			}
 			

@@ -34,6 +34,11 @@ $config['choices'] = array(
 							'center'		=> __('Center', 'CombinedTaxonomiesTagCloud'),
 							'right'			=> __('Right', 'CombinedTaxonomiesTagCloud'),
 						),
+	'align_title'		=> array(
+							'left'			=> __('Left', 'CombinedTaxonomiesTagCloud'),
+							'center'		=> __('Center', 'CombinedTaxonomiesTagCloud'),
+							'right'			=> __('Right', 'CombinedTaxonomiesTagCloud'),
+						),
 	'align_v'			=> array(
 							'top'			=> __('Top', 'CombinedTaxonomiesTagCloud'),
 							'middle'		=> __('Center', 'CombinedTaxonomiesTagCloud'),
@@ -122,21 +127,23 @@ $config['choices'] = array(
 	'fx_shadows'		=> array(
 							'fx_sh_none' 			=> array(
 								'name'				=> __('None', 'CombinedTaxonomiesTagCloud'),
+								'hide-these'		=> array('tshadow'),
 							),
 							'fx_sh_shadow'			=> array(
 								'name'				=> __('Shadow', 'CombinedTaxonomiesTagCloud'),
+								'show-these'		=> array('tshadow'),
 							),
 							'fx_sh_box_inset'		=> array(
 								'name'				=> __('Box Shadow Inset', 'CombinedTaxonomiesTagCloud'),
+								'show-these'		=> array('tshadow'),
 							),
 							'fx_sh_box_outset'		=> array(
 								'name'				=> __('Box Shadow Outset', 'CombinedTaxonomiesTagCloud'),
+								'show-these'		=> array('tshadow'),
 							),
 							'fx_sh_glow'			=> array(
 								'name'				=> __('Shadow Glow', 'CombinedTaxonomiesTagCloud'),
-							),
-							'fx_sh_float_shadow'	=> array(
-								'name'				=> __('Float Shadow', 'CombinedTaxonomiesTagCloud'),
+								'show-these'		=> array('tshadow'),
 							),
 						),
 
@@ -195,12 +202,14 @@ sort($config['choices']['post_types']);
 
 $config['defaults'] = array(
 	'align_h'			=> 'left',
+	'align_title'		=> 'left',
 	'align_v'			=> 'bottom',
 	'border_radius'		=> 0.10,
 	'border_style'		=> '',
 	'border_width'		=> 0.00,
 	'column_gap'		=> 0.50,
 	'exclude'			=> array(0),
+	'font_base'			=> 1.00,
 	'font_family'		=> __('Leave Alone', 'CombinedTaxonomiesTagCloud'),
 	'font_unit'			=> 'em',
 	'fx_backgrounds'	=> 'fx_bg_none',
@@ -223,8 +232,11 @@ $config['defaults'] = array(
 	'tcolor1'			=> '#ffffff',
 	'tcolor2'			=> '#000000',
 	'tborder'			=> '#ffffff',
+	'tshadow'			=> '#00000099',
 	'text_case'			=> '',
 	'text_decoration'	=> 'under_hover',
 	'title' 			=> '',
-	'wbackground'		=> '#ffffff',
+	'wbackground'		=> '',
+	'wborder_radius'	=> 0.00,
+	'wpadding'			=> 0.00,
 );

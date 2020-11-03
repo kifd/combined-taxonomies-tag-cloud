@@ -1,0 +1,592 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: CombinedTaxonomiesTagCloud\n"
+"POT-Creation-Date: 2020-11-03 11:29+0000\n"
+"PO-Revision-Date: 2020-11-03 11:35+0000\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"Language: en_GB\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 2.3\n"
+"X-Poedit-Basepath: ..\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Poedit-SourceCharset: UTF-8\n"
+"X-Poedit-KeywordsList: __\n"
+"X-Poedit-SearchPath-0: combined-taxonomies-tag-cloud.php\n"
+"X-Poedit-SearchPath-1: config.php\n"
+"X-Poedit-SearchPath-2: cttc-widget.php\n"
+
+#: combined-taxonomies-tag-cloud.php:54
+#, php-format
+msgid "CTTC Error: \"%s\" was not recognized as a valid tag cloud ID"
+msgstr ""
+
+#: combined-taxonomies-tag-cloud.php:59
+#, php-format
+msgid "CTTC Error: \"%s\" was not recognized as a numeric tag cloud ID"
+msgstr ""
+
+#: combined-taxonomies-tag-cloud.php:63
+msgid "CTTC Error: You need to enter a tag cloud ID to show a tag cloud"
+msgstr ""
+
+#: config.php:33 config.php:38
+msgid "Left"
+msgstr ""
+
+#: config.php:34 config.php:39 config.php:44
+msgid "Center"
+msgstr ""
+
+#: config.php:35 config.php:40
+msgid "Right"
+msgstr ""
+
+#: config.php:43
+msgid "Top"
+msgstr ""
+
+#: config.php:45
+msgid "Bottom"
+msgstr ""
+
+#: config.php:49 config.php:88 config.php:129 config.php:152 config.php:171
+#: config.php:194
+msgid "None"
+msgstr ""
+
+#: config.php:53
+msgid "Solid"
+msgstr ""
+
+#: config.php:57
+msgid "Dots"
+msgstr ""
+
+#: config.php:61
+msgid "Dashes"
+msgstr ""
+
+#: config.php:65
+msgid "Double Lines"
+msgstr ""
+
+#: config.php:69
+msgid "Grooved"
+msgstr ""
+
+#: config.php:73
+msgid "Ridged"
+msgstr ""
+
+#: config.php:77
+msgid "Inset"
+msgstr ""
+
+#: config.php:81
+msgid "Outset"
+msgstr ""
+
+#: config.php:93
+msgid "Static"
+msgstr ""
+
+#: config.php:99
+msgid "Switch"
+msgstr ""
+
+#: config.php:103
+msgid "Sweep Up"
+msgstr ""
+
+#: config.php:107
+msgid "Sweep Down"
+msgstr ""
+
+#: config.php:111
+msgid "Sweep Left"
+msgstr ""
+
+#: config.php:115
+msgid "Sweep Right"
+msgstr ""
+
+#: config.php:119
+msgid "Radial In"
+msgstr ""
+
+#: config.php:123
+msgid "Radial Out"
+msgstr ""
+
+#: config.php:133
+msgid "Shadow"
+msgstr ""
+
+#: config.php:137
+msgid "Box Shadow Inset"
+msgstr ""
+
+#: config.php:141
+msgid "Box Shadow Outset"
+msgstr ""
+
+#: config.php:145
+msgid "Shadow Glow"
+msgstr ""
+
+#: config.php:155
+msgid "Grow"
+msgstr ""
+
+#: config.php:158
+msgid "Shrink"
+msgstr ""
+
+#: config.php:161
+msgid "Rotate"
+msgstr ""
+
+#: config.php:164
+msgid "Grow &amp; Rotate"
+msgstr ""
+
+#: config.php:168 config.php:182 config.php:188 config.php:193 config.php:213
+#: cttc-widget.php:253
+msgid "Leave Alone"
+msgstr ""
+
+#: config.php:172
+msgid "On Single Pages"
+msgstr ""
+
+#: config.php:175
+msgid "Alphabetically"
+msgstr ""
+
+#: config.php:176
+msgid "By Count"
+msgstr ""
+
+#: config.php:177
+msgid "Randomly"
+msgstr ""
+
+#: config.php:183
+msgid "Remove"
+msgstr ""
+
+#: config.php:184
+msgid "Link to Entry"
+msgstr ""
+
+#: config.php:189
+msgid "lowercase"
+msgstr ""
+
+#: config.php:190
+msgid "UPPERCASE"
+msgstr ""
+
+#: config.php:195
+msgid "Always Underline"
+msgstr ""
+
+#: config.php:196
+msgid "Underline on Hover"
+msgstr ""
+
+#: config.php:197
+msgid "Box Shadow on Hover"
+msgstr ""
+
+#: cttc-widget.php:9
+msgid "Combined Tag Cloud"
+msgstr ""
+
+#: cttc-widget.php:10
+msgid "More adaptable version of the basic WP tag cloud widget."
+msgstr ""
+
+#: cttc-widget.php:86
+msgid ""
+"CTTC: You need to pick some post types and taxonomies to go in this widget."
+msgstr ""
+
+#: cttc-widget.php:467
+msgid "Types &amp; Taxonomies"
+msgstr ""
+
+#: cttc-widget.php:469
+msgid "Count only tags belonging to these types of post"
+msgstr ""
+
+#: cttc-widget.php:471
+msgid "Include These Post Types"
+msgstr ""
+
+#: cttc-widget.php:475
+msgid "Count only tags belonging to these types of taxonomy"
+msgstr ""
+
+#: cttc-widget.php:477
+msgid "Include These Taxonomies"
+msgstr ""
+
+#: cttc-widget.php:481
+msgid ""
+"Ignore these tags - though if posts have non-excluded tags as well, they "
+"will still get included"
+msgstr ""
+
+#: cttc-widget.php:483
+msgid "Exclude These Tags"
+msgstr ""
+
+#: cttc-widget.php:489
+msgid "Text"
+msgstr ""
+
+#: cttc-widget.php:492
+msgid ""
+"Choose a font stack - if in doubt, leave it for your theme or font plugin to "
+"handle"
+msgstr ""
+
+#: cttc-widget.php:494
+msgid "Font Stack"
+msgstr ""
+
+#: cttc-widget.php:499
+msgid ""
+"These are the units used within the widget - best to follow what the rest of "
+"your theme is using"
+msgstr ""
+
+#: cttc-widget.php:501
+msgid "Font Units"
+msgstr ""
+
+#: cttc-widget.php:506
+msgid ""
+"Changing this will affect the relative sizing of all the other widget text"
+msgstr ""
+
+#: cttc-widget.php:508
+msgid "Base Font Size"
+msgstr ""
+
+#: cttc-widget.php:515
+msgid "Show the count of the number of posts that have that term"
+msgstr ""
+
+#: cttc-widget.php:517
+msgid "Show Count in Tags"
+msgstr ""
+
+#: cttc-widget.php:523
+msgid ""
+"You can change the case of all the tags if you wish to make them consistent"
+msgstr ""
+
+#: cttc-widget.php:525
+msgid "Text Case"
+msgstr ""
+
+#: cttc-widget.php:529
+msgid "Change how the tag text uses the CSS text decoration property"
+msgstr ""
+
+#: cttc-widget.php:531
+msgid "Text Decoration"
+msgstr ""
+
+#: cttc-widget.php:536
+msgid "Make the size of the tag bigger if more posts have it"
+msgstr ""
+
+#: cttc-widget.php:538
+msgid "Scale Font"
+msgstr ""
+
+#: cttc-widget.php:545
+msgid "Even a tag with only one post will not be smaller than this"
+msgstr ""
+
+#: cttc-widget.php:547
+msgid "Smallest Size"
+msgstr ""
+
+#: cttc-widget.php:553
+msgid "Even a tag with a million posts will not be larger than this"
+msgstr ""
+
+#: cttc-widget.php:555
+msgid "Largest Size"
+msgstr ""
+
+#: cttc-widget.php:563
+msgid "Widget Appearance"
+msgstr ""
+
+#: cttc-widget.php:565
+msgid "Add a title to the tag cloud"
+msgstr ""
+
+#: cttc-widget.php:567
+msgid "Title"
+msgstr ""
+
+#: cttc-widget.php:573
+msgid "How to align the title horizontally within the widget"
+msgstr ""
+
+#: cttc-widget.php:575
+msgid "Title Alignment"
+msgstr ""
+
+#: cttc-widget.php:580
+msgid "How much spacing is between each tag in the widget"
+msgstr ""
+
+#: cttc-widget.php:582
+msgid "Column Gap"
+msgstr ""
+
+#: cttc-widget.php:588
+msgid "How much spacing is between each row of tags in the widget"
+msgstr ""
+
+#: cttc-widget.php:590
+msgid "Row Gap"
+msgstr ""
+
+#: cttc-widget.php:597
+msgid "How to align the tags horizontally within the widget"
+msgstr ""
+
+#: cttc-widget.php:599
+msgid "Horizontal Alignment"
+msgstr ""
+
+#: cttc-widget.php:603
+msgid "How to align the tags vertically within each line of the cloud"
+msgstr ""
+
+#: cttc-widget.php:605
+msgid "Vertical Alignment"
+msgstr ""
+
+#: cttc-widget.php:610
+msgid "Set the background color of the whole widget"
+msgstr ""
+
+#: cttc-widget.php:612
+msgid "Widget Background"
+msgstr ""
+
+#: cttc-widget.php:619
+msgid ""
+"Make the corners of the widget round - only useful if you have a background "
+"color!"
+msgstr ""
+
+#: cttc-widget.php:621 cttc-widget.php:670
+msgid "Rounded Corners"
+msgstr ""
+
+#: cttc-widget.php:627
+msgid "Add padding to the whole widget"
+msgstr ""
+
+#: cttc-widget.php:629
+msgid "Padding"
+msgstr ""
+
+#: cttc-widget.php:639
+msgid "Tag Borders"
+msgstr ""
+
+#: cttc-widget.php:642
+msgid "Alter the appearance of the border of a tag"
+msgstr ""
+
+#: cttc-widget.php:644
+msgid "Border Style"
+msgstr ""
+
+#: cttc-widget.php:649
+msgid "Choose the border color of a tag"
+msgstr ""
+
+#: cttc-widget.php:651
+msgid "Color"
+msgstr "Colour"
+
+#: cttc-widget.php:659
+msgid "How big is the border of a tag"
+msgstr ""
+
+#: cttc-widget.php:661
+msgid "Size"
+msgstr ""
+
+#: cttc-widget.php:668
+msgid "Make the corners of the tag round"
+msgstr ""
+
+#: cttc-widget.php:678
+msgid "Tag Effects"
+msgstr ""
+
+#: cttc-widget.php:681
+msgid "What background effect to apply to these tags"
+msgstr ""
+
+#: cttc-widget.php:683
+msgid "Background FX"
+msgstr ""
+
+#: cttc-widget.php:688
+msgid "Choose the first color this effect uses"
+msgstr "Choose the first colour this effect uses"
+
+#: cttc-widget.php:690
+msgid "Color 1"
+msgstr "Colour 1"
+
+#: cttc-widget.php:697
+msgid "Choose the second color this effect uses"
+msgstr "Choose the second colour this effect uses"
+
+#: cttc-widget.php:699
+msgid "Color 2"
+msgstr "Colour 2"
+
+#: cttc-widget.php:707
+msgid "What shadow effect to apply to these tags"
+msgstr ""
+
+#: cttc-widget.php:709
+msgid "Shadow FX"
+msgstr ""
+
+#: cttc-widget.php:714
+msgid "Choose the shadow color this effect uses"
+msgstr "Choose the shadow colour this effect uses"
+
+#: cttc-widget.php:716
+msgid "Shadow Color"
+msgstr "Shadow Colour"
+
+#: cttc-widget.php:724
+msgid "What 2D transition effect will apply to these tags"
+msgstr ""
+
+#: cttc-widget.php:726
+msgid "2D FX"
+msgstr ""
+
+#: cttc-widget.php:732
+msgid "See what the tags will look like"
+msgstr ""
+
+#: cttc-widget.php:733
+msgid "Demo"
+msgstr ""
+
+#: cttc-widget.php:735
+msgid "Tag Text"
+msgstr ""
+
+#: cttc-widget.php:736
+msgid "Does this color combination meet WCAG guidelines for contrast?"
+msgstr "Does this colour combination meet WCAG guidelines for contrast?"
+
+#: cttc-widget.php:744
+msgid "Widget Behavior"
+msgstr ""
+
+#: cttc-widget.php:746
+msgid "How the tag cloud will be ordered"
+msgstr ""
+
+#: cttc-widget.php:748
+msgid "Order Tags By"
+msgstr ""
+
+#: cttc-widget.php:752
+msgid "Choose to reverse whatever order you just picked"
+msgstr ""
+
+#: cttc-widget.php:754
+msgid "Reverse Order"
+msgstr ""
+
+#: cttc-widget.php:760
+msgid "The maximum number of tags that will be shown in this particular widget"
+msgstr ""
+
+#: cttc-widget.php:762
+msgid "Maximum Shown"
+msgstr ""
+
+#: cttc-widget.php:768
+msgid ""
+"Automatically add the highlight style to matching tags in the cloud when ..."
+msgstr ""
+
+#: cttc-widget.php:770
+msgid "Auto Highlight"
+msgstr ""
+
+#: cttc-widget.php:774
+msgid "What to do with tags that only have one post associated with them"
+msgstr ""
+
+#: cttc-widget.php:776
+msgid "Single Entry Tags"
+msgstr ""
+
+#: cttc-widget.php:780
+msgid "Add the rel=&quot;nofollow&quot; attribute to each of the tags"
+msgstr ""
+
+#: cttc-widget.php:782
+msgid "Make Links No-Follow"
+msgstr ""
+
+#: cttc-widget.php:788
+msgid "You can cache the generated tag cloud to save working it out every time"
+msgstr ""
+
+#: cttc-widget.php:790
+msgid "Save Cloud For (Hours)"
+msgstr ""
+
+#: cttc-widget.php:797
+msgid "Shortcode"
+msgstr ""
+
+#: cttc-widget.php:799
+msgid "You can use this shortcode to display the widget on its own"
+msgstr ""
+
+#: cttc-widget.php:801
+msgid "Save the widget to make the shortcode"
+msgstr ""
+
+#: cttc-widget.php:804
+msgid "Copy and paste this"
+msgstr ""
+
+#: cttc-widget.php:918 cttc-widget.php:919 cttc-widget.php:960
+#: cttc-widget.php:961
+msgid "n/a"
+msgstr ""
+
+#: cttc-widget.php:937 cttc-widget.php:981
+msgid "Fail"
+msgstr ""

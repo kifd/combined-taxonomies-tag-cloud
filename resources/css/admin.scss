@@ -10,6 +10,8 @@ $colour-legend: #eaeaea;
 		margin: 0 0 0.2em; padding: 0.2em 0;
 		background-color: $colour-fieldset;
 		
+		display: flex; flex-direction: column; width: 100%; flex-basis: 100%;
+		
 		&:first-of-type {
 			margin-top: 1em;
 		}
@@ -49,6 +51,7 @@ $colour-legend: #eaeaea;
 				display: block;
 				margin: 0 -0.4em; padding: 0 0.4em;
 				background-color: $colour-fieldset;
+				width: 100%;
 			}
 			
 			&.closed + div {
@@ -145,7 +148,7 @@ $colour-legend: #eaeaea;
 			.font_units {
 				display: block;
 				text-align: right;
-				padding: 0 0.2em 0 1em;
+				padding: 0 0.4em 0 0.8em;
 			}
 			
 			.wp-picker-container {

@@ -135,17 +135,19 @@ Note all screenshots are for versions older than 0.22 at the mo...
 
 == To-Do List ==
 
-* To Add: auto highlight matching tags on archive pages
-* To Add: choice of highlight effects / better control over :hover - ie. font size change, border width
+* Check: transient saved re single page cloud highlighting
+* merge rest of tag borders into effects
+* js cleanup, esp re css vars
+* demo to include border radius & font
+* widget vertical alignment to follow per line?
 
+* To Add: auto highlight matching tags on archive pages
+* To Add: 	? only show tags for terms used in the category being viewed
+* To Add: more effects
 * To Add: different way relative sizes are calculated - ie. log
-* To Add: smarter colours, so to avoid transparent text etc - maybe auto?
 * To Add: temporarily save widget fieldset open/close states while editing
 * To Add: colors per term - use termmeta?
 * To Add: setting to toggle white-space wrap
-* To Add: ? only show tags for terms used in the category being viewed
-* To Add: demo of rollover effect next to the dropdown
-
 
 * New Screenshots...
 

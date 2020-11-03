@@ -7,7 +7,8 @@
 		$('.color-picker').not('[id*="__i__"]').wpColorPicker({
 			defaultColor: $(this).attr('data-default-color'),
 			change: function(e, ui) {
-				$(e.target).val(ui.color.to_s('rgba'));
+				$(e.target).val(ui.color.to_s('rgba')); // NOTE: not toString anymore; uses the -alpha picker's method
+				
 				// WP doesn't let you save the widget if all you did was use its own color-picker widget
 				$(e.target).trigger('change'); // so trigger manually to enable the save button
 			},
@@ -30,13 +31,20 @@
 		$('.combined-taxonomies-tag-cloud select.font_unit', widget).each(function() {
 			updateFontUnits($(this));
 		});
-		$('.combined-taxonomies-tag-cloud .color-picker[id$="tcolor1"]', widget).each(function() { 
-			updateColors('#' + $(this).attr('id'));
+		
+		$('*[data-css-var]', widget).each(function() {
+			updateCssVars($(this));
 		});
+		
+		/*$('.combined-taxonomies-tag-cloud .color-picker[id$="tcolor1"]', widget).each(function() { 
+		//	updateColors('#' + $(this).attr('id'));
+		});*/
+		
 		// hide form elements depending on what has been selected
 		$('*[data-controls-others=true]', widget).each(function(idx, dom) {
 			toggleManyFields(dom);
 		});
+		
 		
 	});
 	
@@ -52,6 +60,10 @@
 		updateFontUnits($(this));
 	});
 	
+	
+	$(document).on('change', '*[data-css-var]', function() {
+		updateCssVars($(this));
+	});
 	
 	
 	// change the tag demo when updated
@@ -123,10 +135,10 @@
 									
 									if (response.ok == true) {
 									
-										demo.css('--backColor1', $(_color_1).val());
-										demo.css('--textColor1', response.text1);
-										demo.css('--backColor2', $(_color_2).val());
-										demo.css('--textColor2', response.text2);
+										//demo.css('--backColor1', $(_color_1).val());
+										//demo.css('--textColor1', response.text1);
+										//demo.css('--backColor2', $(_color_2).val());
+										//demo.css('--textColor2', response.text2);
 										
 										wcag.html(response.wcag);
 										
@@ -207,13 +219,59 @@
 	
 	
 	// NOTE: units are hard copied from the definition in the .php file
-	var font_units = ['rem', 'em', 'pt', 'px', 'vw'];
+	const font_units = ['rem', 'em', 'pt', 'px', 'vw'];
 	function updateFontUnits(dom) {
-		var _unit = (font_units.indexOf(dom.get(0).value) >= 0) ? dom.get(0).value : '';
-		var _widget = dom.parents().eq(4);
+		const _unit = (font_units.indexOf(dom.get(0).value) >= 0) ? dom.get(0).value : '';
+		const _widget = dom.parents().eq(4);
 		$('.font_units', _widget).text(_unit);
 	}
 	
+	
+	function updateCssVars(dom) {
+		const widget = dom.parents('form:first');
+		const cssvar = dom.data('css-var');
+		$(widget).css('--'+cssvar, dom.val());
+		
+		if (cssvar == 'backColor1') {
+			getContrast({
+				'against': dom.val(),
+				'widget': $(widget),
+				'set_var': 'textColor1',
+			});
+			
+		} else if (cssvar == 'backColor2') {
+			getContrast({
+				'against': dom.val(),
+				'widget': $(widget),
+				'set_var': 'textColor2',
+			});
+		}
+	}
+
+	function getContrast(color) {
+		$.ajax({
+			type:			'POST',
+			url:			cttc_ajax.url,
+			data:			{
+								'action': 'get_contrast',
+								'_ajax_nonce': cttc_ajax.nonce,
+								'color': color.against,
+							},
+			success:		function(response) {
+								if (response.ok == true) {
+									$(color.widget).css('--'+color.set_var, response.contrast);
+									//wcag.html(response.wcag);
+									
+								} else {
+									console.log('error', response);
+									//wcag.html('Error');
+								}
+							},
+			dataType:		'json',
+		});
+	}
+
+
 	
 })(jQuery);
 
