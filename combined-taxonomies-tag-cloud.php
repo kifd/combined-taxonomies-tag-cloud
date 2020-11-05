@@ -1,10 +1,13 @@
 <?php
 /*
-Plugin Name: Combined Taxonomies Tag Cloud
-Version: 0.32
-Description: Makes a tag cloud widget out of multiple taxonomies across multiple post types.
-Author: Keith Drakard
-Author URI: https://drakard.com/
+Plugin Name:  Combined Taxonomies Tag Cloud
+Version:      0.32
+Description:  Makes a tag cloud widget out of multiple taxonomies across multiple post types.
+Author:       Keith Drakard
+Author URI:   https://drakard.com/
+Requires PHP: 7.0
+Text Domain:  CombinedTaxonomiesTagCloud
+Domain Path:  /languages
 */
 
 

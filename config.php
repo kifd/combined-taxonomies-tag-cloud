@@ -20,10 +20,26 @@ $config['fonts'] = array(
 		'"Segoe UI", Candara, "Bitstream Vera Sans", "DejaVu Sans", "Bitstream Vera Sans", "Trebuchet MS", Verdana, "Verdana Ref", sans-serif',
 	'Impact' =>
 		'Impact, Haettenschweiler, "Franklin Gothic Bold", Charcoal, "Helvetica Inserat", "Bitstream Vera Sans Bold", "Arial Black", sans-serif',
-	'Monospace' =>
+	'Monospace 1' =>
 		'Consolas, "Andale Mono WT", "Andale Mono", "Lucida Console", "Lucida Sans Typewriter", "DejaVu Sans Mono", "Bitstream Vera Sans Mono", "Liberation Mono", "Nimbus Mono L", Monaco, "Courier New", Courier, monospace',
+		
+	// https://www.webfx.com/blog/web-design/a-web-designers-guide-to-linux-fonts/
+	'Narrow Sans-Serif' =>
+		'"Liberation Sans", "Nimbus Sans L", "FreeSans", "Helvetica Neue", Helvetica, Arial, sans-serif',
+	'Wide Sans-Serif' =>
+		'"DejaVu Sans", "Bitstream Vera Sans", Geneva, Verdana, sans-serif',
+	'Narrow Serif' =>
+		'"Liberation Serif", "Nimbus Roman No 9 L",  "FreeSerif", "Hoefler Text", Times, "Times New Roman", serif',
+	'Antique Serif' =>
+		'"Bitstream Charter", "URW Palladio L", Palatino, "Palatino Linotype", "Book Antiqua", serif',
+	'Wide Serif' =>
+		'"DejaVu Serif", "Bitstream Vera Serif", "Century Schoolbook L", "Lucida Bright", Georgia, serif',
+	'Monospace 2' =>
+		'"Liberation Mono", "Nimbus Mono L", "FreeMono", "DejaVu Mono", "Bitstream Vera Mono", "Lucida Console", "Andale Mono", "Courier New", monospace',
+	
+	
 );
-asort($config['fonts']);
+ksort($config['fonts']);
 
 
 // NOTE: $fields var in form() function must have matching keys
@@ -146,7 +162,6 @@ $config['choices'] = array(
 								'show-these'		=> array('tshadow'),
 							),
 						),
-
 	'fx_two_dee'		=> array(
 							'fx_2d_none' 		=> array(
 								'name'				=> __('None', 'CombinedTaxonomiesTagCloud'),
@@ -162,6 +177,9 @@ $config['choices'] = array(
 							),
 							'fx_2d_grow_rotate'		=> array(
 								'name'				=> __('Grow &amp; Rotate', 'CombinedTaxonomiesTagCloud'),
+							),
+							'fx_2d_skew'		=> array(
+								'name'				=> __('Skew', 'CombinedTaxonomiesTagCloud'),
 							),
 						),
 	
