@@ -278,7 +278,8 @@ class CombinedTaxonomiesTagCloudWidget extends WP_Widget {
 			sprintf('--borderRadius:%.2f%s;', $args['border_radius'], $args['font_unit']),
 			
 			($args['border_style'] != '') ? sprintf('--borderStyle:%s;', $args['border_style']) : '',
-			($args['border_style'] != '') ? sprintf('--borderColor:%s;', $args['tborder']) : '',
+			($args['border_style'] != '') ? sprintf('--borderColor1:%s;', $args['tborder1']) : '',
+			($args['border_style'] != '') ? sprintf('--borderColor2:%s;', $args['tborder2']) : '',
 			($args['border_style'] != '') ? sprintf('--borderWidth:%.2f%s;', $args['border_width'], $args['font_unit']) : '',
 		);
 		
@@ -293,8 +294,9 @@ class CombinedTaxonomiesTagCloudWidget extends WP_Widget {
 	
 
 	// update the widget ------------------------------------
-	public function update($new, $old) {
-		$instance = $old;
+	public function update($new, $instance) {
+		
+		$new = wp_parse_args($new, $this->defaults);
 		
 		// TODO: check post types and taxs in allowed array
 		$instance['exclude'] = array(0);   foreach ($new['exclude'] as $term_id) $instance['exclude'][] = absint($term_id);
@@ -339,7 +341,8 @@ class CombinedTaxonomiesTagCloudWidget extends WP_Widget {
 		// and colors now need to always be defined (hard to work out contrasting colours if you don't know what to contrast)
 		$instance['wbackground'] = ($this->is_valid_color($new['wbackground']) OR $new['wbackground'] == '')
 			? $new['wbackground'] : $this->defaults['wbackground'];
-		$instance['tborder'] = ($this->is_valid_color($new['tborder'])) ? $new['tborder'] : $this->defaults['tborder'];
+		$instance['tborder1'] = ($this->is_valid_color($new['tborder1'])) ? $new['tborder1'] : $this->defaults['tborder1'];
+		$instance['tborder2'] = ($this->is_valid_color($new['tborder2'])) ? $new['tborder2'] : $this->defaults['tborder2'];
 		$instance['tcolor1'] = ($this->is_valid_color($new['tcolor1'])) ? $new['tcolor1'] : $this->defaults['tcolor1'];
 		$instance['tcolor2'] = ($this->is_valid_color($new['tcolor2'])) ? $new['tcolor2'] : $this->defaults['tcolor2'];
 		$instance['tshadow'] = ($this->is_valid_color($new['tshadow'])) ? $new['tshadow'] : $this->defaults['tshadow'];
@@ -463,7 +466,8 @@ class CombinedTaxonomiesTagCloudWidget extends WP_Widget {
 		
 		$output = '<div class="combined-taxonomies-tag-cloud">'
 				
-				// POST TYPES and TAXONOMIES in use
+				# POST TYPES and TAXONOMIES to use #############################################################################
+				
 				. sprintf('<fieldset><legend>%s</legend><div>', __('Types &amp; Taxonomies', 'CombinedTaxonomiesTagCloud'))
 				. sprintf('<p title="%s" class="full"><label for="%s">%s:</label>%s</p>',
 						__('Count only tags belonging to these types of post', 'CombinedTaxonomiesTagCloud'),
@@ -486,8 +490,9 @@ class CombinedTaxonomiesTagCloudWidget extends WP_Widget {
 				. '</div></fieldset>'
 				
 				
-				. sprintf('<fieldset><legend>%s</legend><div>', __('Text', 'CombinedTaxonomiesTagCloud'))
-
+				# FONT SETUP ######################################################################################################
+				
+				. sprintf('<fieldset><legend>%s</legend><div>', __('Fonts', 'CombinedTaxonomiesTagCloud'))
 				. sprintf('<p title="%s"><label for="%s">%s:</label>%s<br><span class="font_list">%s</span></p>',
 						__('Choose a font stack - if in doubt, leave it for your theme or font plugin to handle', 'CombinedTaxonomiesTagCloud'),
 						esc_attr($this->get_field_id('font_family')),
@@ -501,7 +506,6 @@ class CombinedTaxonomiesTagCloudWidget extends WP_Widget {
 						__('Font Units', 'CombinedTaxonomiesTagCloud'),
 						$select['font_unit']
 					)
-					
 				. sprintf('<p title="%s"><label for="%s">%s:</label><input type="number" min="0.01" step="0.01" size="3" id="%s" name="%s" value="%s"><span class="font_units"></span></p>',
 						__('Changing this will affect the relative sizing of all the other widget text', 'CombinedTaxonomiesTagCloud'),
 						esc_attr($this->get_field_id('font_base')),
@@ -510,28 +514,6 @@ class CombinedTaxonomiesTagCloudWidget extends WP_Widget {
 						esc_attr($this->get_field_name('font_base')),
 						(float) $instance['font_base']
 					)
-					
-				. sprintf('<p title="%s"><label for="%s">%s:</label><input type="checkbox" id="%s" name="%s" value="1"%s></p>',
-						__('Show the count of the number of posts that have that term', 'CombinedTaxonomiesTagCloud'),
-						esc_attr($this->get_field_id('show_count')),
-						__('Show Count in Tags', 'CombinedTaxonomiesTagCloud'),
-						esc_attr($this->get_field_id('show_count')),
-						esc_attr($this->get_field_name('show_count')),
-						$checked['show_count']
-					)
-				. sprintf('<p title="%s"><label for="%s">%s:</label>%s</p>',
-						__('You can change the case of all the tags if you wish to make them consistent', 'CombinedTaxonomiesTagCloud'),
-						esc_attr($this->get_field_id('text_case')),
-						__('Text Case', 'CombinedTaxonomiesTagCloud'),
-						$select['text_case']
-					)
-				. sprintf('<p title="%s"><label for="%s">%s:</label>%s</p>',
-						__('Change how the tag text uses the CSS text decoration property', 'CombinedTaxonomiesTagCloud'),
-						esc_attr($this->get_field_id('text_decoration')),
-						__('Text Decoration', 'CombinedTaxonomiesTagCloud'),
-						$select['text_decoration']
-					)
-					
 				. sprintf('<p title="%s"><label for="%s">%s:</label><input type="checkbox" id="%s" class="%s" name="%s" data-controls-others="true" data-show-these="smallest,largest" value="1"%s></p>',
 						__('Make the size of the tag bigger if more posts have it', 'CombinedTaxonomiesTagCloud'),
 						esc_attr($this->get_field_id('scale_tag')),
@@ -559,7 +541,9 @@ class CombinedTaxonomiesTagCloudWidget extends WP_Widget {
 					)
 				. '</div></fieldset>'
 				
-				// WIDGET APPEARANCE
+				
+				# WIDGET APPEARANCE ############################################################################################
+				
 				. sprintf('<fieldset><legend>%s</legend><div>', __('Widget Appearance', 'CombinedTaxonomiesTagCloud'))
 				. sprintf('<p title="%s"><label for="%s">%s:</label><input type="text" id="%s" name="%s" value="%s"></p>',
 						__('Add a title to the tag cloud', 'CombinedTaxonomiesTagCloud'),
@@ -635,112 +619,8 @@ class CombinedTaxonomiesTagCloudWidget extends WP_Widget {
 				. '</div></fieldset>'
 				
 				
-				// TAG attributes
-				. sprintf('<fieldset><legend>%s</legend><div>', __('Tag Borders', 'CombinedTaxonomiesTagCloud'))
+				# WIDGET BEHAVIOUR #############################################################################################
 				
-				. sprintf('<p title="%s"><label for="%s">%s:</label>%s</p>',
-						__('Alter the appearance of the border of a tag', 'CombinedTaxonomiesTagCloud'),
-						esc_attr($this->get_field_id('border_style')),
-						__('Border Style', 'CombinedTaxonomiesTagCloud'),
-						$select['border_style']
-					)
-					
-				. sprintf('<p title="%s"><label for="%s">%s:</label><input class="color-picker" type="text" size="5" id="%s" name="%s" value="%s" data-default-color="%s" data-alpha-enabled="true" data-css-var="borderColor"></p>',
-						__('Choose the border color of a tag', 'CombinedTaxonomiesTagCloud'),
-						esc_attr($this->get_field_id('tborder')),
-						__('Color', 'CombinedTaxonomiesTagCloud'),
-						esc_attr($this->get_field_id('tborder')),
-						esc_attr($this->get_field_name('tborder')),
-						$instance['tborder'],
-						$this->defaults['tborder']
-					)
-					
-				. sprintf('<p title="%s"><label for="%s">%s:</label><input type="number" min="0.01" step="0.01" size="3" id="%s" name="%s" value="%s"><span class="font_units"></span></p>',
-						__('How big is the border of a tag', 'CombinedTaxonomiesTagCloud'),
-						esc_attr($this->get_field_id('border_width')),
-						__('Size', 'CombinedTaxonomiesTagCloud'),
-						esc_attr($this->get_field_id('border_width')),
-						esc_attr($this->get_field_name('border_width')),
-						(float) $instance['border_width']
-					)
-					
-				. sprintf('<p title="%s"><label for="%s">%s:</label><input type="number" min="0" step="0.01" size="3" id="%s" name="%s" value="%s"><span class="font_units"></span></p>',
-						__('Make the corners of the tag round', 'CombinedTaxonomiesTagCloud'),
-						esc_attr($this->get_field_id('border_radius')),
-						__('Rounded Corners', 'CombinedTaxonomiesTagCloud'),
-						esc_attr($this->get_field_id('border_radius')),
-						esc_attr($this->get_field_name('border_radius')),
-						(float) $instance['border_radius']
-					)
-				. '</div></fieldset>'
-				
-				
-				. sprintf('<fieldset><legend>%s</legend><div>', __('Tag Effects', 'CombinedTaxonomiesTagCloud'))
-				
-				. sprintf('<p title="%s"><label for="%s">%s:</label>%s</p>',
-						__('What background effect to apply to these tags', 'CombinedTaxonomiesTagCloud'),
-						esc_attr($this->get_field_id('fx_backgrounds')),
-						__('Background FX', 'CombinedTaxonomiesTagCloud'),
-						$select['fx_backgrounds']
-					)
-				
-				. sprintf('<p title="%s"><label for="%s">%s:</label><input class="color-picker" type="text" size="5" id="%s" name="%s" value="%s" data-default-color="%s" data-alpha-enabled="true" data-css-var="backColor1"></p>',
-						__('Choose the first color this effect uses', 'CombinedTaxonomiesTagCloud'),
-						esc_attr($this->get_field_id('tcolor1')),
-						__('Color 1', 'CombinedTaxonomiesTagCloud'),
-						esc_attr($this->get_field_id('tcolor1')),
-						esc_attr($this->get_field_name('tcolor1')),
-						$instance['tcolor1'],
-						$this->defaults['tcolor1']
-					)
-				. sprintf('<p title="%s"><label for="%s">%s:</label><input class="color-picker" type="text" size="5" id="%s" name="%s" value="%s" data-default-color="%s" data-alpha-enabled="true" data-css-var="backColor2"></p>',
-						__('Choose the second color this effect uses', 'CombinedTaxonomiesTagCloud'),
-						esc_attr($this->get_field_id('tcolor2')),
-						__('Color 2', 'CombinedTaxonomiesTagCloud'),
-						esc_attr($this->get_field_id('tcolor2')),
-						esc_attr($this->get_field_name('tcolor2')),
-						$instance['tcolor2'],
-						$this->defaults['tcolor2']
-					)
-					
-				. sprintf('<p title="%s"><label for="%s">%s:</label>%s</p>',
-						__('What shadow effect to apply to these tags', 'CombinedTaxonomiesTagCloud'),
-						esc_attr($this->get_field_id('fx_shadows')),
-						__('Shadow FX', 'CombinedTaxonomiesTagCloud'),
-						$select['fx_shadows']
-					)
-					
-				. sprintf('<p title="%s"><label for="%s">%s:</label><input class="color-picker" type="text" size="5" id="%s" name="%s" value="%s" data-default-color="%s" data-alpha-enabled="true" data-css-var="shadowColor"></p>',
-						__('Choose the shadow color this effect uses', 'CombinedTaxonomiesTagCloud'),
-						esc_attr($this->get_field_id('tshadow')),
-						__('Shadow Color', 'CombinedTaxonomiesTagCloud'),
-						esc_attr($this->get_field_id('tshadow')),
-						esc_attr($this->get_field_name('tshadow')),
-						$instance['tshadow'],
-						$this->defaults['tshadow']
-					)
-				
-				. sprintf('<p title="%s"><label for="%s">%s:</label>%s</p>',
-						__('What 2D transition effect will apply to these tags', 'CombinedTaxonomiesTagCloud'),
-						esc_attr($this->get_field_id('fx_two_dee')),
-						__('2D FX', 'CombinedTaxonomiesTagCloud'),
-						$select['fx_two_dee']
-					)
-				
-					
-				. sprintf('<p title="%s" class="tag-demo"><label>%s</label><span class="half"><a class="%s">%s</a><span class="wcag" title="%s">%s</span></span></p>',
-						__('See what the tags will look like', 'CombinedTaxonomiesTagCloud'),
-						__('Demo', 'CombinedTaxonomiesTagCloud'),
-						$instance['fx_two_dee'].' '.$instance['fx_backgrounds'].' '.$instance['fx_shadows'],
-						__('Tag Text', 'CombinedTaxonomiesTagCloud'),
-						__('Does this color combination meet WCAG guidelines for contrast?', 'CombinedTaxonomiesTagCloud'),
-						$this->get_contrast_ratio(array($instance['tcolor1'], $instance['tcolor2']))
-					)
-					
-				. '</div></fieldset>'
-				
-				
-				// WIDGET BEHAVIOUR
 				. sprintf('<fieldset><legend>%s</legend><div>', __('Widget Behavior', 'CombinedTaxonomiesTagCloud'))
 				. sprintf('<p title="%s"><label for="%s">%s:</label>%s</p>',
 						__('How the tag cloud will be ordered', 'CombinedTaxonomiesTagCloud'),
@@ -793,7 +673,148 @@ class CombinedTaxonomiesTagCloudWidget extends WP_Widget {
 				. '</div></fieldset>'
 				
 				
-				// SHORTCODE
+				
+				# GENERAL TAG LOOK #############################################################################################
+				
+				. sprintf('<fieldset><legend>%s</legend><div>', __('Tag Appearance', 'CombinedTaxonomiesTagCloud'))
+				
+				. sprintf('<p title="%s"><label for="%s">%s:</label><input type="checkbox" id="%s" name="%s" value="1"%s></p>',
+						__('Show the count of the number of posts that have that term', 'CombinedTaxonomiesTagCloud'),
+						esc_attr($this->get_field_id('show_count')),
+						__('Show Count in Tags', 'CombinedTaxonomiesTagCloud'),
+						esc_attr($this->get_field_id('show_count')),
+						esc_attr($this->get_field_name('show_count')),
+						$checked['show_count']
+					)
+				. sprintf('<p title="%s"><label for="%s">%s:</label>%s</p>',
+						__('You can change the case of all the tags if you wish to make them consistent', 'CombinedTaxonomiesTagCloud'),
+						esc_attr($this->get_field_id('text_case')),
+						__('Text Case', 'CombinedTaxonomiesTagCloud'),
+						$select['text_case']
+					)
+				. sprintf('<p title="%s"><label for="%s">%s:</label>%s</p>',
+						__('Change how the tag text uses the CSS text decoration property', 'CombinedTaxonomiesTagCloud'),
+						esc_attr($this->get_field_id('text_decoration')),
+						__('Text Decoration', 'CombinedTaxonomiesTagCloud'),
+						$select['text_decoration']
+					)
+				
+				. sprintf('<p title="%s"><label for="%s">%s:</label><input type="number" min="0" step="0.01" size="3" id="%s" name="%s" value="%s"><span class="font_units"></span></p>',
+						__('Make the corners of the tag round', 'CombinedTaxonomiesTagCloud'),
+						esc_attr($this->get_field_id('border_radius')),
+						__('Rounded Corners', 'CombinedTaxonomiesTagCloud'),
+						esc_attr($this->get_field_id('border_radius')),
+						esc_attr($this->get_field_name('border_radius')),
+						(float) $instance['border_radius']
+					)
+				. '</div></fieldset>'
+				
+				
+				# TAG FANCY BITS ###############################################################################################
+				
+				. sprintf('<fieldset><legend>%s</legend><div>', __('Tag Effects', 'CombinedTaxonomiesTagCloud'))
+				
+				// --- Backgrounds ---------------------------------------------------------------------------------------------
+				. sprintf('<p title="%s"><label for="%s">%s:</label>%s</p>',
+						__('What background effect to apply to these tags', 'CombinedTaxonomiesTagCloud'),
+						esc_attr($this->get_field_id('fx_backgrounds')),
+						__('Background FX', 'CombinedTaxonomiesTagCloud'),
+						$select['fx_backgrounds']
+					)
+				. sprintf('<p title="%s"><label for="%s">%s:</label><input class="color-picker" type="text" size="5" id="%s" name="%s" value="%s" data-default-color="%s" data-alpha-enabled="true" data-css-var="backColor1"></p>',
+						__('Choose the first color this effect uses', 'CombinedTaxonomiesTagCloud'),
+						esc_attr($this->get_field_id('tcolor1')),
+						__('Color 1', 'CombinedTaxonomiesTagCloud'),
+						esc_attr($this->get_field_id('tcolor1')),
+						esc_attr($this->get_field_name('tcolor1')),
+						$instance['tcolor1'],
+						$this->defaults['tcolor1']
+					)
+				. sprintf('<p title="%s"><label for="%s">%s:</label><input class="color-picker" type="text" size="5" id="%s" name="%s" value="%s" data-default-color="%s" data-alpha-enabled="true" data-css-var="backColor2"></p>',
+						__('Choose the second color this effect uses', 'CombinedTaxonomiesTagCloud'),
+						esc_attr($this->get_field_id('tcolor2')),
+						__('Color 2', 'CombinedTaxonomiesTagCloud'),
+						esc_attr($this->get_field_id('tcolor2')),
+						esc_attr($this->get_field_name('tcolor2')),
+						$instance['tcolor2'],
+						$this->defaults['tcolor2']
+					)
+				
+				// --- Borders -------------------------------------------------------------------------------------------------
+				. sprintf('<p title="%s"><label for="%s">%s:</label>%s</p>',
+						__('Alter the appearance of the border of a tag', 'CombinedTaxonomiesTagCloud'),
+						esc_attr($this->get_field_id('border_style')),
+						__('Border Style', 'CombinedTaxonomiesTagCloud'),
+						$select['border_style']
+					)
+				. sprintf('<p title="%s"><label for="%s">%s:</label><input class="color-picker" type="text" size="5" id="%s" name="%s" value="%s" data-default-color="%s" data-alpha-enabled="true" data-css-var="borderColor1"></p>',
+						__('Choose the border color of a tag', 'CombinedTaxonomiesTagCloud'),
+						esc_attr($this->get_field_id('tborder1')),
+						__('Color', 'CombinedTaxonomiesTagCloud'),
+						esc_attr($this->get_field_id('tborder1')),
+						esc_attr($this->get_field_name('tborder1')),
+						$instance['tborder1'],
+						$this->defaults['tborder1']
+					)
+				. sprintf('<p title="%s"><label for="%s">%s:</label><input class="color-picker" type="text" size="5" id="%s" name="%s" value="%s" data-default-color="%s" data-alpha-enabled="true" data-css-var="borderColor2"></p>',
+						__('Choose the border color of a tag when highlighted', 'CombinedTaxonomiesTagCloud'),
+						esc_attr($this->get_field_id('tborder2')),
+						__('Color (Highlight)', 'CombinedTaxonomiesTagCloud'),
+						esc_attr($this->get_field_id('tborder2')),
+						esc_attr($this->get_field_name('tborder2')),
+						$instance['tborder2'],
+						$this->defaults['tborder2']
+					)
+				. sprintf('<p title="%s"><label for="%s">%s:</label><input type="number" min="0.01" step="0.01" size="3" id="%s" name="%s" value="%s" data-css-var="borderWidth" data-is-size="true"><span class="font_units"></span></p>',
+						__('How big is the border of a tag', 'CombinedTaxonomiesTagCloud'),
+						esc_attr($this->get_field_id('border_width')),
+						__('Size', 'CombinedTaxonomiesTagCloud'),
+						esc_attr($this->get_field_id('border_width')),
+						esc_attr($this->get_field_name('border_width')),
+						(float) $instance['border_width']
+					)
+					
+				// --- Shadows -------------------------------------------------------------------------------------------------
+				. sprintf('<p title="%s"><label for="%s">%s:</label>%s</p>',
+						__('What shadow effect to apply to these tags when highlighted', 'CombinedTaxonomiesTagCloud'),
+						esc_attr($this->get_field_id('fx_shadows')),
+						__('Shadow FX', 'CombinedTaxonomiesTagCloud'),
+						$select['fx_shadows']
+					)
+				. sprintf('<p title="%s"><label for="%s">%s:</label><input class="color-picker" type="text" size="5" id="%s" name="%s" value="%s" data-default-color="%s" data-alpha-enabled="true" data-css-var="shadowColor"></p>',
+						__('Choose the shadow color this effect uses', 'CombinedTaxonomiesTagCloud'),
+						esc_attr($this->get_field_id('tshadow')),
+						__('Shadow Color', 'CombinedTaxonomiesTagCloud'),
+						esc_attr($this->get_field_id('tshadow')),
+						esc_attr($this->get_field_name('tshadow')),
+						$instance['tshadow'],
+						$this->defaults['tshadow']
+					)
+				
+				// --- Movement ------------------------------------------------------------------------------------------------
+				. sprintf('<p title="%s"><label for="%s">%s:</label>%s</p>',
+						__('What 2D transition effect will apply to these tags', 'CombinedTaxonomiesTagCloud'),
+						esc_attr($this->get_field_id('fx_two_dee')),
+						__('2D FX', 'CombinedTaxonomiesTagCloud'),
+						$select['fx_two_dee']
+					)
+					
+					
+				// --- Demo / WCAG ---------------------------------------------------------------------------------------------
+				. sprintf('<p title="%s" class="tag-demo"><label>%s</label><span class="half"><a class="%s">%s</a><span class="wcag" title="%s">%s</span></span></p>',
+						__('See what the tags will look like', 'CombinedTaxonomiesTagCloud'),
+						__('Demo', 'CombinedTaxonomiesTagCloud'),
+						$instance['fx_two_dee'].' '.$instance['fx_backgrounds'].' '.$instance['fx_shadows'],
+						__('Tag Text', 'CombinedTaxonomiesTagCloud'),
+						__('Does this color combination meet WCAG guidelines for contrast?', 'CombinedTaxonomiesTagCloud'),
+						$this->get_contrast_ratio(array($instance['tcolor1'], $instance['tcolor2']))
+					)
+					
+				. '</div></fieldset>'
+				
+			
+				# SHORTCODE ####################################################################################################
+				
 				. sprintf('<fieldset><legend>%s</legend><div>', __('Shortcode', 'CombinedTaxonomiesTagCloud'))
 				. sprintf('<p title="%s">%s</p>',
 						__('You can use this shortcode to display the widget on its own', 'CombinedTaxonomiesTagCloud'),

@@ -230,7 +230,12 @@
 	function updateCssVars(dom) {
 		const widget = dom.parents('form:first');
 		const cssvar = dom.data('css-var');
-		$(widget).css('--'+cssvar, dom.val());
+		
+		let val = dom.val();
+		if (dom.data('is-size')) val+='em';
+		
+		$(widget).css('--'+cssvar, val);
+		console.log('set '+cssvar+' to '+val);
 		
 		if (cssvar == 'backColor1') {
 			getContrast({

@@ -118,26 +118,28 @@
 				position: relative;
 				
 				margin: 0;
-				padding: var(--linkPaddingX, 0.5em) var(--linkPaddingY, 1em);
+				padding: var(--linkPaddingY, 0.5em) var(--linkPaddingX, 1em);
 				
 				word-wrap: break-word;
 				white-space: break-spaces;
 				overflow: hidden;
 				
-				border: var(--borderWidth, 0) var(--borderStyle, solid) var(--borderColor, transparent);
+				border: var(--borderWidth, 0) var(--borderStyle, solid) var(--borderColor1, transparent);
 				
-				background-color: var(--backColor1);
-				color: var(--textColor1);
+				background-color: var(--backColor1, transparent);
+				color: var(--textColor1, #000000);
 				
 				transition: color 0.3s, background-color 0.3s;
+				
+				transform: scale(1) rotate(0);
 
 				border-radius: var(--borderRadius, 0.1em);
 				font-size: var(--linkBaseSize, 1em);
 				
 				&.highlight, &:hover {
-					background-color: var(--backColor2);
-					color: var(--textColor2);
-					border-color: var(--borderColor, transparent);
+					background-color: var(--backColor2, transparent);
+					color: var(--textColor2, #000000);
+					border-color: var(--borderColor2, transparent);
 				}
 				
 				&:before {
@@ -196,6 +198,14 @@
 				
 				
 				// backgrounds ---------------------------------------------------------------------------------------------------------
+				
+				&.fx_bg_static {
+					&.highlight, &:hover {
+						background-color: var(--backColor1);
+						color: var(--textColor1);
+					}
+				}
+				
 				
 				&.fx_bg_sweep_up,
 				&.fx_bg_sweep_down,
@@ -270,6 +280,24 @@
 				}
 				
 				
+				&.fx_bg_underline_center_out {
+					background-color: var(--backColor1);
+					
+					&:before {
+						background-color: var(--backColor2);
+						
+						left: 51%; right:51%;
+						top: unset; height:15%;
+					}
+					&.highlight, &:hover {
+						color: var(--textColor1);
+						&:before {
+							left: 0; right: 0;
+						}
+					}
+				}
+				
+				
 				
 				// shadows and glows ---------------------------------------------------------------------------------------------------
 				
@@ -305,84 +333,3 @@
 	}
 }
 
-
-
-
-/*
- * 
- * delete
- * 
- * 
-				
-				&.fx_invert {
-					&.highlight, &:hover {
-						background-color: var(--textColor1);
-						color: var(--backColor1);
-					}
-				}
- * 
-				&.fx_line_up { // https://codepen.io/geoffgraham/pen/GXoOdK
-					background: linear-gradient(to bottom, var(--backColor2) 0%, var(--backColor2) 100%);
-					background-position: 0 100%;
-					background-repeat: repeat-x;
-					background-size: 1% 8%;
-					
-					&.highlight, &:hover {
-						background-size: 1% 100%;
-					}
-				}
-				&.fx_line_down {
-					background: linear-gradient(to bottom, var(--backColor2) 0%, var(--backColor2) 100%);
-					background-position: 0 0%;
-					background-repeat: repeat-x;
-					background-size: 1% 8%;
-					
-					&.highlight, &:hover {
-						background-size: 1% 100%;
-					}
-				}
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				&.effect1:hover {
-					background-image: linear-gradient(to right, #ff8a00, #e52e71);
-					background-clip: border-box;
-					-webkit-background-clip: text;
-					-webkit-text-fill-color: transparent;
-					-webkit-box-decoration-break: clone;
-					box-decoration-break: clone;
-					text-shadow: none;
-				}
-				// NOTE: not suitable for small size text like tags...
-				&.effect3 { // https://codepen.io/geoffgraham/pen/gdPpyE
-					color: var(--backColor);
-					text-decoration: none;
-					&:hover {
-						color: transparent;
-						-webkit-text-stroke: 2px var(--backColor);
-					}
-				}
-				
-				
-
-@supports not(-webkit-text-stroke: 2px red) {
-	a.effect3 {
-		text-shadow:
-			3px 3px 0 var(--backColor),
-			-1px -1px 0 var(--backColor),
-			1px -1px 0 var(--backColor),
-			-1px 1px 0 var(--backColor),
-			1px 1px 0 var(--backColor);
-	}
-}
-
-
-*/

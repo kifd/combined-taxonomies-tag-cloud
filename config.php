@@ -63,39 +63,39 @@ $config['choices'] = array(
 	'border_style'		=> array(
 							''				=> array(
 								'name'			=> __('None', 'CombinedTaxonomiesTagCloud'),
-								'hide-these'	=> array('tborder', 'border_width'),
+								'hide-these'	=> array('tborder1', 'tborder2', 'border_width'),
 							),
 							'solid'			=> array(
 								'name'			=> __('Solid', 'CombinedTaxonomiesTagCloud'),
-								'show-these'	=> array('tborder', 'border_width'),
+								'show-these'	=> array('tborder1', 'tborder2', 'border_width'),
 							),
 							'dotted'		=> array(
 								'name'			=> __('Dots', 'CombinedTaxonomiesTagCloud'),
-								'show-these'	=> array('tborder', 'border_width'),
+								'show-these'	=> array('tborder1', 'tborder2', 'border_width'),
 							),
 							'dashed'		=> array(
 								'name'			=> __('Dashes', 'CombinedTaxonomiesTagCloud'),
-								'show-these'	=> array('tborder', 'border_width'),
+								'show-these'	=> array('tborder1', 'tborder2', 'border_width'),
 							),
 							'double'		=> array(
 								'name'			=> __('Double Lines', 'CombinedTaxonomiesTagCloud'),
-								'show-these'	=> array('tborder', 'border_width'),
+								'show-these'	=> array('tborder1', 'tborder2', 'border_width'),
 							),
 							'groove'		=> array(
 								'name'			=> __('Grooved', 'CombinedTaxonomiesTagCloud'),
-								'show-these'	=> array('tborder', 'border_width'),
+								'show-these'	=> array('tborder1', 'tborder2', 'border_width'),
 							),
 							'ridge'			=> array(
 								'name'			=> __('Ridged', 'CombinedTaxonomiesTagCloud'),
-								'show-these'	=> array('tborder', 'border_width'),
+								'show-these'	=> array('tborder1', 'tborder2', 'border_width'),
 							),
 							'inset'			=> array(
 								'name'			=> __('Inset', 'CombinedTaxonomiesTagCloud'),
-								'show-these'	=> array('tborder', 'border_width'),
+								'show-these'	=> array('tborder1', 'tborder2', 'border_width'),
 							),
 							'outset'		=> array(
 								'name'			=> __('Outset', 'CombinedTaxonomiesTagCloud'),
-								'show-these'	=> array('tborder', 'border_width'),
+								'show-these'	=> array('tborder1', 'tborder2', 'border_width'),
 							),
 						),
 	
@@ -137,6 +137,10 @@ $config['choices'] = array(
 							),
 							'fx_bg_radial_out'	=>  array(
 								'name'				=> __('Radial Out', 'CombinedTaxonomiesTagCloud'),
+								'show-these'		=> array('tcolor1', 'tcolor2'),
+							),
+							'fx_bg_underline_center_out'	=> array(
+								'name'				=> __('Underline Center Out', 'CombinedTaxonomiesTagCloud'),
 								'show-these'		=> array('tcolor1', 'tcolor2'),
 							),
 						),
@@ -224,7 +228,7 @@ $config['defaults'] = array(
 	'align_v'			=> 'bottom',
 	'border_radius'		=> 0.10,
 	'border_style'		=> '',
-	'border_width'		=> 0.00,
+	'border_width'		=> 0.01,
 	'column_gap'		=> 0.50,
 	'exclude'			=> array(0),
 	'font_base'			=> 1.00,
@@ -247,9 +251,10 @@ $config['defaults'] = array(
 	'single'			=> '',
 	'smallest' 			=> 0.60,
 	'taxonomies'		=> array('post_tag'),
-	'tcolor1'			=> '#ffffff',
-	'tcolor2'			=> '#000000',
-	'tborder'			=> '#ffffff',
+	'tcolor1'			=> '#ffffff00',
+	'tcolor2'			=> '#ffffff00',
+	'tborder1'			=> '#ffffffff',
+	'tborder2'			=> '#000000ff',
 	'tshadow'			=> '#00000099',
 	'text_case'			=> '',
 	'text_decoration'	=> 'under_hover',
