@@ -15,9 +15,6 @@ $colour-legend: #eaeaea;
 		&:first-of-type {
 			margin-top: 1em;
 		}
-		&:last-of-type {
-			margin-bottom: 1em;
-		}
 		
 		legend {
 			background-color: $colour-legend;
@@ -184,29 +181,20 @@ $colour-legend: #eaeaea;
 				}
 			}
 			
+			.wcag {
+				display: flex;
+				padding: 0.4em;
+				justify-content: center;
+				align-items: center;
+				flex-grow: 1;
+				font-weight: bold;
+			}
+			
 			span[data-copy-text] {
 				display: block;
 				width: 100%;
 				text-align: center;
 				cursor: pointer;
-			}
-			
-			&.tag-demo {
-				label.half {
-					flex-basis: 50%;
-				}
-				a {
-					cursor: pointer;
-					text-align: center;
-					flex-basis: 20%;
-				}
-				.wcag {
-					display: block;
-					padding: 0.4em;
-					text-align: center;
-					flex-basis: 20%;
-					font-weight: bold;
-				}
 			}
 		}
 		
@@ -218,6 +206,28 @@ $colour-legend: #eaeaea;
 			display: flex;
 		}
 	
+	}
+	
+	.tag-demo {
+		display: flex;
+		margin: 0.2em 0 1em; padding: 0.2em 0 0.4em;
+		align-items: center;
+		width: 100%;
+		
+		b {
+			flex-grow: 1;
+		}
+		
+		span.half {
+			display: flex;
+			flex-grow: 1;
+			
+			a {
+				cursor: pointer;
+				text-align: center;
+				max-width: max-content;
+			}
+		}
 	}
 }
 

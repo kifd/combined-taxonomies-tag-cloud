@@ -5,7 +5,7 @@ Tags: tag cloud, taxonomy tag cloud, tag cloud widget, tag, cloud, widget, tag c
 Requires at least: 3.8 or higher
 Tested up to: 5.5
 Requires PHP: 7.2
-Stable tag: 0.32
+Stable tag: 0.33
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -66,12 +66,19 @@ Note all screenshots are for versions older than 0.22 at the mo...
 
 == Changelog ==
 
+= 0.33 =
+* Enhancement: added tag padding controls
+* Enhancement: improved inset shadow, added a few more effects
+* Enhancement: tag demo includes more details now (font, border & radius, tag padding)
+* Bugfix: transient saves re single page cloud highlighting
+
 = 0.32 =
 * Enhancement: changed default wpColorPicker to one that has transparency control
 * Enhancement: added more choices of effects
 * Enhancement: added demo of tag effect into the widget form
-* Enhancement: automatic contrasting text color over backgrounds
+* Enhancement: automatic contrasting text color over backgrounds for a simpler form
 * Enhancement: more general widget appearance control (title color, widget padding etc)
+* Enhancement: changing taxonomies now automatically updates the possible terms to exclude
 
 = 0.31 =
 * Enhancement: font unit selection now reflected across relevant options
@@ -79,7 +86,7 @@ Note all screenshots are for versions older than 0.22 at the mo...
 * Enhancement: added choice of tag highlighting effects
 * Enhancement: now uses CSS vars for easier customising
 * Bugfix: more code tidying and UI fiddling
-* Bugfix: requires php7+ now due to type hinting etc
+* Note: requires php7+ now due to type hinting etc
 
 = 0.30 =
 * Enhancement: added ability to display the widget via a shortcode
@@ -94,8 +101,8 @@ Note all screenshots are for versions older than 0.22 at the mo...
 * Enhancement: added tag border color option
 * Enhancement: rearranged the admin form UI into collapsible sections
 * Enhancement: added mouseover help text to each element
-* Enhancement/Bugfix: completely changed the way CSS was added, so you can have your own styling on one widget and a predefined one on another
 * Enhancement: added tag text decoration option
+* Enhancement: completely changed the way CSS was added, so you can style multiple widgets at once
 * Bugfix: can now clear color settings, oops
 * Bugfix: found a fix for WP not enabling the save button after just a color change
 
@@ -135,23 +142,23 @@ Note all screenshots are for versions older than 0.22 at the mo...
 
 == To-Do List ==
 
-* Check: transient saved re single page cloud highlighting
-* merge rest of tag borders into effects
-* js cleanup, esp re css vars
-* demo to include border radius & font
+* rewrite admin js, esp re css vars
 * widget vertical alignment to follow per line?
+* force save colors as rgba to simplify code
+* ? wcag contrast including alpha
 
-* To Add: auto highlight matching tags on archive pages
-* To Add: 	? only show tags for terms used in the category being viewed
-* To Add: more effects
-* To Add: different way relative sizes are calculated - ie. log
-* To Add: temporarily save widget fieldset open/close states while editing
-* To Add: colors per term - use termmeta?
-* To Add: setting to toggle white-space wrap
+* auto highlight matching tags on archive pages
+* only show tags for terms used in the category being viewed
+* more effects
+* different way relative sizes are calculated - ie. log
+* temporarily save widget fieldset open/close states while editing
+* colors per term - use termmeta?
+* setting to toggle white-space wrap
 
-* New Screenshots...
+* new screenshots...
 
-* To Fix: changing what taxonomies to use doesn't automatically update the widget re what terms to exclude etc - save it first
+* ? make taxonomies select update on post type change, ajax like excluded
+
 
 * To Add much later: use as a drop widget to make a cloud out of the words of a post, ignoring stop words
 * To Add much later: and then combine with your word cloud work to make images...

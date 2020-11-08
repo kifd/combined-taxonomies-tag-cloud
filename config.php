@@ -143,6 +143,14 @@ $config['choices'] = array(
 								'name'				=> __('Underline Center Out', 'CombinedTaxonomiesTagCloud'),
 								'show-these'		=> array('tcolor1', 'tcolor2'),
 							),
+							'fx_bg_overline_center_out'	=> array(
+								'name'				=> __('Overline Center Out', 'CombinedTaxonomiesTagCloud'),
+								'show-these'		=> array('tcolor1', 'tcolor2'),
+							),
+							'fx_bg_bothline_center_out'	=> array(
+								'name'				=> __('Both Center Out', 'CombinedTaxonomiesTagCloud'),
+								'show-these'		=> array('tcolor1', 'tcolor2'),
+							),
 						),
 	'fx_shadows'		=> array(
 							'fx_sh_none' 			=> array(
@@ -153,16 +161,20 @@ $config['choices'] = array(
 								'name'				=> __('Shadow', 'CombinedTaxonomiesTagCloud'),
 								'show-these'		=> array('tshadow'),
 							),
+							'fx_sh_inset'			=> array(
+								'name'				=> __('Shadow Inset', 'CombinedTaxonomiesTagCloud'),
+								'show-these'		=> array('tshadow'),
+							),
+							'fx_sh_glow'			=> array(
+								'name'				=> __('Shadow Glow', 'CombinedTaxonomiesTagCloud'),
+								'show-these'		=> array('tshadow'),
+							),
 							'fx_sh_box_inset'		=> array(
 								'name'				=> __('Box Shadow Inset', 'CombinedTaxonomiesTagCloud'),
 								'show-these'		=> array('tshadow'),
 							),
 							'fx_sh_box_outset'		=> array(
 								'name'				=> __('Box Shadow Outset', 'CombinedTaxonomiesTagCloud'),
-								'show-these'		=> array('tshadow'),
-							),
-							'fx_sh_glow'			=> array(
-								'name'				=> __('Shadow Glow', 'CombinedTaxonomiesTagCloud'),
 								'show-these'		=> array('tshadow'),
 							),
 						),
@@ -255,11 +267,13 @@ $config['defaults'] = array(
 	'tcolor2'			=> '#ffffff00',
 	'tborder1'			=> '#ffffffff',
 	'tborder2'			=> '#000000ff',
+	'tag_padding_x'		=> 1.00,
+	'tag_padding_y'		=> 0.50,
 	'tshadow'			=> '#00000099',
 	'text_case'			=> '',
 	'text_decoration'	=> 'under_hover',
 	'title' 			=> '',
-	'wbackground'		=> '',
+	'wbackground'		=> '#ffffff00',
 	'wborder_radius'	=> 0.00,
 	'wpadding'			=> 0.00,
 );
