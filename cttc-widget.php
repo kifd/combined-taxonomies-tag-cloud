@@ -216,13 +216,10 @@ class CombinedTaxonomiesTagCloudWidget extends WP_Widget {
 			
 			$title = apply_filters('widget_title', $instance['title']); if ('' != $title) $title = $args['before_title'].$title.$args['after_title'];
 			
-			$extra_classes = trim($args['align_h'].' '.$args['align_v']);
-			
 			// make the html
 			$output = $args['before_widget']."\r\n"
 					. $title."\n"
-					. sprintf('<ul class="combined-taxonomies-tag-cloud %s" role="list">%s</ul>',
-						$extra_classes,
+					. sprintf('<ul class="combined-taxonomies-tag-cloud" role="list">%s</ul>',
 						'<li>'.implode("</li>\r\n<li>", $cloud).'</li>'
 					)."\r\n"
 					. $args['after_widget']."\r\n";
@@ -240,7 +237,7 @@ class CombinedTaxonomiesTagCloudWidget extends WP_Widget {
 			
 			sprintf('--titleAlignment:%s;', $args['align_title']),
 			
-			sprintf('--widgetBackgroundColor:%s;', $args['wbackground']),
+			vsprintf('--widgetBackgroundColor:rgba(%d,%d,%d,%.2f);', $args['wbackground']),
 			sprintf('--widgetBorderRadius:%.2f%s;', $args['wborder_radius'], $args['font_unit']),
 			sprintf('--widgetPadding:%.2f%s;', $args['wpadding'], $args['font_unit']),
 			sprintf('--widgetFontSize:%.2f%s;', $args['font_base'], $args['font_unit']),
@@ -248,13 +245,16 @@ class CombinedTaxonomiesTagCloudWidget extends WP_Widget {
 			sprintf('--columnGap:%.2f%s;', $args['column_gap'], $args['font_unit']),
 			sprintf('--rowGap:%.2f%s;', $args['row_gap'], $args['font_unit']),
 			
+			sprintf('--alignHorizontal:%s;', $args['align_h']),
+			sprintf('--alignVertical:%s;', $args['align_v']),
+			
 			sprintf('--linkPaddingX:%.2f%s;', $args['tag_padding_x'], $args['font_unit']),
 			sprintf('--linkPaddingY:%.2f%s;', $args['tag_padding_y'], $args['font_unit']),
 		
-			sprintf('--backColor1:%s;', $args['tcolor1']),
-			sprintf('--backColor2:%s;', $args['tcolor2']),
-			sprintf('--textColor1:%s;', $this->get_contrasting_text_color($args['tcolor1'])),
-			sprintf('--textColor2:%s;', $this->get_contrasting_text_color($args['tcolor2'])),
+			vsprintf('--backColor1:rgba(%d,%d,%d,%.2f);', $args['tcolor1']),
+			vsprintf('--backColor2:rgba(%d,%d,%d,%.2f);', $args['tcolor2']),
+			vsprintf('--textColor1:rgba(%d,%d,%d,%.2f);', $args['tag_text_color_1']),
+			vsprintf('--textColor2:rgba(%d,%d,%d,%.2f);', $args['tag_text_color_2']),
 			
 			sprintf('--shadowColor:%s;', ($args['fx_shadows'] != 'fx_sh_none') ? $args['tshadow'] : 'transparent'),
 			
@@ -276,6 +276,13 @@ class CombinedTaxonomiesTagCloudWidget extends WP_Widget {
 	// update the widget ------------------------------------
 	public function update($new, $instance) {
 		
+		// NOTE: validate the checkboxes before wp_parse_args because unchecked boxes don't get passed via POST
+		$checkboxes = array('auto_text_color', 'nofollow', 'order', 'scale_tag', 'show_count');
+		foreach ($checkboxes as $box) {
+			$instance[$box] = (isset($new[$box]) AND $new[$box]);
+		}
+		
+		// now we can fill in any blanks in $new
 		$new = wp_parse_args($new, $this->defaults);
 		
 		// TODO: check post types and taxs in allowed array
@@ -290,11 +297,7 @@ class CombinedTaxonomiesTagCloudWidget extends WP_Widget {
 		$instance['font_base'] = sprintf('%0.2f', (float) $new['font_base']);
 		$instance['largest'] = sprintf('%0.2f', (float) $new['largest']);
 		$instance['maximum'] = absint($new['maximum']);
-		$instance['nofollow'] = (bool) $new['nofollow'];
-		$instance['order'] = (bool) $new['order'];
 		$instance['row_gap'] = sprintf('%0.2f', (float) $new['row_gap']);
-		$instance['scale_tag'] = (bool) $new['scale_tag'];
-		$instance['show_count'] = (bool) $new['show_count'];
 		$instance['smallest'] = sprintf('%0.2f', (float) $new['smallest']);
 		$instance['tag_padding_x'] = sprintf('%0.2f', (float) $new['tag_padding_x']);
 		$instance['tag_padding_y'] = sprintf('%0.2f', (float) $new['tag_padding_y']);
@@ -321,15 +324,30 @@ class CombinedTaxonomiesTagCloudWidget extends WP_Widget {
 		
 		
 		// and colors now need to always be defined (hard to work out contrasting colours if you don't know what to contrast)
-		$instance['wbackground'] = ($this->is_valid_color($new['wbackground']) OR $new['wbackground'] == '')
-			? $new['wbackground'] : $this->defaults['wbackground'];
+		$instance['wbackground'] = ($this->is_valid_color($new['wbackground']))
+			? $this->convert_color_to_rgba($new['wbackground']) : $this->defaults['wbackground'];
+			
+		$instance['tcolor1'] = ($this->is_valid_color($new['tcolor1']))
+			? $this->convert_color_to_rgba($new['tcolor1']) : $this->defaults['tcolor1'];
+		$instance['tcolor2'] = ($this->is_valid_color($new['tcolor2']))
+			? $this->convert_color_to_rgba($new['tcolor2']) : $this->defaults['tcolor2'];
+		
+		
+		if ($instance['auto_text_color']) {
+			$instance['tag_text_color_1'] = $this->get_contrasting_text_color($this->blend_arrays($instance['tcolor1'], $instance['wbackground']));
+			$instance['tag_text_color_2'] = $this->get_contrasting_text_color($this->blend_arrays($instance['tcolor2'], $instance['wbackground']));
+		} else {
+			$instance['tag_text_color_1'] = ($this->is_valid_color($new['tag_text_color_1']))
+			? $this->convert_color_to_rgba($new['tag_text_color_1']) : $this->defaults['tag_text_color_1'];
+			$instance['tag_text_color_2'] = ($this->is_valid_color($new['tag_text_color_2']))
+			? $this->convert_color_to_rgba($new['tag_text_color_2']) : $this->defaults['tag_text_color_2'];
+		}
+		
 		$instance['tborder1'] = ($this->is_valid_color($new['tborder1'])) ? $new['tborder1'] : $this->defaults['tborder1'];
 		$instance['tborder2'] = ($this->is_valid_color($new['tborder2'])) ? $new['tborder2'] : $this->defaults['tborder2'];
-		$instance['tcolor1'] = ($this->is_valid_color($new['tcolor1'])) ? $new['tcolor1'] : $this->defaults['tcolor1'];
-		$instance['tcolor2'] = ($this->is_valid_color($new['tcolor2'])) ? $new['tcolor2'] : $this->defaults['tcolor2'];
 		$instance['tshadow'] = ($this->is_valid_color($new['tshadow'])) ? $new['tshadow'] : $this->defaults['tshadow'];
 		
-		
+		// TODO: not deleting single page highlighting now
 		// either something's changed or we pressed the save button for the sake of it. regardless, delete our saved html and start again
 		$this->transient = 'combined_taxonomies_tag_cloud_'.$this->id;
 		delete_transient($this->transient);
@@ -343,9 +361,9 @@ class CombinedTaxonomiesTagCloudWidget extends WP_Widget {
 	public function form($instance) {
 		// if (empty($instance)) return;
 		// TODO: don't go through all this if we're not using the widget - need to account for freshly added widgets
-
-		$instance = wp_parse_args((array) $instance, $this->defaults);
-
+		
+		$instance = $this->update((array) $instance, $this->defaults);
+		
 		// build up the various selects in the form (0=array of objects, 1=array of k/v pairs, 2=array of plain values)
 		$fields = array(
 			'align_h' => 1,
@@ -369,6 +387,8 @@ class CombinedTaxonomiesTagCloudWidget extends WP_Widget {
 		
 		// TODO: this is getting silly now
 		$css_vars = array(
+			'align_h' => 'alignHorizontal',
+			'align_v' => 'alignVertical',
 			'border_style' => 'borderStyle',
 			// 'font_family' => 'fontFamily', // handled in a separate js function to the other css vars because the key isn't the value
 		);
@@ -448,10 +468,11 @@ class CombinedTaxonomiesTagCloudWidget extends WP_Widget {
 
 		// TODO: do a loop like the selects if we keep adding more...
 		$checked = array(
-			'nofollow'	=> ($instance['nofollow'] == 1) ? ' checked="checked"' : '',
-			'order'		=> ($instance['order'] == 1) ? ' checked="checked"' : '',
-			'scale_tag'	=> ($instance['scale_tag'] == 1) ? ' checked="checked"' : '',
-			'show_count'=> ($instance['show_count'] == 1) ? ' checked="checked"' : '',
+			'auto_text_color'	=> ($instance['auto_text_color'] == 1) ? ' checked="checked"' : '',
+			'nofollow'			=> ($instance['nofollow'] == 1) ? ' checked="checked"' : '',
+			'order'				=> ($instance['order'] == 1) ? ' checked="checked"' : '',
+			'scale_tag'			=> ($instance['scale_tag'] == 1) ? ' checked="checked"' : '',
+			'show_count'		=> ($instance['show_count'] == 1) ? ' checked="checked"' : '',
 		);
 
 		
@@ -590,7 +611,7 @@ class CombinedTaxonomiesTagCloudWidget extends WP_Widget {
 						__('Widget Background', 'CombinedTaxonomiesTagCloud'),
 						esc_attr($this->get_field_id('wbackground')),
 						esc_attr($this->get_field_name('wbackground')),
-						$instance['wbackground'],
+						vsprintf('rgba(%d,%d,%d,%.2f)', $instance['wbackground']),
 						$this->defaults['wbackground']
 					)
 				. sprintf('<p title="%s"><label for="%s">%s:</label><input type="number" min="0" step="0.01" size="3" id="%s" name="%s" value="%s"><span class="font_units"></span></p>',
@@ -715,11 +736,12 @@ class CombinedTaxonomiesTagCloudWidget extends WP_Widget {
 				
 				. sprintf('<fieldset><legend>%s</legend><div>', __('Tag Effects', 'CombinedTaxonomiesTagCloud'))
 				
+				
 				// --- Backgrounds ---------------------------------------------------------------------------------------------
 				. sprintf('<p title="%s"><label for="%s">%s:</label>%s</p>',
 						__('What background effect to apply to these tags', 'CombinedTaxonomiesTagCloud'),
 						esc_attr($this->get_field_id('fx_backgrounds')),
-						__('Background FX', 'CombinedTaxonomiesTagCloud'),
+						__('Background', 'CombinedTaxonomiesTagCloud'),
 						$select['fx_backgrounds']
 					)
 				. sprintf('<p title="%s"><label for="%s">%s:</label><input class="color-picker" type="text" size="5" id="%s" name="%s" value="%s" data-default-color="%s" data-alpha-enabled="true" data-css-var="backColor1">%s</p>',
@@ -728,28 +750,56 @@ class CombinedTaxonomiesTagCloudWidget extends WP_Widget {
 						__('Color 1', 'CombinedTaxonomiesTagCloud'),
 						esc_attr($this->get_field_id('tcolor1')),
 						esc_attr($this->get_field_name('tcolor1')),
-						$instance['tcolor1'],
-						$this->defaults['tcolor1'],
+						vsprintf('rgba(%d,%d,%d,%.2f)', $instance['tcolor1']),
+						vsprintf('rgba(%d,%d,%d,%.2f)', $this->defaults['tcolor1']),
 						sprintf('<span class="wcag" title="%s">%s</span>',
 							__('When the auto text color is used on top of this color, what rating will it get under the WCAG guidelines for contrast?', 'CombinedTaxonomiesTagCloud'),
-							$this->get_wcag_color_and_rating($instance['tcolor1'], true),
+							$this->get_wcag_color_and_rating($instance['tcolor1'], $instance['wbackground'], true),
 						)
 					)
-					
 				. sprintf('<p title="%s"><label for="%s">%s:</label><input class="color-picker" type="text" size="5" id="%s" name="%s" value="%s" data-default-color="%s" data-alpha-enabled="true" data-css-var="backColor2">%s</p>',
 						__('Choose the second color this effect uses', 'CombinedTaxonomiesTagCloud'),
 						esc_attr($this->get_field_id('tcolor2')),
 						__('Color 2', 'CombinedTaxonomiesTagCloud'),
 						esc_attr($this->get_field_id('tcolor2')),
 						esc_attr($this->get_field_name('tcolor2')),
-						$instance['tcolor2'],
-						$this->defaults['tcolor2'],
+						vsprintf('rgba(%d,%d,%d,%.2f)', $instance['tcolor2']),
+						vsprintf('rgba(%d,%d,%d,%.2f)', $this->defaults['tcolor2']),
 						sprintf('<span class="wcag" title="%s">%s</span>',
 							__('When the auto text color is used on top of this color, what rating will it get under the WCAG guidelines for contrast?', 'CombinedTaxonomiesTagCloud'),
-							$this->get_wcag_color_and_rating($instance['tcolor2'], true),
+							$this->get_wcag_color_and_rating($instance['tcolor2'], $instance['wbackground'], true),
 						)
 					)
 				
+				// --- Foregrounds ---------------------------------------------------------------------------------------------
+				. sprintf('<p title="%s"><label for="%s">%s:</label><input type="checkbox" id="%s" class="%s" name="%s" data-controls-others="true" data-hide-these="tag_text_color_1,tag_text_color_2" value="1"%s></p>',
+						__('Automatically pick text colors that contrast the background', 'CombinedTaxonomiesTagCloud'),
+						esc_attr($this->get_field_id('auto_text_color')),
+						__('Auto Text Color', 'CombinedTaxonomiesTagCloud'),
+						esc_attr($this->get_field_id('auto_text_color')),
+						'auto_text_color',
+						esc_attr($this->get_field_name('auto_text_color')),
+						$checked['auto_text_color']
+					)
+				. sprintf('<p title="%s"><label for="%s">%s:</label><input class="color-picker" type="text" size="5" id="%s" name="%s" value="%s" data-default-color="%s" data-alpha-enabled="true" data-css-var="textColor1"></p>',
+						__('Choose the color to use normally', 'CombinedTaxonomiesTagCloud'),
+						esc_attr($this->get_field_id('tag_text_color_1')),
+						__('Text Color 1', 'CombinedTaxonomiesTagCloud'),
+						esc_attr($this->get_field_id('tag_text_color_1')),
+						esc_attr($this->get_field_name('tag_text_color_1')),
+						vsprintf('rgba(%d,%d,%d,%.2f)', $instance['tag_text_color_1']),
+						vsprintf('rgba(%d,%d,%d,%.2f)', $this->defaults['tag_text_color_1'])
+					)
+				. sprintf('<p title="%s"><label for="%s">%s:</label><input class="color-picker" type="text" size="5" id="%s" name="%s" value="%s" data-default-color="%s" data-alpha-enabled="true" data-css-var="textColor2"></p>',
+						__('Choose the color to use for highlighting', 'CombinedTaxonomiesTagCloud'),
+						esc_attr($this->get_field_id('tag_text_color_2')),
+						__('Text Color 2', 'CombinedTaxonomiesTagCloud'),
+						esc_attr($this->get_field_id('tag_text_color_2')),
+						esc_attr($this->get_field_name('tag_text_color_2')),
+						vsprintf('rgba(%d,%d,%d,%.2f)', $instance['tag_text_color_2']),
+						vsprintf('rgba(%d,%d,%d,%.2f)', $this->defaults['tag_text_color_2'])
+					)
+					
 				// --- Borders -------------------------------------------------------------------------------------------------
 				. sprintf('<p title="%s"><label for="%s">%s:</label>%s</p>',
 						__('Alter the appearance of the border of a tag', 'CombinedTaxonomiesTagCloud'),
@@ -796,7 +846,7 @@ class CombinedTaxonomiesTagCloudWidget extends WP_Widget {
 				. sprintf('<p title="%s"><label for="%s">%s:</label>%s</p>',
 						__('What shadow effect to apply to these tags when highlighted', 'CombinedTaxonomiesTagCloud'),
 						esc_attr($this->get_field_id('fx_shadows')),
-						__('Shadow FX', 'CombinedTaxonomiesTagCloud'),
+						__('Shadow', 'CombinedTaxonomiesTagCloud'),
 						$select['fx_shadows']
 					)
 				. sprintf('<p title="%s"><label for="%s">%s:</label><input class="color-picker" type="text" size="5" id="%s" name="%s" value="%s" data-default-color="%s" data-alpha-enabled="true" data-css-var="shadowColor"></p>',
@@ -811,9 +861,9 @@ class CombinedTaxonomiesTagCloudWidget extends WP_Widget {
 				
 				// --- Movement ------------------------------------------------------------------------------------------------
 				. sprintf('<p title="%s"><label for="%s">%s:</label>%s</p>',
-						__('What 2D transition effect will apply to these tags', 'CombinedTaxonomiesTagCloud'),
+						__('What movement effect will apply to these tags', 'CombinedTaxonomiesTagCloud'),
 						esc_attr($this->get_field_id('fx_two_dee')),
-						__('2D FX', 'CombinedTaxonomiesTagCloud'),
+						__('Movement', 'CombinedTaxonomiesTagCloud'),
 						$select['fx_two_dee']
 					)
 					
@@ -959,13 +1009,28 @@ class CombinedTaxonomiesTagCloudWidget extends WP_Widget {
 	
 	
 
-	private function is_valid_color($value) {
-		return
-			preg_match('/^#(?:[0-9a-f]{3}){1,2}$/i', $value) or 
-			preg_match('/^#(?:[0-9a-f]{2}){3,4}$/i', $value) or 
-			// NOTE: won't catch invalid RGB values > 255 but the regex is simpler and colour values like that will just wrap
-			preg_match('/^rgb\((?:\s*\d+\s*,){2}\s*[\d]+\)$/i', $value) or
-			preg_match('/^rgba\((\s*\d+\s*,){3}[\d\.]+\)$/i', $value);
+	private function is_valid_color($value): bool {
+		if (is_string($value)) {
+			return
+				preg_match('/^#(?:[0-9a-f]{3}){1,2}$/i', $value) or 
+				preg_match('/^#(?:[0-9a-f]{2}){3,4}$/i', $value) or 
+				// NOTE: won't catch invalid RGB values > 255 but the regex is simpler and colour values like that will just wrap
+				preg_match('/^rgb\((?:\s*\d+\s*,){2}\s*[\d]+\)$/i', $value) or
+				preg_match('/^rgba\((\s*\d+\s*,){3}\s*[\d\.]+\)$/i', $value);
+		
+		} elseif (is_array($value) AND sizeof($value) == 4) {
+			$okay = true;
+			foreach ($value as $i => $channel) {
+				if (! (($i < 3 AND $channel >= 0 AND $channel <= 255) OR ($channel >= 0 AND $channel <= 1))) {
+					$okay = false;
+					break;
+				}
+			}
+			return $okay;
+		
+		} else {
+			return false;
+		}
 	}
 	
 	
@@ -1023,8 +1088,16 @@ class CombinedTaxonomiesTagCloudWidget extends WP_Widget {
 			'wcag'		=> __('Error', 'CombinedTaxonomiesTagCloud'),
 		);
 		
-		if (check_ajax_referer('cttc_nonce') AND isset($_POST['color']) AND $this->is_valid_color($_POST['color'])) {
-			$response = array_merge(array('ok' => true), $this->get_wcag_color_and_rating($_POST['color']));
+		if (check_ajax_referer('cttc_nonce')) {
+			if (isset($_POST['color']) AND $this->is_valid_color($_POST['color'])) {
+				if (isset($_POST['additional']) AND $this->is_valid_color($_POST['additional'])) {
+			
+					$color = $this->convert_color_to_rgba($_POST['color']);
+					$additional = $this->convert_color_to_rgba($_POST['additional']);
+					
+					$response = array_merge(array('ok' => true), $this->get_wcag_color_and_rating($color, $additional));
+				}
+			}
 		}
 		
 		echo json_encode($response);
@@ -1032,12 +1105,47 @@ class CombinedTaxonomiesTagCloudWidget extends WP_Widget {
 	}
 	
 	
-	private function get_wcag_color_and_rating(string $color, bool $just_rating = false) {
+	
+	// all colours should be at least valid at this point, but may be hex/rgb/rgba ...
+	private function convert_color_to_rgba($color): array {
 		
-		$contrast = $this->get_contrasting_text_color($color);
+		if (is_string($color)) {
+			
+			// convert non-rgb strings (ie. hex) like #f0f, #ff00ff, #ff00ffff to an array
+			if (strpos($color, 'rgb') === false) {
+				
+				// arosolino @ https://stackoverflow.com/a/17115500
+				$rgba = array_map(
+					function($c) {
+						return hexdec(str_pad($c, 2, $c));
+					}, str_split(ltrim($color, '#'), strlen($color) > 4 ? 2 : 1)
+				);
+			
+			} else {
+				$rgba = explode(',', trim($color, 'rgba()'));
+			}
+			
+			if (sizeof($rgba) == 3) $rgba[] = 1; // wasn't transparent
+			
+		} elseif (is_array($color)) {
+			
+			$rgba = $color;
+			
+		}
+		
+		return $rgba;
+	}
+	
+	
+	
+	private function get_wcag_color_and_rating(array $color, array $additional, bool $just_rating = false) {
+		
+		$blend = $this->blend_arrays($color, $additional);
+		
+		$contrast = $this->get_contrasting_text_color($blend);
 		
 		// https://www.w3.org/TR/UNDERSTANDING-WCAG20/visual-audio-contrast-contrast.html
-		$ratio = $this->get_contrast_ratio(array($color, $contrast));
+		$ratio = $this->get_contrast_ratio(array($blend, $contrast));
 		
 		if ($ratio >= 7)
 			$wcag = 'AAA';
@@ -1050,7 +1158,8 @@ class CombinedTaxonomiesTagCloudWidget extends WP_Widget {
 		
 		$return = $wcag; if (! $just_rating) {
 			$return = array(
-				'contrast'	=> $contrast,
+				'contrast'	=> vsprintf('rgba(%d,%d,%d,%.2f)', $contrast),
+				'against'	=> $blend,
 				'ratio'		=> $ratio,
 				'wcag'		=> $wcag,
 			);
@@ -1060,14 +1169,43 @@ class CombinedTaxonomiesTagCloudWidget extends WP_Widget {
 	}
 	
 	
-	private function get_contrasting_text_color(string $hex): string {
-		$hex = $this->convert_rgb_string_to_hex($hex);
-		return ($this->get_luminance($hex) >= 0.1791) ? '#000000' : '#ffffff';
+	private function blend_arrays(array $color1, array $color2): array {
+		$rgba = $color1;
+		
+		// only blend with the other colour if we have some transparency
+		if ($color1[3] < 1) {
+			
+			// and if it's completely transparent then forget it
+			if ($color1[3] == 0) {
+				$rgba = $color2;
+				
+			} else {
+				
+				$rgba = array(
+					round($color1[0]*$color1[3] + $color2[0]*(1-$color1[3])),
+					round($color1[1]*$color1[3] + $color2[1]*(1-$color1[3])),
+					round($color1[2]*$color1[3] + $color2[2]*(1-$color1[3])),
+					$color1[3] *1,
+				);
+			
+			}
+		}
+		
+		return $rgba;
 	}
+	
+	
+	private function get_contrasting_text_color(array $rgba): array {
+		return ($this->get_luminance($this->convert_rgba_to_hex($rgba)) >= 0.1791) ? [0,0,0,1] : [255,255,255,1];
+	}
+	
+	
 	
 	private function get_contrast_ratio(array $colors): float {
 		// $colors should be an array of two strings (hex codes)
-		$colors = array_map([$this, 'get_luminance'], array_map([$this, 'convert_rgb_string_to_hex'], $colors)); rsort($colors);
+		$colors = array_map([$this, 'get_luminance'], array_map([$this, 'convert_rgba_to_hex'], $colors));
+		
+		rsort($colors);
 		$contrast = ($colors[0] + 0.05) / ($colors[1] + 0.05);
 		return round($contrast, 3);
 	}
@@ -1080,13 +1218,6 @@ class CombinedTaxonomiesTagCloudWidget extends WP_Widget {
 		return $luminance;
 	}
 	
-	// https://stackoverflow.com/a/56678483
-	private function get_perceptual_lightness(string $hex): float {
-		$luminance = $this->get_luminance($hex);
-		// and convert to L*
-		$lightness = ($luminance <= 0.008856) ? $luminance * 903.3 : (pow($luminance, (1/3)) * 116) - 16;
-		return $lightness;
-	}
 	
 	private function get_decimal_color(string $hex): array {
 		list($r, $g, $b) = sscanf($hex, "#%02x%02x%02x");
@@ -1097,6 +1228,18 @@ class CombinedTaxonomiesTagCloudWidget extends WP_Widget {
 		return ($value <= 0.04045) ? $value / 12.92 : pow((($value + 0.055)/1.055), 2.4);
 	}
 	
+	private function convert_rgba_to_hex(array $rgba): string {
+		return sprintf("#%02x%02x%02x", $rgba[0], $rgba[1], $rgba[2]);
+	}
+	
+	/*
+	// https://stackoverflow.com/a/56678483
+	private function get_perceptual_lightness(string $hex): float {
+		$luminance = $this->get_luminance($hex);
+		// and convert to L*
+		$lightness = ($luminance <= 0.008856) ? $luminance * 903.3 : (pow($luminance, (1/3)) * 116) - 16;
+		return $lightness;
+	}
 	private function convert_rgb_string_to_hex(string $rgb): string {
 		if (strpos($rgb, ',')) { // then the colour is either RGB or RGBA (remember we've already checked validity)
 			$rgb = explode(',', $rgb);
@@ -1105,7 +1248,7 @@ class CombinedTaxonomiesTagCloudWidget extends WP_Widget {
 			$hex = $rgb;
 		}
 		return $hex;
-	}
+	}*/
 	
 	
 }

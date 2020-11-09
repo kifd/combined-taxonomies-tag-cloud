@@ -128,27 +128,35 @@
 		const widget = dom.parents('form:first');
 		const cssvar = dom.data('css-var');
 		
-		let val = dom.val();
-		if (dom.data('is-size')) val+= font_unit;
+		let val = dom.val(); if (dom.data('is-size')) val+= font_unit;
 		
 		$(widget).css('--'+cssvar, val);
-		//console.log('set '+cssvar+' to '+val);
+		console.log('set '+cssvar+' to '+val);
 		
-		if (cssvar == 'backColor1') {
-			setContrast({
-				'against': dom.val(),
-				'widget': $(widget),
-				'set_var': 'textColor1',
-				'wcag': $(dom).parents('p').children('.wcag')
-			});
+		
+		const wcag = {
+			'backColor1': 'textColor1',
+			'backColor2': 'textColor2',
+			//'widgetBackgroundColor': both
+		};
+		
+		
+		if (wcag.hasOwnProperty(cssvar) && $('.auto_text_color', widget).prop('checked')) {
 			
-		} else if (cssvar == 'backColor2') {
-			setContrast({
+			let color = {
 				'against': dom.val(),
 				'widget': $(widget),
-				'set_var': 'textColor2',
-				'wcag': $(dom).parents('p').children('.wcag')
-			});
+				'set_var': wcag[cssvar],
+				'wcag': $(dom).parents('p').children('.wcag'),
+				'additional': $(widget).css('--widgetBackgroundColor')
+			}
+			
+			// NOTE: if the widget background is transparent, then we assume the background behind that is white
+			// TODO: implement dark mode or use magic to find out what it really is
+			if (typeof color.additional === 'undefined') color.additional = 'rgba(255,255,255,1)';
+			
+			// TODO: replace the ajax call to php with js implementation
+			setContrast(color);
 		}
 	}
 
@@ -241,16 +249,19 @@
 			data:			{
 								'action': 'cttc_get_contrast',
 								'_ajax_nonce': cttc_ajax.nonce,
-								'color': color.against,
+								'color': color.against,			// the background we're contrasting against
+								'additional': color.additional, // and the widget background to the background in case of transparency
 							},
 			success:		function(response) {
 								if (response.ok == true) {
 									$(color.widget).css('--'+color.set_var, response.contrast);
 									$(color.wcag).html(response.wcag);
+									
+									console.log('cool', response, color);
 									//console.log(color.against, response.contrast, response.ratio, response.wcag);
 									
 								} else {
-									console.log('error', response);
+									console.log('error', response, color);
 									//$(color.wcag).html('Error');
 								}
 							},

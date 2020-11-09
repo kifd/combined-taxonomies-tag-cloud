@@ -1,13 +1,13 @@
 === Combined Taxonomies Tag Cloud ===
-Contributors: keith_wp
-Author Link: https://drakard.com/
-Tags: tag cloud, taxonomy tag cloud, tag cloud widget, tag, cloud, widget, tag cloud post type, custom tag cloud, combined tag cloud, custom post tag cloud, change tag cloud, redirect single tag, remove single tag
-Requires at least: 3.8 or higher
-Tested up to: 5.5
-Requires PHP: 7.2
-Stable tag: 0.33
-License: GPLv2 or later
-License URI: http://www.gnu.org/licenses/gpl-2.0.html
+Contributors:		keith_wp
+Author Link:		https://drakard.com/
+Requires at least:	3.8 or higher
+Tested up to:		5.5
+Requires PHP	:	7.2
+Stable tag:			0.34
+License:			GPLv3 or later
+License URI:		https://www.gnu.org/licenses/gpl-3.0.html
+Tags:				tag cloud, taxonomy tag cloud, tag cloud widget, tag, cloud, widget, tag cloud post type, custom tag cloud, combined tag cloud, custom post tag cloud, change tag cloud, redirect single tag, remove single tag
 
 A widget to make tag clouds out of multiple taxonomies, across multiple post types and control their appearance.
 
@@ -66,6 +66,11 @@ Note all screenshots are for versions older than 0.22 at the mo...
 
 == Changelog ==
 
+
+= 0.34 =
+* Enhancement: added toggle for auto text coloring
+* Note: update GPL license to 3.0
+
 = 0.33 =
 * Enhancement: added tag padding controls
 * Enhancement: improved inset shadow, added a few more effects
@@ -85,7 +90,6 @@ Note all screenshots are for versions older than 0.22 at the mo...
 * Enhancement: font stack applies to widget title as well
 * Enhancement: added choice of tag highlighting effects
 * Enhancement: now uses CSS vars for easier customising
-* Bugfix: more code tidying and UI fiddling
 * Note: requires php7+ now due to type hinting etc
 
 = 0.30 =
@@ -142,20 +146,21 @@ Note all screenshots are for versions older than 0.22 at the mo...
 
 == To-Do List ==
 
-* rewrite admin js, esp re css vars
+* rewrite form + admin js, esp re css vars - load all config vars into js
+* do wcag contrast in js as well
+
+
 * widget vertical alignment to follow per line?
-* force save colors as rgba to simplify code
-* ? wcag contrast including alpha
+
 
 * auto highlight matching tags on archive pages
 * only show tags for terms used in the category being viewed
 * more effects
 * different way relative sizes are calculated - ie. log
 * temporarily save widget fieldset open/close states while editing
-* colors per term - use termmeta?
+* ? colours per term - use termmeta
 * setting to toggle white-space wrap
 
-* new screenshots...
 
 * ? make taxonomies select update on post type change, ajax like excluded
 

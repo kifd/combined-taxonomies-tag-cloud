@@ -216,11 +216,15 @@ $colour-legend: #eaeaea;
 		
 		b {
 			flex-grow: 1;
+			padding-right: 0.8em;
 		}
 		
 		span.half {
 			display: flex;
 			flex-grow: 1;
+			background-color: var(--widgetBackgroundColor, transparent);
+			justify-content: var(--alignHorizontal, left);
+			padding: 0.4em;
 			
 			a {
 				cursor: pointer;

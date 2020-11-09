@@ -6,9 +6,12 @@
 		list-style: none;
 		margin: 0; padding: 0;
 		
+		justify-content: left;
+		
 		li {
 			margin: 0; padding: 0; border: 0; background-color: transparent;
 			max-width: 100%;
+			align-self: start;
 		}
 		
 		// NOTE: default look for browsers that don't support CSS vars is approx
@@ -35,24 +38,6 @@
 			}
 		}
 		
-		&.left {
-			justify-content: left;
-		}
-		&.center {
-			justify-content: center;
-		}
-		&.right {
-			justify-content: right;
-		}
-		&.top li {
-			align-self: start;
-		}
-		&.middle li {
-			align-self: center;
-		}
-		&.bottom li {
-			align-self: end;
-		}
 		
 		a {
 			&.smaller {
@@ -108,6 +93,10 @@
 			.combined-taxonomies-tag-cloud {
 				column-gap: var(--columnGap, 0.5em);
 				row-gap: var(--rowGap, 0.5em);
+				justify-content: var(--alignHorizontal, left);
+				li {
+					align-self: var(--alignVertical, start);
+				}
 			}
 		}
 		
