@@ -103,13 +103,11 @@ $config['choices'] = array(
 							'fx_bg_none' 		=> array(
 								'name'				=> __('None', 'CombinedTaxonomiesTagCloud'),
 								'hide-these'		=> array('tcolor1', 'tcolor2'),
-								//'contrast'		=> array('tcolor1', 'tcolor1'),
 							),
 							'fx_bg_static' 		=> array(
 								'name'				=> __('Static', 'CombinedTaxonomiesTagCloud'),
 								'show-these'		=> array('tcolor1'),
 								'hide-these'		=> array('tcolor2'),
-								//'contrast'		=> array('tcolor1', 'tcolor1'),
 							),
 							'fx_bg_fade'		=> array(
 								'name'				=> __('Switch', 'CombinedTaxonomiesTagCloud'),
@@ -137,6 +135,14 @@ $config['choices'] = array(
 							),
 							'fx_bg_radial_out'	=>  array(
 								'name'				=> __('Radial Out', 'CombinedTaxonomiesTagCloud'),
+								'show-these'		=> array('tcolor1', 'tcolor2'),
+							),
+							'fx_bg_rectangle_in'	=>  array(
+								'name'				=> __('Rectangle In', 'CombinedTaxonomiesTagCloud'),
+								'show-these'		=> array('tcolor1', 'tcolor2'),
+							),
+							'fx_bg_rectangle_out'	=>  array(
+								'name'				=> __('Rectangle Out', 'CombinedTaxonomiesTagCloud'),
 								'show-these'		=> array('tcolor1', 'tcolor2'),
 							),
 							'fx_bg_underline_center_out'	=> array(
@@ -251,6 +257,7 @@ $config['defaults'] = array(
 	'fx_backgrounds'	=> 'fx_bg_none',
 	'fx_shadows'		=> 'fx_sh_none',
 	'fx_two_dee'		=> 'fx_2d_none',
+	'fx_timing'			=> 0.3,
 	'highlight'			=> '',
 	'largest' 			=> 1.40,
 	'maximum'			=> 999,

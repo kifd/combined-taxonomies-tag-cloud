@@ -123,7 +123,7 @@
 				background-color: var(--backColor1, transparent);
 				color: var(--textColor1, #000000);
 				
-				transition: color 0.3s, background-color 0.3s;
+				transition: all var(--fxTimingSpeed, 0.3s) var(--fxTimingFunction, ease-out);
 				
 				transform: scale(1) rotate(0);
 
@@ -144,7 +144,7 @@
 					border-radius: var(--borderRadius, 0.1em);
 					z-index: -1;
 					top: 0; bottom: 0; left: 0; right: 0;
-					transition: all 0.3s ease-out;
+					transition: all var(--fxTimingSpeed, 0.3s) var(--fxTimingFunction, ease-out);
 				}
 				
 				&:after {
@@ -241,7 +241,9 @@
 				
 				
 				&.fx_bg_radial_in,
-				&.fx_bg_radial_out {
+				&.fx_bg_radial_out,
+				&.fx_bg_rectangle_in,
+				&.fx_bg_rectangle_out {
 					transform: perspective(1px) translateZ(0);
 					
 					&:before {
@@ -256,8 +258,8 @@
 					}
 				}
 				
-				
-				&.fx_bg_radial_in {
+				&.fx_bg_radial_in,
+				&.fx_bg_rectangle_in {
 					background-color: var(--backColor2);
 					
 					&:before {
@@ -270,6 +272,15 @@
 						}
 					}
 				}
+				
+				&.fx_bg_rectangle_in,
+				&.fx_bg_rectangle_out {
+					&:before {
+						border-radius: 0;
+					}
+				}
+				
+				
 				
 				&.fx_bg_underline_center_out,
 				&.fx_bg_overline_center_out,

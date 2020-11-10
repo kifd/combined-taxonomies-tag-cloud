@@ -128,7 +128,12 @@
 		const widget = dom.parents('form:first');
 		const cssvar = dom.data('css-var');
 		
-		let val = dom.val(); if (dom.data('is-size')) val+= font_unit;
+		let val = dom.val();
+		// css vars that need units need them before the browser inserts spaces where it shouldn't
+		if (dom.data('is-size'))
+			val+= font_unit;
+		else if (dom.data('is-time'))
+			val+= 's';
 		
 		$(widget).css('--'+cssvar, val);
 		console.log('set '+cssvar+' to '+val);

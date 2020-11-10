@@ -251,6 +251,8 @@ class CombinedTaxonomiesTagCloudWidget extends WP_Widget {
 			
 			sprintf('--linkPaddingX:%.2f%s;', $args['tag_padding_x'], $args['font_unit']),
 			sprintf('--linkPaddingY:%.2f%s;', $args['tag_padding_y'], $args['font_unit']),
+			
+			sprintf('--fxTimingSpeed:%.2fs;', $args['fx_timing']),
 		
 			vsprintf('--backColor1:rgba(%d,%d,%d,%.2f);', $args['tcolor1']),
 			vsprintf('--backColor2:rgba(%d,%d,%d,%.2f);', $args['tcolor2']),
@@ -296,6 +298,7 @@ class CombinedTaxonomiesTagCloudWidget extends WP_Widget {
 		$instance['border_width'] = sprintf('%0.2f', (float) $new['border_width']);
 		$instance['column_gap'] = sprintf('%0.2f', (float) $new['column_gap']);
 		$instance['font_base'] = sprintf('%0.2f', (float) $new['font_base']);
+		$instance['fx_timing'] = sprintf('%0.2f', (float) $new['fx_timing']);
 		$instance['largest'] = sprintf('%0.2f', (float) $new['largest']);
 		$instance['maximum'] = absint($new['maximum']);
 		$instance['row_gap'] = sprintf('%0.2f', (float) $new['row_gap']);
@@ -351,7 +354,7 @@ class CombinedTaxonomiesTagCloudWidget extends WP_Widget {
 		$instance['tborder2'] = ($this->is_valid_color($new['tborder2'])) ? $new['tborder2'] : $this->defaults['tborder2'];
 		$instance['tshadow'] = ($this->is_valid_color($new['tshadow'])) ? $new['tshadow'] : $this->defaults['tshadow'];
 		
-		// TODO: not deleting single page highlighting now
+		// BUG: not deleting single page highlighting now
 		// either something's changed or we pressed the save button for the sake of it. regardless, delete our saved html and start again
 		$this->transient = 'combined_taxonomies_tag_cloud_'.$this->id;
 		delete_transient($this->transient);
@@ -749,6 +752,15 @@ class CombinedTaxonomiesTagCloudWidget extends WP_Widget {
 				
 				. sprintf('<fieldset><legend>%s</legend><div>', __('Tag Effects', 'CombinedTaxonomiesTagCloud'))
 				
+				. sprintf('<p title="%s"><label for="%s">%s:</label><input type="number" min="0" step="0.01" size="3" id="%s" name="%s" value="%s" data-css-var="fxTimingSpeed" data-is-time="true"><span class="time_units">%s</span></p>',
+						__('How quickly will the highlighting effects happen', 'CombinedTaxonomiesTagCloud'),
+						esc_attr($this->get_field_id('fx_timing')),
+						__('Effect Speed', 'CombinedTaxonomiesTagCloud'),
+						esc_attr($this->get_field_id('fx_timing')),
+						esc_attr($this->get_field_name('fx_timing')),
+						(float) $instance['fx_timing'],
+						__('seconds', 'CombinedTaxonomiesTagCloud')
+					)
 				
 				// --- Backgrounds ---------------------------------------------------------------------------------------------
 				. sprintf('<p title="%s"><label for="%s">%s:</label>%s</p>',

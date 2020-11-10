@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: CombinedTaxonomiesTagCloud\n"
-"POT-Creation-Date: 2020-11-10 11:38+0000\n"
-"PO-Revision-Date: 2020-11-10 11:42+0000\n"
+"POT-Creation-Date: 2020-11-10 12:15+0000\n"
+"PO-Revision-Date: 2020-11-10 12:15+0000\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: en_GB\n"
@@ -52,8 +52,8 @@ msgstr ""
 msgid "Bottom"
 msgstr ""
 
-#: config.php:65 config.php:104 config.php:157 config.php:183 config.php:205
-#: config.php:228
+#: config.php:65 config.php:104 config.php:163 config.php:189 config.php:211
+#: config.php:234
 msgid "None"
 msgstr ""
 
@@ -89,139 +89,147 @@ msgstr ""
 msgid "Outset"
 msgstr ""
 
-#: config.php:109
+#: config.php:108
 msgid "Static"
 msgstr ""
 
-#: config.php:115
+#: config.php:113
 msgid "Switch"
 msgstr ""
 
-#: config.php:119
+#: config.php:117
 msgid "Sweep Up"
 msgstr ""
 
-#: config.php:123
+#: config.php:121
 msgid "Sweep Down"
 msgstr ""
 
-#: config.php:127
+#: config.php:125
 msgid "Sweep Left"
 msgstr ""
 
-#: config.php:131
+#: config.php:129
 msgid "Sweep Right"
 msgstr ""
 
-#: config.php:135
+#: config.php:133
 msgid "Radial In"
 msgstr ""
 
-#: config.php:139
+#: config.php:137
 msgid "Radial Out"
 msgstr ""
 
-#: config.php:143
+#: config.php:141
+msgid "Rectangle In"
+msgstr ""
+
+#: config.php:145
+msgid "Rectangle Out"
+msgstr ""
+
+#: config.php:149
 msgid "Underline Center Out"
 msgstr ""
 
-#: config.php:147
+#: config.php:153
 msgid "Overline Center Out"
 msgstr ""
 
-#: config.php:151
+#: config.php:157
 msgid "Both Center Out"
 msgstr ""
 
-#: config.php:161 cttc-widget.php:862
+#: config.php:167 cttc-widget.php:874
 msgid "Shadow"
 msgstr ""
 
-#: config.php:165
+#: config.php:171
 msgid "Shadow Inset"
 msgstr ""
 
-#: config.php:169
+#: config.php:175
 msgid "Shadow Glow"
 msgstr ""
 
-#: config.php:173
+#: config.php:179
 msgid "Box Shadow Inset"
 msgstr ""
 
-#: config.php:177
+#: config.php:183
 msgid "Box Shadow Outset"
 msgstr ""
 
-#: config.php:186
+#: config.php:192
 msgid "Grow"
 msgstr ""
 
-#: config.php:189
+#: config.php:195
 msgid "Shrink"
 msgstr ""
 
-#: config.php:192
+#: config.php:198
 msgid "Rotate"
 msgstr ""
 
-#: config.php:195
+#: config.php:201
 msgid "Grow &amp; Rotate"
 msgstr ""
 
-#: config.php:198
+#: config.php:204
 msgid "Skew"
 msgstr ""
 
-#: config.php:202 config.php:216 config.php:222 config.php:227 config.php:249
+#: config.php:208 config.php:222 config.php:228 config.php:233 config.php:255
 msgid "Leave Alone"
 msgstr ""
 
-#: config.php:206
+#: config.php:212
 msgid "On Single Pages"
 msgstr ""
 
-#: config.php:209
+#: config.php:215
 msgid "Alphabetically"
 msgstr ""
 
-#: config.php:210
+#: config.php:216
 msgid "By Count"
 msgstr ""
 
-#: config.php:211
+#: config.php:217
 msgid "Randomly"
 msgstr ""
 
-#: config.php:217
+#: config.php:223
 msgid "Remove"
 msgstr ""
 
-#: config.php:218
+#: config.php:224
 msgid "Link to Entry"
 msgstr ""
 
-#: config.php:223
+#: config.php:229
 msgid "lowercase"
 msgstr ""
 
-#: config.php:224
+#: config.php:230
 msgid "UPPERCASE"
 msgstr ""
 
-#: config.php:229
+#: config.php:235
 msgid "Always Underline"
 msgstr ""
 
-#: config.php:230
+#: config.php:236
 msgid "Underline on Hover"
 msgstr ""
 
-#: config.php:231
+#: config.php:237
 msgid "Box Shadow on Hover"
 msgstr ""
 
-#: config.php:232
+#: config.php:238
 msgid "Underline to Dots"
 msgstr ""
 
@@ -238,162 +246,162 @@ msgid ""
 "CTTC: You need to pick some post types and taxonomies to go in this widget."
 msgstr ""
 
-#: cttc-widget.php:490
+#: cttc-widget.php:493
 msgid "Types &amp; Taxonomies"
 msgstr ""
 
-#: cttc-widget.php:492
+#: cttc-widget.php:495
 msgid "Count only tags belonging to these types of post"
 msgstr ""
 
-#: cttc-widget.php:494
+#: cttc-widget.php:497
 msgid "Include These Post Types"
 msgstr ""
 
-#: cttc-widget.php:498
+#: cttc-widget.php:501
 msgid "Count only tags belonging to these types of taxonomy"
 msgstr ""
 
-#: cttc-widget.php:500
+#: cttc-widget.php:503
 msgid "Include These Taxonomies"
 msgstr ""
 
-#: cttc-widget.php:504
+#: cttc-widget.php:507
 msgid ""
 "Ignore these tags - though if posts have non-excluded tags as well, they "
 "will still get included"
 msgstr ""
 
-#: cttc-widget.php:506
+#: cttc-widget.php:509
 msgid "Exclude These Tags"
 msgstr ""
 
-#: cttc-widget.php:514
+#: cttc-widget.php:517
 msgid "Fonts"
 msgstr ""
 
-#: cttc-widget.php:516
+#: cttc-widget.php:519
 msgid ""
 "Choose a font stack - if in doubt, leave it for your theme or font plugin to "
 "handle"
 msgstr ""
 
-#: cttc-widget.php:518
+#: cttc-widget.php:521
 msgid "Font Stack"
 msgstr ""
 
-#: cttc-widget.php:523
+#: cttc-widget.php:526
 msgid ""
 "These are the units used within the widget - best to follow what the rest of "
 "your theme is using"
 msgstr ""
 
-#: cttc-widget.php:525
+#: cttc-widget.php:528
 msgid "Font Units"
 msgstr ""
 
-#: cttc-widget.php:529
+#: cttc-widget.php:532
 msgid ""
 "Changing this will affect the relative sizing of all the other widget text"
 msgstr ""
 
-#: cttc-widget.php:531
+#: cttc-widget.php:534
 msgid "Base Font Size"
 msgstr ""
 
-#: cttc-widget.php:537
+#: cttc-widget.php:540
 msgid "Make the size of the tag bigger if more posts have it"
 msgstr ""
 
-#: cttc-widget.php:539
+#: cttc-widget.php:542
 msgid "Scale Font"
 msgstr ""
 
-#: cttc-widget.php:546
+#: cttc-widget.php:549
 msgid "Even a tag with only one post will not be smaller than this"
 msgstr ""
 
-#: cttc-widget.php:548
+#: cttc-widget.php:551
 msgid "Smallest Size"
 msgstr ""
 
-#: cttc-widget.php:554
+#: cttc-widget.php:557
 msgid "Even a tag with a million posts will not be larger than this"
 msgstr ""
 
-#: cttc-widget.php:556
+#: cttc-widget.php:559
 msgid "Largest Size"
 msgstr ""
 
-#: cttc-widget.php:566
+#: cttc-widget.php:569
 msgid "Widget Appearance"
 msgstr ""
 
-#: cttc-widget.php:568
+#: cttc-widget.php:571
 msgid "Add a title to the tag cloud"
 msgstr ""
 
-#: cttc-widget.php:570
+#: cttc-widget.php:573
 msgid "Title"
 msgstr ""
 
-#: cttc-widget.php:576
+#: cttc-widget.php:579
 msgid "Set the color of the title text"
 msgstr "Set the colour of the title text"
 
-#: cttc-widget.php:578
+#: cttc-widget.php:581
 msgid "Title Color"
 msgstr "Title Colour"
 
-#: cttc-widget.php:585
+#: cttc-widget.php:588
 msgid "How to align the title horizontally within the widget"
 msgstr ""
 
-#: cttc-widget.php:587
+#: cttc-widget.php:590
 msgid "Title Alignment"
 msgstr ""
 
-#: cttc-widget.php:592
+#: cttc-widget.php:595
 msgid "How much spacing is between each tag in the widget"
 msgstr ""
 
-#: cttc-widget.php:594
+#: cttc-widget.php:597
 msgid "Column Gap"
 msgstr ""
 
-#: cttc-widget.php:600
+#: cttc-widget.php:603
 msgid "How much spacing is between each row of tags in the widget"
 msgstr ""
 
-#: cttc-widget.php:602
+#: cttc-widget.php:605
 msgid "Row Gap"
 msgstr ""
 
-#: cttc-widget.php:609
+#: cttc-widget.php:612
 msgid "How to align the tags horizontally within the widget"
 msgstr ""
 
-#: cttc-widget.php:611
+#: cttc-widget.php:614
 msgid "Horizontal Alignment"
 msgstr ""
 
-#: cttc-widget.php:615
+#: cttc-widget.php:618
 msgid "How to align the tags vertically within each line of the cloud"
 msgstr ""
 
-#: cttc-widget.php:617
+#: cttc-widget.php:620
 msgid "Vertical Alignment"
 msgstr ""
 
-#: cttc-widget.php:622
+#: cttc-widget.php:625
 msgid "Set the background color of the whole widget"
 msgstr "Set the background colour of the whole widget"
 
-#: cttc-widget.php:624
+#: cttc-widget.php:627
 msgid "Widget Background"
 msgstr ""
 
-#: cttc-widget.php:631
+#: cttc-widget.php:634
 msgid ""
 "Make the corners of the widget round - only useful if you have a background "
 "color!"
@@ -401,145 +409,157 @@ msgstr ""
 "Make the corners of the widget round - only useful if you have a background "
 "colour!"
 
-#: cttc-widget.php:633 cttc-widget.php:852
+#: cttc-widget.php:636 cttc-widget.php:864
 msgid "Rounded Corners"
 msgstr ""
 
-#: cttc-widget.php:639
+#: cttc-widget.php:642
 msgid "Add padding to the whole widget"
 msgstr ""
 
-#: cttc-widget.php:641
+#: cttc-widget.php:644
 msgid "Padding"
 msgstr ""
 
-#: cttc-widget.php:652
+#: cttc-widget.php:655
 msgid "Widget Behavior"
 msgstr ""
 
-#: cttc-widget.php:654
+#: cttc-widget.php:657
 msgid "How the tag cloud will be ordered"
 msgstr ""
 
-#: cttc-widget.php:656
+#: cttc-widget.php:659
 msgid "Order Tags By"
 msgstr ""
 
-#: cttc-widget.php:660
+#: cttc-widget.php:663
 msgid "Choose to reverse whatever order you just picked"
 msgstr ""
 
-#: cttc-widget.php:662
+#: cttc-widget.php:665
 msgid "Reverse Order"
 msgstr ""
 
-#: cttc-widget.php:668
+#: cttc-widget.php:671
 msgid "The maximum number of tags that will be shown in this particular widget"
 msgstr ""
 
-#: cttc-widget.php:670
+#: cttc-widget.php:673
 msgid "Maximum Shown"
 msgstr ""
 
-#: cttc-widget.php:676
+#: cttc-widget.php:679
 msgid ""
 "Automatically add the highlight style to matching tags in the cloud when ..."
 msgstr ""
 
-#: cttc-widget.php:678
+#: cttc-widget.php:681
 msgid "Auto Highlight"
 msgstr ""
 
-#: cttc-widget.php:682
+#: cttc-widget.php:685
 msgid "What to do with tags that only have one post associated with them"
 msgstr ""
 
-#: cttc-widget.php:684
+#: cttc-widget.php:687
 msgid "Single Entry Tags"
 msgstr ""
 
-#: cttc-widget.php:688
+#: cttc-widget.php:691
 msgid "Add the rel=&quot;nofollow&quot; attribute to each of the tags"
 msgstr ""
 
-#: cttc-widget.php:690
+#: cttc-widget.php:693
 msgid "Make Links No-Follow"
 msgstr ""
 
-#: cttc-widget.php:696
+#: cttc-widget.php:699
 msgid "You can cache the generated tag cloud to save working it out every time"
 msgstr ""
 
-#: cttc-widget.php:698
+#: cttc-widget.php:701
 msgid "Save Cloud For (Hours)"
 msgstr ""
 
-#: cttc-widget.php:707
+#: cttc-widget.php:710
 msgid "Tag Appearance"
 msgstr ""
 
-#: cttc-widget.php:710
+#: cttc-widget.php:713
 msgid "Show the count of the number of posts that have that term"
 msgstr ""
 
-#: cttc-widget.php:712
+#: cttc-widget.php:715
 msgid "Show Count in Tags"
 msgstr ""
 
-#: cttc-widget.php:718
+#: cttc-widget.php:721
 msgid ""
 "You can change the case of all the tags if you wish to make them consistent"
 msgstr ""
 
-#: cttc-widget.php:720
+#: cttc-widget.php:723
 msgid "Text Case"
 msgstr ""
 
-#: cttc-widget.php:724
+#: cttc-widget.php:727
 msgid "Change how the tag text uses the CSS text decoration property"
 msgstr ""
 
-#: cttc-widget.php:726
+#: cttc-widget.php:729
 msgid "Text Decoration"
 msgstr ""
 
-#: cttc-widget.php:730
+#: cttc-widget.php:733
 msgid "Add horizontal padding to each tag"
 msgstr ""
 
-#: cttc-widget.php:732
+#: cttc-widget.php:735
 msgid "Horizontal Padding"
 msgstr ""
 
-#: cttc-widget.php:738
+#: cttc-widget.php:741
 msgid "Add vertical padding to each tag"
 msgstr ""
 
-#: cttc-widget.php:740
+#: cttc-widget.php:743
 msgid "Vertical Padding"
 msgstr ""
 
-#: cttc-widget.php:750
+#: cttc-widget.php:753
 msgid "Tag Effects"
 msgstr ""
 
-#: cttc-widget.php:755
+#: cttc-widget.php:756
+msgid "How quickly will the highlighting effects happen"
+msgstr ""
+
+#: cttc-widget.php:758
+msgid "Effect Speed"
+msgstr ""
+
+#: cttc-widget.php:762
+msgid "seconds"
+msgstr ""
+
+#: cttc-widget.php:767
 msgid "What background effect to apply to these tags"
 msgstr ""
 
-#: cttc-widget.php:757
+#: cttc-widget.php:769
 msgid "Background"
 msgstr ""
 
-#: cttc-widget.php:761
+#: cttc-widget.php:773
 msgid "Choose the first color this effect uses"
 msgstr "Choose the first colour this effect uses"
 
-#: cttc-widget.php:763
+#: cttc-widget.php:775
 msgid "Color 1"
 msgstr "Colour 1"
 
-#: cttc-widget.php:769 cttc-widget.php:782
+#: cttc-widget.php:781 cttc-widget.php:794
 msgid ""
 "When the auto text color is used on top of this color, what rating will it "
 "get under the WCAG guidelines for contrast?"
@@ -547,141 +567,141 @@ msgstr ""
 "When the auto text colour is used on top of this colour, what rating will it "
 "get under the WCAG guidelines for contrast?"
 
-#: cttc-widget.php:774
+#: cttc-widget.php:786
 msgid "Choose the second color this effect uses"
 msgstr "Choose the second colour this effect uses"
 
-#: cttc-widget.php:776
+#: cttc-widget.php:788
 msgid "Color 2"
 msgstr "Colour 2"
 
-#: cttc-widget.php:789
+#: cttc-widget.php:801
 msgid "Automatically pick text colors that contrast the background"
 msgstr "Automatically pick text colours that contrast the background"
 
-#: cttc-widget.php:791
+#: cttc-widget.php:803
 msgid "Auto Text Color"
 msgstr "Auto Text Colour"
 
-#: cttc-widget.php:798
+#: cttc-widget.php:810
 msgid "Choose the color to use normally"
 msgstr "Choose the colour to use normally"
 
-#: cttc-widget.php:800
+#: cttc-widget.php:812
 msgid "Text Color 1"
 msgstr "Text Colour 1"
 
-#: cttc-widget.php:807
+#: cttc-widget.php:819
 msgid "Choose the color to use for highlighting"
 msgstr "Choose the colour to use for highlighting"
 
-#: cttc-widget.php:809
+#: cttc-widget.php:821
 msgid "Text Color 2"
 msgstr "Text Colour 2"
 
-#: cttc-widget.php:818
+#: cttc-widget.php:830
 msgid "Alter the appearance of the border of a tag"
 msgstr ""
 
-#: cttc-widget.php:820
+#: cttc-widget.php:832
 msgid "Border Style"
 msgstr ""
 
-#: cttc-widget.php:824
+#: cttc-widget.php:836
 msgid "Choose the border color of a tag"
 msgstr "Choose the border colour of a tag"
 
-#: cttc-widget.php:826
+#: cttc-widget.php:838
 msgid "Color"
 msgstr "Colour"
 
-#: cttc-widget.php:833
+#: cttc-widget.php:845
 msgid "Choose the border color of a tag when highlighted"
 msgstr "Choose the border colour of a tag when highlighted"
 
-#: cttc-widget.php:835
+#: cttc-widget.php:847
 msgid "Color (Highlight)"
 msgstr "Colour (Highlight)"
 
-#: cttc-widget.php:842
+#: cttc-widget.php:854
 msgid "How big is the border of a tag"
 msgstr ""
 
-#: cttc-widget.php:844
+#: cttc-widget.php:856
 msgid "Size"
 msgstr ""
 
-#: cttc-widget.php:850
+#: cttc-widget.php:862
 msgid ""
 "Make the corners of the tag round - NOTE: set this to twice the border width "
 "to make the corners round on the inside as well as the outside"
 msgstr ""
 
-#: cttc-widget.php:860
+#: cttc-widget.php:872
 msgid "What shadow effect to apply to these tags when highlighted"
 msgstr ""
 
-#: cttc-widget.php:866
+#: cttc-widget.php:878
 msgid "Choose the shadow color this effect uses"
 msgstr "Choose the shadow colour this effect uses"
 
-#: cttc-widget.php:868
+#: cttc-widget.php:880
 msgid "Shadow Color"
 msgstr "Shadow Colour"
 
-#: cttc-widget.php:877
+#: cttc-widget.php:889
 msgid "What movement effect will apply to these tags"
 msgstr ""
 
-#: cttc-widget.php:879
+#: cttc-widget.php:891
 msgid "Movement"
 msgstr ""
 
-#: cttc-widget.php:888
+#: cttc-widget.php:900
 msgid "Shortcode"
 msgstr ""
 
-#: cttc-widget.php:890
+#: cttc-widget.php:902
 msgid "You can use this shortcode to display the widget on its own"
 msgstr ""
 
-#: cttc-widget.php:892
+#: cttc-widget.php:904
 msgid "Save the widget to make the shortcode"
 msgstr ""
 
-#: cttc-widget.php:895
+#: cttc-widget.php:907
 msgid "Copy and paste this"
 msgstr ""
 
-#: cttc-widget.php:906
+#: cttc-widget.php:918
 msgid "See what the tags will look like"
 msgstr ""
 
-#: cttc-widget.php:907
+#: cttc-widget.php:919
 msgid "Example Tag"
 msgstr ""
 
-#: cttc-widget.php:909
+#: cttc-widget.php:921
 msgid "Tag Text"
 msgstr ""
 
-#: cttc-widget.php:1100
+#: cttc-widget.php:1112
 msgid "0"
 msgstr ""
 
-#: cttc-widget.php:1101
+#: cttc-widget.php:1113
 msgid "Error"
 msgstr ""
 
-#: cttc-widget.php:1170
+#: cttc-widget.php:1182
 msgid "Fail"
 msgstr ""
 
-#: cttc-widget.php:1178
+#: cttc-widget.php:1190
 msgid "WCAG Rating"
 msgstr ""
 
-#: cttc-widget.php:1180
+#: cttc-widget.php:1192
 #, php-format
 msgid "(Contrast Ratio of %.2f)"
 msgstr ""

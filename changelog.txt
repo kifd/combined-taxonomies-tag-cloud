@@ -2,7 +2,9 @@
 
 = 0.34 =
 * Enhancement: added toggle for auto text coloring
+* Enhancement: added more choices of effects
 * Enhancement: can also change the color of the widget title
+* Enhancement: can change the effect transition timing
 * Note: update GPL license to 3.0
 
 = 0.33 =
