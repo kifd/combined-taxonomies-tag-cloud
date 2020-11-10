@@ -148,6 +148,21 @@ $colour-legend: #eaeaea;
 				padding: 0 0.4em 0 0.8em;
 			}
 			
+			.wcag {
+				display: flex;
+				padding: 0.4em;
+				justify-content: center;
+				align-items: center;
+				flex-grow: 1;
+				font-weight: bold;
+				
+				.details {
+					display: none;
+					font-weight: normal;
+					padding: 0 0.6em;
+				}
+			}
+			
 			.wp-picker-container {
 				margin: 0.4em 0;
 				
@@ -172,6 +187,10 @@ $colour-legend: #eaeaea;
 						justify-content: center;
 						width: 100%;
 					}
+					
+					& + .wcag .details {
+						display: inline;
+					}
 				}
 				
 				.wp-color-result-text {
@@ -179,15 +198,6 @@ $colour-legend: #eaeaea;
 					font-size: 1em;
 					line-height: 30px;
 				}
-			}
-			
-			.wcag {
-				display: flex;
-				padding: 0.4em;
-				justify-content: center;
-				align-items: center;
-				flex-grow: 1;
-				font-weight: bold;
 			}
 			
 			span[data-copy-text] {

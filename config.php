@@ -229,6 +229,7 @@ $config['choices'] = array(
 							'under_always'	=> __('Always Underline', 'CombinedTaxonomiesTagCloud'),
 							'under_hover'	=> __('Underline on Hover', 'CombinedTaxonomiesTagCloud'),
 							'box_hover'		=> __('Box Shadow on Hover', 'CombinedTaxonomiesTagCloud'),
+							'under_dotted'	=> __('Underline to Dots', 'CombinedTaxonomiesTagCloud'),
 						),
 );
 sort($config['choices']['taxonomies']);
@@ -264,8 +265,8 @@ $config['defaults'] = array(
 	'single'			=> '',
 	'smallest' 			=> 0.60,
 	'taxonomies'		=> array('post_tag'),
-	'tcolor1'			=> [255,255,255,1],
-	'tcolor2'			=> [255,255,255,1],
+	'tcolor1'			=> [255,255,255,0],
+	'tcolor2'			=> [255,255,255,0],
 	'tborder1'			=> '#ffffffff',
 	'tborder2'			=> '#000000ff',
 	'tag_padding_x'		=> 1.00,
@@ -276,6 +277,7 @@ $config['defaults'] = array(
 	'text_case'			=> '',
 	'text_decoration'	=> 'under_hover',
 	'title' 			=> '',
+	'title_color'		=> [0,0,0,1],
 	'wbackground'		=> [255,255,255,0],
 	'wborder_radius'	=> 0.00,
 	'wpadding'			=> 0.00,

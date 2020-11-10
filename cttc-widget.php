@@ -236,6 +236,7 @@ class CombinedTaxonomiesTagCloudWidget extends WP_Widget {
 			sprintf('--fontFamily:%s;', $this->get_font_stacks($args['font_family'])),
 			
 			sprintf('--titleAlignment:%s;', $args['align_title']),
+			vsprintf('--titleColor:rgba(%d,%d,%d,%.2f);', $args['title_color']),
 			
 			vsprintf('--widgetBackgroundColor:rgba(%d,%d,%d,%.2f);', $args['wbackground']),
 			sprintf('--widgetBorderRadius:%.2f%s;', $args['wborder_radius'], $args['font_unit']),
@@ -324,6 +325,9 @@ class CombinedTaxonomiesTagCloudWidget extends WP_Widget {
 		
 		
 		// and colors now need to always be defined (hard to work out contrasting colours if you don't know what to contrast)
+		$instance['title_color'] = ($this->is_valid_color($new['title_color']))
+			? $this->convert_color_to_rgba($new['title_color']) : $this->defaults['title_color'];
+			
 		$instance['wbackground'] = ($this->is_valid_color($new['wbackground']))
 			? $this->convert_color_to_rgba($new['wbackground']) : $this->defaults['wbackground'];
 			
@@ -567,6 +571,15 @@ class CombinedTaxonomiesTagCloudWidget extends WP_Widget {
 						esc_attr($this->get_field_id('title')),
 						esc_attr($this->get_field_name('title')),
 						esc_attr($instance['title'])
+					)
+				. sprintf('<p title="%s"><label for="%s">%s:</label><input class="color-picker" type="text" size="5" id="%s" name="%s" value="%s" data-alpha-enabled="true" data-css-var="titleColor"></p>',
+						__('Set the color of the title text', 'CombinedTaxonomiesTagCloud'),
+						esc_attr($this->get_field_id('title_color')),
+						__('Title Color', 'CombinedTaxonomiesTagCloud'),
+						esc_attr($this->get_field_id('title_color')),
+						esc_attr($this->get_field_name('title_color')),
+						vsprintf('rgba(%d,%d,%d,%.2f)', $instance['title_color']),
+						$this->defaults['title_color']
 					)
 				. sprintf('<p title="%s"><label for="%s">%s:</label>%s</p>',
 						__('How to align the title horizontally within the widget', 'CombinedTaxonomiesTagCloud'),
@@ -1161,7 +1174,11 @@ class CombinedTaxonomiesTagCloudWidget extends WP_Widget {
 				'contrast'	=> vsprintf('rgba(%d,%d,%d,%.2f)', $contrast),
 				'against'	=> $blend,
 				'ratio'		=> $ratio,
-				'wcag'		=> $wcag,
+				'wcag'		=> sprintf('<span class="details">%s:</span> %s <span class="details">%s</span>',
+					__('WCAG Rating', 'CombinedTaxonomiesTagCloud'),
+					$wcag,
+					sprintf(__('(Contrast Ratio of %.2f)', 'CombinedTaxonomiesTagCloud'), $ratio)
+				),
 			);
 		}
 		
@@ -1181,13 +1198,14 @@ class CombinedTaxonomiesTagCloudWidget extends WP_Widget {
 				
 			} else {
 				
+				// NOTE: check https://stackoverflow.com/a/40962043 for a more accurate blending
+				//       and more in the thread at https://lists.w3.org/Archives/Public/w3c-wai-ig/2012OctDec/0066.html
 				$rgba = array(
 					round($color1[0]*$color1[3] + $color2[0]*(1-$color1[3])),
 					round($color1[1]*$color1[3] + $color2[1]*(1-$color1[3])),
 					round($color1[2]*$color1[3] + $color2[2]*(1-$color1[3])),
 					$color1[3] *1,
 				);
-			
 			}
 		}
 		

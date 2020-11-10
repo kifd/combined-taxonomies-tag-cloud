@@ -1,0 +1,78 @@
+== Changelog ==
+
+= 0.34 =
+* Enhancement: added toggle for auto text coloring
+* Enhancement: can also change the color of the widget title
+* Note: update GPL license to 3.0
+
+= 0.33 =
+* Enhancement: added tag padding controls
+* Enhancement: improved inset shadow, added a few more effects
+* Enhancement: tag demo includes more details now (font, border & radius, tag padding)
+* Bugfix: transient saves re single page cloud highlighting
+
+= 0.32 =
+* Enhancement: changed default wpColorPicker to one that has transparency control
+* Enhancement: added more choices of effects
+* Enhancement: added demo of tag effect into the widget form
+* Enhancement: automatic contrasting text color over backgrounds for a simpler form
+* Enhancement: more general widget appearance control (title color, widget padding etc)
+* Enhancement: changing taxonomies now automatically updates the possible terms to exclude
+
+= 0.31 =
+* Enhancement: font unit selection now reflected across relevant options
+* Enhancement: font stack applies to widget title as well
+* Enhancement: added choice of tag highlighting effects
+* Enhancement: now uses CSS vars for easier customising
+* Note: requires php7+ now due to type hinting etc
+
+= 0.30 =
+* Enhancement: added ability to display the widget via a shortcode
+* Enhancement: added WCAG tag color contast checker
+* Enhancement: added option to automatically highlight tags in the cloud that match the tags in the current post
+* Enhancement: added adjustable row/column gaps
+* Enhancement: can copy the shortcode to the clipboard with a click
+* Bugfix: clearing just a color will also tell WP the form needs saving
+
+= 0.23 =
+* Enhancement: added 'show count' option
+* Enhancement: added tag border color option
+* Enhancement: rearranged the admin form UI into collapsible sections
+* Enhancement: added mouseover help text to each element
+* Enhancement: added tag text decoration option
+* Enhancement: completely changed the way CSS was added, so you can style multiple widgets at once
+* Bugfix: can now clear color settings, oops
+* Bugfix: found a fix for WP not enabling the save button after just a color change
+
+= 0.22 =
+* Tested with WP 5.6 alpha
+* Enhancement: added tag font stack selection
+* Enhancement: added tag text size scaling choice
+* Enhancement: added 'vw' to scaling unit selection because why not
+* Enhancement: made the widget form hide unused options based on select dropdowns
+* Bugfix: checks 'before_widget' param for CSS id, so themes that don't include it (like 2020...) can still have the widgets styled individually
+* Bugfix: tidied up the widget form code
+* Bugfix: removed a stray pre_get_posts() call
+
+= 0.21.4 =
+* Bugfix: was still trying to make a cloud even if we pulled no tags back
+
+= 0.21.3 =
+* Bugfix: transient was only saving a single instance
+* Bugfix: crashed in a different place if you deleted a taxonomy while it was selected in a widget
+
+= 0.21.2 =
+* Tested with WP 5.2.1
+
+= 0.21.1 =
+* Tested with WP 4.6.1
+
+= 0.21 =
+* Bugfix: crashed if you deleted a taxonomy while it was selected in a widget
+
+= 0.20 =
+* Enhancement: added colour pickers
+* Bugfix: tidied up the stylesheet
+
+= 0.10 =
+* Initial release.
