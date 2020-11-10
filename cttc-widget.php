@@ -779,7 +779,7 @@ class CombinedTaxonomiesTagCloudWidget extends WP_Widget {
 						vsprintf('rgba(%d,%d,%d,%.2f)', $this->defaults['tcolor1']),
 						sprintf('<span class="wcag" title="%s">%s</span>',
 							__('When the auto text color is used on top of this color, what rating will it get under the WCAG guidelines for contrast?', 'CombinedTaxonomiesTagCloud'),
-							$this->get_wcag_color_and_rating($instance['tcolor1'], $instance['wbackground'], true),
+							$this->get_wcag_color_and_rating($instance['tcolor1'], $instance['wbackground'], true)
 						)
 					)
 				. sprintf('<p title="%s"><label for="%s">%s:</label><input class="color-picker" type="text" size="5" id="%s" name="%s" value="%s" data-default-color="%s" data-alpha-enabled="true" data-css-var="backColor2">%s</p>',
@@ -792,7 +792,7 @@ class CombinedTaxonomiesTagCloudWidget extends WP_Widget {
 						vsprintf('rgba(%d,%d,%d,%.2f)', $this->defaults['tcolor2']),
 						sprintf('<span class="wcag" title="%s">%s</span>',
 							__('When the auto text color is used on top of this color, what rating will it get under the WCAG guidelines for contrast?', 'CombinedTaxonomiesTagCloud'),
-							$this->get_wcag_color_and_rating($instance['tcolor2'], $instance['wbackground'], true),
+							$this->get_wcag_color_and_rating($instance['tcolor2'], $instance['wbackground'], true)
 						)
 					)
 				
